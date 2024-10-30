@@ -1,0 +1,51 @@
+---
+title: "eyetools: an R package for simplified analysis of eye data"
+shorttitle: "eyetools: eye data analysis"
+author:
+  - name: Tom Beesley
+    corresponding: true
+    orcid: 0000-0003-2836-2743
+    email: t.beesley@lancaster.ac.uk
+    affiliation: 
+      - ref: LU
+  - name: Matthew Ivory 
+    affiliation: 
+      - ref: LU
+affiliations:
+  - id: LU
+    name: Lancaster University
+    country: UK
+    address: Department of Psychology, Lancaster University, UK, LA1 4YD
+abstract: |
+  | Abstract goes here 
+keywords: [eye-tracking; fixations; saccades; areas-of-interest]
+bibliography: bibliography.bib
+format:
+  apaquarto-pdf:
+    link-citations: true
+    numbered-lines: true
+    fig-pos: 'H'
+    documentmode: man
+    keep-tex: true
+    citeproc: false
+    filters: 
+      - at: pre-render
+        path: "wordcount.lua"
+execute:
+  echo: false
+  warning: false
+editor_options: 
+  chunk_output_type: console
+floatsintext: true
+ 
+---
+
+
+
+# References
+
+<!-- References will auto-populate in the refs div below -->
+
+::: {#refs}
+:::
+
