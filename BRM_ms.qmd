@@ -42,7 +42,7 @@ floatsintext: true
 
 # Introduction
 
-Some primer on collecting/requiring eye data (couple paragraphs) - what is it and how is it used/leveraged. Perhaps something on why R-based analysis helps to automate and speed up research.
+Some primer on collecting/requiring eye data (couple paragraphs) - what is it and how is it used/leveraged. Perhaps something on why R-based analysis helps to automate and speed up research. @tom
 
 The aim of this tutorial is to introduce the R package eyetools and demonstrate its uses for streamlining the processing and analysis of eye gaze data. It should appeal to researchers unfamiliar with working with eye data, as we detail steps of converting raw data through to the analysis in a reproducible R environment. It should also appeal to researchers accustomed to working with eye data in other environments who wish to transfer to working in R. In using eyetools as the foundation data pipeline, we hope that this tutorial provides a comprehensive and clear approach to working with eye data.
 
@@ -50,20 +50,24 @@ This tutorial is separated into five distinct sections. In the first section, we
 
 # Data Collection
 
-First describe basic paradigms for collecting eye data. Also purpose etc.
+First describe basic paradigms for collecting eye data. Also purpose etc. @tom
 
 Then describe the specifics of the dataset we are using - I presume this is the HCL dataset in full?
 
 # Converting Raw Data
+@matthew, @tom
 
 `hdf5_to_csv()`
 `combine_eyes()`
 
-# Working with eyetools
+# Working with eyetools 
+@matthew
 
-
+In the last section, we finished with the data in a format that holds participant ID, trial number, a timestamp, along with x and y coordinates. This is the format expected by eyetools when working with multi-participant data, however if you some reason you are working with a single participant then the participant ID column is superfluous and can be dropped. This basic data format of ID, trial, time, x, and y ensures that eyetools is applicable to a variety of eye data sources and does not depend on specific eye trackers being used.
 
 # Analysing eye data
+
+@tom
 
 # Discussion
 
