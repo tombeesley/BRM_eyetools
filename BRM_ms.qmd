@@ -40,6 +40,36 @@ floatsintext: true
  
 ---
 
+# Introduction
+
+Some primer on collecting/requiring eye data (couple paragraphs) - what is it and how is it used/leveraged. Perhaps something on why R-based analysis helps to automate and speed up research.
+
+The aim of this tutorial is to introduce the R package eyetools and demonstrate its uses for streamlining the processing and analysis of eye gaze data. It should appeal to researchers unfamiliar with working with eye data, as we detail steps of converting raw data through to the analysis in a reproducible R environment. It should also appeal to researchers accustomed to working with eye data in other environments who wish to transfer to working in R. In using eyetools as the foundation data pipeline, we hope that this tutorial provides a comprehensive and clear approach to working with eye data.
+
+This tutorial is separated into five distinct sections. In the first section, we briefly describe the basic methodology of collecting eye data in general, and in regard to the specific dataset we use to illustrate all the functionality of the eyetools package. The second section covers the process for getting data from an eye tracker into an eyetools-friendly format. The third section introduces the foundational functions of the eyetools package, from fixing missing data, smoothing erratic gaze patterns, to calculating fixations, and detecting time spent in Areas of Interest (AOIs). The fourth section takes the processed data, and applies basic analysis techniques commonplace in eye data research. In the fifth and final section, we reflect on the benefits of the eyetools package, including contributions to open science practices, reproducibility, and providing clarity to eye data analysis.
+
+# Data Collection
+
+First describe basic paradigms for collecting eye data. Also purpose etc.
+
+Then describe the specifics of the dataset we are using - I presume this is the HCL dataset in full?
+
+# Converting Raw Data
+
+`hdf5_to_csv()`
+`combine_eyes()`
+
+# Working with eyetools
+
+
+
+# Analysing eye data
+
+# Discussion
+
+# Data Availability
+# Code Availability
+
 
 
 # References
