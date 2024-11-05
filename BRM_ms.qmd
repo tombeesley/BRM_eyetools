@@ -40,6 +40,13 @@ floatsintext: true
  
 ---
 
+```{r}
+
+library(eyetools)
+
+```
+
+
 # Introduction
 
 Some primer on collecting/requiring eye data (couple paragraphs) - what is it and how is it used/leveraged. Perhaps something on why R-based analysis helps to automate and speed up research. @tom
@@ -52,18 +59,87 @@ This tutorial is separated into five distinct sections. In the first section, we
 
 First describe basic paradigms for collecting eye data. Also purpose etc. @tom
 
-Then describe the specifics of the dataset we are using - I presume this is the HCL dataset in full?
+Then describe the specifics of the dataset we are using - I presume this is the HCL dataset in full? Should make mention of the fact that the workflow can be done either with the full dataset, or the two participant dataset provided in package.
 
 # Converting Raw Data
 @matthew, @tom
 
 `hdf5_to_csv()`
-`combine_eyes()`
+`combine_eyes()` returns a flattened list of participant data that has x and y variables in place of the left\_\* and right\_\* variables.
+
+```{r}
+data_combined <- combine_eyes(HCL,method = "average")
+```
+
 
 # Working with eyetools 
-@matthew
 
 In the last section, we finished with the data in a format that holds participant ID, trial number, a timestamp, along with x and y coordinates. This is the format expected by eyetools when working with multi-participant data, however if you some reason you are working with a single participant then the participant ID column is superfluous and can be dropped. This basic data format of ID, trial, time, x, and y ensures that eyetools is applicable to a variety of eye data sources and does not depend on specific eye trackers being used.
+
+### Counterbalanced designs
+
+Many psychology experiments will position stimuli on the screen in a counterbalanced fashion. For example, in the example data we are using, there are two stimuli, with one of these appearing on the left and one on the right. In our design, one of the cue stimuli is a "target" and one is a "distractor", and the experiment counterbalances whether these are positioned on the left or right across trials.
+
+Eyetools has a built in function which allows us to transform the x (or y) values of the stimuli to take into account a counterbalancing variable: `conditional_transform()`. This function currently allows for a single-dimensional flip across either the horizontal or vertical midline. It can be used on raw data or fixation data. It requires the spatial coordinates (x, y) and a specification of the counterbalancing variable. The result is a normalised set of data, in which the x (and/or y) position is consistent across counterbalanced conditions (e.g., in our example, we can transform the data so that the target cue is always on the left). This transformation is especially useful for future visualisations and calculation of time on areas of interest. Note that `conditional_transform()` is another function that does not discriminate between multi-participant and single-participant data and so no participant_ID parameter is required. To transform the data, we require knowledge of where predictive cues were presented. Using this, `conditional_transform()` can align data across the x or y midline, depending on how stimuli were presented.
+
+```{r}
+
+data_merged <- merge(data_combined, HCL_behavioural) # merges with the common variables pNum and trial
+
+data_counterbalanced <- conditional_transform(data_merged, 
+                              flip = "x", #flip across x midline
+                              cond_column = "cue_order", #this column holds the counterbalance information
+                              cond_values = "2",#which values in cond_column to flip
+                              message = FALSE) #suppress message
+
+```
+
+## Repairing missing data and smoothing data
+
+Despite researcher's best efforts and hopes, participants are likely to blink during data collection, resulting in observations where no data is present for where the eyes would be looking. To mitigate this issue, the `interpolate()` function estimates the  path taken by the eyes based upon the eye coordinates before and after the missing data. There are two methods for estimating the path, linear interpolation ("approx", the default setting) and cubic spline ("spline"). The default method of linear interpolation replaces missing values with a line of constant slope and evenly spaced coordinates reaching the existing data. The cubic spline method applies piecewise cubic functions to enable a curve to be calculated as opposed to a line between points.
+
+```{r}
+data <- interpolate(data_counterbalanced, 
+                    method = "approx",
+                    participant_ID = "pNum")
+
+```
+
+When using `interpolate()`, a report can be requested so that a researcher can measure how much missing data has been replaced. This parameter changes the output format of the function, and returns a list of both the data and the report. The report can be accessed easily using the following code:
+
+```{r}
+interpolate(data_counterbalanced, 
+            method = "approx",
+            participant_ID = "pNum", 
+            report = TRUE)[[2]]
+```
+
+As shown, not all missing data has been replaced, this is because when gaps are larger than a given size they are kept as missing data due to it being unreasonable to try to estimate the path taken by the eye. The amount of missing data that will be estimated can be changed through the maxgap parameter. 
+
+Once missing data has been fixed, a common step is to smooth the eye data to remove particularly jerky eye movements. To do this,  `smoother()`  reduces the noise in the data by applying a moving averaging function. The degree of smoothing can be specified, as well as having a plot generated for random trials to observe how well the smoothed data fits the raw data.
+
+```{r, message=FALSE}
+data <- smoother(data,
+                 span = .02,
+                 participant_ID = "pNum", 
+                 plot = TRUE)
+```
+
+## Fixations
+
+Once the data has been repaired and smoothed, a core step in eye data analysis is to identify fixations [@salvucci2000identifying], defined as when the gaze stops in a specific location for a given amount of time. When the eyes are moving between these fixations, they are considered to be saccades. Subsequently, data can be split into these two groups, fixations and saccades. In the eyetools package, there are two fixation algorithms offered; the first algorithm, `fixation_dispersion()` employs a dispersion-based approach that uses spatial and temporal data to determine fixations. By using a maximum dispersion range, the algorithm looks for sufficient periods of time that the eye gaze remains within this range and once this range is exceed, this is termed as a fixation. The second algorithm, `fixation_VTI()` takes advantage of the idea that data is either a fixation or a saccade and employs a velocity-threshold approach. It identifies data where the eye is moving and excludes this, before applying a dispersion check to ensure that the eye does not drift during the fixation period. If the range is broken, a new fixation is determined. Saccades must be of a given length to be removed, otherwise they are considered as micro-saccades [@CITATION_NEEDED_HERE?].
+
+
+```{r}
+data_fixations_disp <- fixation_dispersion(data,
+                                           min_dur = 150, # Minimum duration (in milliseconds) of period over which fixations are assessed
+                                           disp_tol = 100, # Maximum tolerance (in pixels) for the dispersion of values allowed over fixation period
+                                           run_interp = FALSE, # the default is true, but we have already run interpolate()
+                                           NA_tol = 0.25, # the proportion of NAs tolerated within any window of samples evaluated as a fixation
+                                           progress = FALSE, # whether to display a progress bar or not
+                                           participant_ID = "pNum") 
+```
+
 
 # Analysing eye data
 
