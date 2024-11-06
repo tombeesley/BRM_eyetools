@@ -40,8 +40,9 @@ floatsintext: true
  
 ---
 
-```{r}
+```{r, include=FALSE, message=FALSE}
 
+#install_github("tombeesley/eyetools@0.7.3")
 library(eyetools)
 
 ```
@@ -49,20 +50,26 @@ library(eyetools)
 
 # Introduction
 
-Some primer on collecting/requiring eye data (couple paragraphs) - what is it and how is it used/leveraged. Perhaps something on why R-based analysis helps to automate and speed up research. @tom
+Eye tracking is a widely used technique in behavioural sciences, such as attention, learning, and decision making [@orquin2019primer]. By recording the movement of an individual's gaze during research studies, researchers can quantify where and how long individual's look at stimuli presented on screen. Eye tracking offers an insight into real-time cognitive processing, allowing researchers to infer mental states and processes with high temporal precision [@duchowski2017eye]. The most common eye tracking systems use infrared light to detect reflections from the eyes enabling the calculation of gaze position on a screen. Once this data has been collected, it can be classified into fixations and saccades. Fixations are time periods where the eyes remain relatively stationary which enable focused attention on stimuli [@rayner1998eye]. Conversely, saccades are the rapid eye movements between fixations that are typically too fast to allow for new information processing [@holmqvist2011eye].
 
-The aim of this tutorial is to introduce the R package eyetools and demonstrate its uses for streamlining the processing and analysis of eye gaze data. It should appeal to researchers unfamiliar with working with eye data, as we detail steps of converting raw data through to the analysis in a reproducible R environment. It should also appeal to researchers accustomed to working with eye data in other environments who wish to transfer to working in R. In using eyetools as the foundation data pipeline, we hope that this tutorial provides a comprehensive and clear approach to working with eye data.
+A core element to utilising eye data effectively is in knowing how to process and analyse the information gathered, which is often comprised of hundreds of trials from multiple participants, and so datasets need to have processing stages applied consistently across participants and trials. Utilising reproducible workflows, such as implementing R-based pipelines for processing and analysis can offer this consistency as well as confidence in the outputs and results. Using R enables access to the Comprehensive R Archive Network (CRAN), a repository of packages containing functions designed to improve and optimise data processing and analysis workflows. It is here that we introduce eyetools, an R package designed to work with eye data and streamlines the processing and analysis pipeline.
+
+The aim of this tutorial is to demonstrate the functionality contained within eyetools. It should appeal to researchers unfamiliar with working with eye data, as we detail steps of converting raw data through to the analysis in a reproducible R environment. It should also appeal to researchers accustomed to working with eye data in other environments who wish to transfer to working in R. In using eyetools as the foundation data pipeline, we hope that this tutorial provides a comprehensive and clear approach to working with eye data.
+
+eyetools is not the only R package available for working with eye data, a recent assessment of available packages on CRAN identified six that offer eye data relevant functions. eyeTrackr offers functionality for experiments from 'Eyelink' trackers, limiting the usability of the package. Similarly, eyelinker and eyelinkReader are constrained to eyelink data. In contrast, eyetools provides a hardware-agnostic design, relying on data being in a given format that is easily managed from any data source. The emov package offers a limited set of functions, including a fixation algorithm that is based upon the same algorithm used in eyetools, however emov is limited in continued functionality, and plotting and data preparation functions are absent. eyeRead is a package exclusively designed for eye tracking on reading exercises and eyetools is designed for attention and intent-based research. Finally, the eyetrackingR is perhaps the most comprehensive alternative package, but it lacks any functions related to fixations and saccades, instead offering a suite of more naive approaches.
 
 This tutorial is separated into five distinct sections. In the first section, we briefly describe the basic methodology of collecting eye data in general, and in regard to the specific dataset we use to illustrate all the functionality of the eyetools package. The second section covers the process for getting data from an eye tracker into an eyetools-friendly format. The third section introduces the foundational functions of the eyetools package, from fixing missing data, smoothing erratic gaze patterns, to calculating fixations, and detecting time spent in Areas of Interest (AOIs). The fourth section takes the processed data, and applies basic analysis techniques commonplace in eye data research. In the fifth and final section, we reflect on the benefits of the eyetools package, including contributions to open science practices, reproducibility, and providing clarity to eye data analysis.
 
 # Data Collection
 
-First describe basic paradigms for collecting eye data. Also purpose etc. @tom
+First describe basic paradigms for collecting eye data. Also purpose etc. \@tom
 
 Then describe the specifics of the dataset we are using - I presume this is the HCL dataset in full? Should make mention of the fact that the workflow can be done either with the full dataset, or the two participant dataset provided in package.
 
 # Converting Raw Data
-@matthew, @tom
+\@matthew, \@tom
+
+Owing to the vast range of eye tracking hardware available, eyetools does not offer much in the way of converting raw data into the eyetools format of participant ID, trial number, timestamp, x, and y coordinates. In this section, we cover the stages of transforming the data from a TOBII eye tracker
 
 `hdf5_to_csv()`
 `combine_eyes()` returns a flattened list of participant data that has x and y variables in place of the left\_\* and right\_\* variables.
@@ -80,7 +87,7 @@ In the last section, we finished with the data in a format that holds participan
 
 Many psychology experiments will position stimuli on the screen in a counterbalanced fashion. For example, in the example data we are using, there are two stimuli, with one of these appearing on the left and one on the right. In our design, one of the cue stimuli is a "target" and one is a "distractor", and the experiment counterbalances whether these are positioned on the left or right across trials.
 
-Eyetools has a built in function which allows us to transform the x (or y) values of the stimuli to take into account a counterbalancing variable: `conditional_transform()`. This function currently allows for a single-dimensional flip across either the horizontal or vertical midline. It can be used on raw data or fixation data. It requires the spatial coordinates (x, y) and a specification of the counterbalancing variable. The result is a normalised set of data, in which the x (and/or y) position is consistent across counterbalanced conditions (e.g., in our example, we can transform the data so that the target cue is always on the left). This transformation is especially useful for future visualisations and calculation of time on areas of interest. Note that `conditional_transform()` is another function that does not discriminate between multi-participant and single-participant data and so no participant_ID parameter is required. To transform the data, we require knowledge of where predictive cues were presented. Using this, `conditional_transform()` can align data across the x or y midline, depending on how stimuli were presented.
+Eyetools has a built in function which allows us to transform the x (or y) values of the stimuli to take into account a counterbalancing variable: `conditional_transform()`. This function currently allows for a single-dimensional flip across either the horizontal or vertical midline. It can be used on raw data or fixation data. It requires the spatial coordinates (x, y) and a specification of the counterbalancing variable. The result is a normalised set of data, in which the x (and/or y) position is consistent across counterbalanced conditions (e.g., in our example, we can transform the data so that the target cue is always on the left). This transformation is especially useful for future visualisations and calculation of time on areas of interest. Note that `conditional_transform()` is another function that does not discriminate between multi-participant and single-participant data and so no participant_ID parameter is required. To transform the data, we require knowledge of where predictive cues were presented. Using this, `conditional_transform()` can align data across the x or y midline, depending on how stimuli were presented. In the experimental design used in our study, cues were presented either on the left or the right, so by applying `conditional_transform()`, all the predictive cues in the dataset are recorded on the same side.
 
 ```{r}
 
@@ -127,23 +134,64 @@ data <- smoother(data,
 
 ## Fixations
 
-Once the data has been repaired and smoothed, a core step in eye data analysis is to identify fixations [@salvucci2000identifying], defined as when the gaze stops in a specific location for a given amount of time. When the eyes are moving between these fixations, they are considered to be saccades. Subsequently, data can be split into these two groups, fixations and saccades. In the eyetools package, there are two fixation algorithms offered; the first algorithm, `fixation_dispersion()` employs a dispersion-based approach that uses spatial and temporal data to determine fixations. By using a maximum dispersion range, the algorithm looks for sufficient periods of time that the eye gaze remains within this range and once this range is exceed, this is termed as a fixation. The second algorithm, `fixation_VTI()` takes advantage of the idea that data is either a fixation or a saccade and employs a velocity-threshold approach. It identifies data where the eye is moving and excludes this, before applying a dispersion check to ensure that the eye does not drift during the fixation period. If the range is broken, a new fixation is determined. Saccades must be of a given length to be removed, otherwise they are considered as micro-saccades [@CITATION_NEEDED_HERE?].
-
+Once the data has been repaired and smoothed, a core step in eye data analysis is to identify fixations [@salvucci2000identifying], defined as when the gaze stops in a specific location for a given amount of time. When the eyes are moving between these fixations, they are considered to be saccades. Subsequently, data can be split into these two groups, fixations and saccades. In the eyetools package, there are two fixation algorithms offered; the first algorithm, `fixation_dispersion()` employs a dispersion-based approach that uses spatial and temporal data to determine fixations. By using a maximum dispersion range, the algorithm looks for sufficient periods of time that the eye gaze remains within this range and once this range is exceed, this is termed as a fixation. The second algorithm, `fixation_VTI()` takes advantage of the idea that data is either a fixation or a saccade and employs a velocity-threshold approach. It identifies data where the eye is moving at a minimum velocity and excludes this, before applying a dispersion check to ensure that the eye does not drift during the fixation period. If the range is broken, a new fixation is determined. Saccades must be of a given length to be removed, otherwise they are considered as micro-saccades [\@CITATION_NEEDED_HERE?].
 
 ```{r}
-data_fixations_disp <- fixation_dispersion(data,
-                                           min_dur = 150, # Minimum duration (in milliseconds) of period over which fixations are assessed
-                                           disp_tol = 100, # Maximum tolerance (in pixels) for the dispersion of values allowed over fixation period
-                                           run_interp = FALSE, # the default is true, but we have already run interpolate()
-                                           NA_tol = 0.25, # the proportion of NAs tolerated within any window of samples evaluated as a fixation
-                                           progress = FALSE, # whether to display a progress bar or not
-                                           participant_ID = "pNum") 
+fixations <- fixation_dispersion(data,
+                                 min_dur = 150, # Minimum duration (in milliseconds) of fixations
+                                 disp_tol = 100, # Maximum tolerance (in pixels) for the dispersion of values
+                                 run_interp = FALSE, # the default is true, but we have already run interpolate()
+                                 NA_tol = 0.25, # the proportion of NAs tolerated within a fixation window
+                                 progress = FALSE, # whether to display a progress bar or not
+                                 participant_ID = "pNum") 
+```
+
+Once fixations have been calculated, they can be used in conjunction with Areas of Interest (AOIs) to determine the sequence in which the eye enters and exits these areas, as well as the time spent in these regions. When referring to AOIs, these often refer to the cues presented and the outcome object. In our example, the two cues at the top of the screen are the cues, and the outcome is at the bottom. We can define these areas in a separate dataframe object by giving the centrepoint of the AOI in x, y coordinates along with the width and height (if the AOIs are rectangular) or just the radius (if circular).
+
+```{r}
+
+# set areas of interest
+AOI_areas <- data.frame(matrix(nrow = 3, ncol = 4))
+colnames(AOI_areas) <- c("x", "y", "width_radius", "height")
+
+AOI_areas[1,] <- c(460, 840, 400, 300) # Left cue
+AOI_areas[2,] <- c(1460, 840, 400, 300) # Right cue
+AOI_areas[3,] <- c(960, 270, 300, 500) # outcomes
+
+```
+
+In combination with the fixation data, the AOI information can be used to determine the sequence of AOI entries using the `AOI_seq()` function. This fucntion checks whether a fixation is detected within an AOI, and if not, it is dropped from the output, and then provides a list of the sequence of AOI entries, along with start and end timestamps, and the duration.
+
+```{r}
+data_AOI_entry <- AOI_seq(fixations, AOIs = AOI_areas,
+                          AOI_names = c("predictive", "non-predictive", "target"),
+                          participant_ID = "pNum")
+```
+
+Time spent in AOIs can also be calculated from fixations or raw data using the `AOI_time()` function available. This calculates the time spent in each AOI in each trial, based on the data type given, in our case fixation data.
+
+```{r}
+
+data_AOI_time <- AOI_time(fixations, data_type = "fix", AOIs = AOI_areas,
+                          AOI_names = c("predictive", "non-predictive", "target"),
+                          participant_ID = "pNum")
+
+```
+
+If choosing to work with the raw data, there is also the option of using `AOI_time_binned()` which allows for the trials to be split into bins of a given length, and the time spent in AOIs calculated as a result.
+
+```{r}
+data_AOI_time_binned <- AOI_time_binned(data, AOIs = AOI_areas,
+                                        AOI_names = c("predictive", "non-predictive", "target"),
+                                        bin_length = 100,
+                                        max_time = 2000, #in milliseconds
+                                        participant_ID = "pNum")
 ```
 
 
 # Analysing eye data
 
-@tom
+\@tom
 
 # Discussion
 
