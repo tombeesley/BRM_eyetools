@@ -69,10 +69,11 @@ Then describe the specifics of the dataset we are using - I presume this is the 
 # Converting Raw Data
 \@matthew, \@tom
 
-Owing to the vast range of eye tracking hardware available, eyetools does not offer much in the way of converting raw data into the eyetools format of participant ID, trial number, timestamp, x, and y coordinates. In this section, we cover the stages of transforming the data from a TOBII eye tracker
+Owing to the vast range of eye tracking hardware available, eyetools does not offer much in the way of converting raw data into the eyetools format of participant ID, trial number, timestamp, x, and y coordinates. In this section, we cover the stages of transforming the data from a TOBII eye tracker.
 
 `hdf5_to_csv()`
-`combine_eyes()` returns a flattened list of participant data that has x and y variables in place of the left\_\* and right\_\* variables.
+
+When you have data that is in a binocular format, that is you have a set of coordinates for each eye, it needs to be converted into single x and y coordinates for both eyes combined. Using eyetools, this can be done in one of two ways, either taking an average of the coordinattes from the two eyes, or by choosing the eye with the fewest missing samples is used to represent the data. An averaging of the two coordinates sets is the typical method of combining binocular data, and can be done using the `combine_eyes()` function in eyetools. This returns a flattened list of participant data that has x and y variables in place of the left\_\* and right\_\* variables.
 
 ```{r}
 data_combined <- combine_eyes(HCL,method = "average")
@@ -195,9 +196,21 @@ data_AOI_time_binned <- AOI_time_binned(data, AOIs = AOI_areas,
 
 # Discussion
 
+In the present tutorial, we began by identifying the current gap in available tools for working with eye data in open-science pipelines. We then provided an overview of the general data collection process required for eye tracking research, before detailing the conversion of raw eye data into a useable eyetools format. We then covered the entire processing pipeline using functions available in the eyetools package that included the repairing and normalising the data, and the detection of events such as fixations, saccades, and AOI entries. \@SOMETHING_ON_THE_ANALYSIS_GOES_HERE.
+
+From a practical perspective, this tutorial offers a step-by-step walkthrough for handling eye data using R for open-science, reproducible purposes. It provides a pipeline that can be relied upon by novices looking to work with eye data, as well as offering new functions and tools for experienced researchers. By enabling the processing and analysis of data in a single R environment it also helps to speed up data analysis.
+
+## Advantages of Open-Source Tools
+
+eyetools offers an open-source toolset that holds no hidden nor proprietary functionality.
+
 # Data Availability
+
+The data required for reproducing this tutorial is available at: \@URL. A condensed version of the dataset (starting with the `combine_eyes()` function) is a dataset in the eyetools package called HCL.
+
 # Code Availability
 
+The code used in this tutorial is available in the reproducible manuscript file available at:
 
 
 # References
