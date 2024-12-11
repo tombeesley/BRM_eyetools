@@ -252,10 +252,17 @@ The `plot_seq()` function allows for the plotting of raw data to visualise the g
 plot_seq(data = data[data$pNum == 118,], AOIs = HCL_AOIs,  bin_time = 5000, trial_number = 1)
 ```
 
-The final plotting function in eyetools is `plot_spatial()`.
+The final plotting function in eyetools is `plot_spatial()`. This can plot raw data, fixations, and saccades, either separately or in combination. `plot_spatial()` plots the location of the eye gaze of a trial, and when given raw data is very similar to the output of `plot_seq()`, when using fixation data, then an additional parameter can be used to label the fixations in their temporal order, enabling a better presentation of how fixations arise. Finally, providing saccade data allows for the length and direction of saccades to be presented. 
+
+```{r}
+plot_spatial(raw_data = data[data$pNum == 118,])
+# plot both raw and fixation data together
+plot_spatial(raw_data = data, fix_data = fixation_dispersion(data))
+#plot one trial
+plot_spatial(raw_data = data, fix_data = fixation_dispersion(data), trial_number = 1)
+```
 
 
-`plot_spatial()`
 
 # Analysing eye data
 
