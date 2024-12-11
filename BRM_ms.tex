@@ -81,17 +81,15 @@
 
 \usepackage{graphicx}
 \makeatletter
-\newsavebox\pandoc@box
-\newcommand*\pandocbounded[1]{% scales image to fit in text height/width
-  \sbox\pandoc@box{#1}%
-  \Gscale@div\@tempa{\textheight}{\dimexpr\ht\pandoc@box+\dp\pandoc@box\relax}%
-  \Gscale@div\@tempb{\linewidth}{\wd\pandoc@box}%
-  \ifdim\@tempb\p@<\@tempa\p@\let\@tempa\@tempb\fi% select the smaller of both
-  \ifdim\@tempa\p@<\p@\scalebox{\@tempa}{\usebox\pandoc@box}%
-  \else\usebox{\pandoc@box}%
-  \fi%
-}
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
 % Set default figure placement to htbp
+\makeatletter
 \def\fps@figure{htbp}
 \makeatother
 
@@ -327,8 +325,8 @@ foundation data pipeline, we hope that this tutorial provides a
 comprehensive and clear approach to working with eye data.
 
 eyetools is not the only R package available for working with eye data,
-a recent assessment of available packages on CRAN identified six that
-offer eye data relevant functions. eyeTrackr offers functionality for
+a recent assessment of CRAN identified seven active packages that offer
+eye data relevant functions. eyeTrackr offers functionality for
 experiments from `Eyelink' trackers, limiting the usability of the
 package. Similarly, eyelinker and eyelinkReader are constrained to
 eyelink data. In contrast, eyetools provides a hardware-agnostic design,
@@ -338,10 +336,12 @@ including a fixation algorithm that is based upon the same algorithm
 used in eyetools, however emov is limited in continued functionality,
 and plotting and data preparation functions are absent. eyeRead is a
 package exclusively designed for eye tracking on reading exercises and
-eyetools is designed for attention and intent-based research. Finally,
-the eyetrackingR is perhaps the most comprehensive alternative package,
-but it lacks any functions related to fixations and saccades, instead
-offering a suite of more naive approaches.
+eyetools is designed for attention and intent-based research. saccadr
+offers exclusively methods for extracting saccades, limiting its usage
+for broader processing steps. Finally, the eyetrackingR is perhaps the
+most comprehensive alternative package, but it lacks any functions
+related to fixations and saccades, instead offering a suite of more
+naive approaches.
 
 This tutorial is separated into five distinct sections. In the first
 section, we briefly describe the basic methodology of collecting eye
@@ -378,18 +378,29 @@ format of participant ID, trial number, timestamp, x, and y coordinates.
 In this section, we cover the stages of transforming the data from a
 TOBII eye tracker.
 
-\texttt{hdf5\_to\_csv()}
+TOBII-generated data is stored in an hdf5 format, which is a
+gold-standard method for managing large hierarchical datasets, such as
+eye gaze data, however due to its hierarchical, and somewhat complex
+structure, hdf5 is not easily worked with in R. eyetools contains two
+functions that convert the data into dataframes for easier data
+processing. \texttt{hdf5\_to\_df()} takes the TOBII-generated data and
+extracts any eye gaze information into a dataframe (or list of
+dataframes). When using a TOBII eyetracker in custom experimental code
+(such as PsychPy), it is often beneficial to store timestamps of trial
+beginning and end, as well as markers for specific phases of the task.
+These are stored within the hdf5 file and can be accessed using the
+\texttt{hdf5\_get\_event()} function.
 
 When you have data that is in a binocular format, that is you have a set
 of coordinates for each eye, it needs to be converted into single x and
 y coordinates for both eyes combined. Using eyetools, this can be done
-in one of two ways, either taking an average of the coordinattes from
-the two eyes, or by choosing the eye with the fewest missing samples is
-used to represent the data. An averaging of the two coordinates sets is
-the typical method of combining binocular data, and can be done using
-the \texttt{combine\_eyes()} function in eyetools. This returns a
-flattened list of participant data that has x and y variables in place
-of the left\_* and right\_* variables.
+in one of two ways, either taking an average of the coordinates from the
+two eyes, or by choosing the eye with the fewest missing samples is used
+to represent the data. An averaging of the two coordinates sets is the
+typical method of combining binocular data, and can be done using the
+\texttt{combine\_eyes()} function in eyetools. This returns a flattened
+list of participant data that has x and y variables in place of the
+left\_* and right\_* variables.
 
 \section{Working with eyetools}\label{working-with-eyetools}
 
@@ -451,7 +462,7 @@ to enable a curve to be calculated as opposed to a line between points.
 When using \texttt{interpolate()}, a report can be requested so that a
 researcher can measure how much missing data has been replaced. This
 parameter changes the output format of the function, and returns a list
-of both the data and the report. The report can be accessed easily using
+of both the data and the report. The report can be easily accessed using
 the following code:
 
 \begin{verbatim}
@@ -473,7 +484,7 @@ averaging function. The degree of smoothing can be specified, as well as
 having a plot generated for random trials to observe how well the
 smoothed data fits the raw data.
 
-\pandocbounded{\includegraphics[keepaspectratio]{BRM_ms_files/figure-pdf/unnamed-chunk-6-1.pdf}}
+\includegraphics{BRM_ms_files/figure-pdf/unnamed-chunk-6-1.pdf}
 
 \subsection{Fixations}\label{fixations}
 
@@ -490,13 +501,13 @@ uses spatial and temporal data to determine fixations. By using a
 maximum dispersion range, the algorithm looks for sufficient periods of
 time that the eye gaze remains within this range and once this range is
 exceed, this is termed as a fixation. The second algorithm,
-\texttt{fixation\_VTI()} takes advantage of the idea that data is either
-a fixation or a saccade and employs a velocity-threshold approach. It
-identifies data where the eye is moving at a minimum velocity and
-excludes this, before applying a dispersion check to ensure that the eye
-does not drift during the fixation period. If the range is broken, a new
-fixation is determined. Saccades must be of a given length to be
-removed, otherwise they are considered as micro-saccades
+\texttt{fixation\_VTI()} takes advantage of the idea that eye data is
+either a fixation or a saccade and employs a velocity-threshold
+approach. It identifies data where the eye is moving at a minimum
+velocity and excludes this, before applying a dispersion check to ensure
+that the eye does not drift during the fixation period. If the range is
+broken, a new fixation is determined. Saccades must be of a given length
+to be removed, otherwise they are considered as micro-saccades
 {[}@CITATION\_NEEDED\_HERE?{]}.
 
 Once fixations have been calculated, they can be used in conjunction
@@ -526,6 +537,119 @@ If choosing to work with the raw data, there is also the option of using
 into bins of a given length, and the time spent in AOIs calculated as a
 result.
 
+\subsection{eyetool assumptions {[}I DON'T KNOW WHERE THIS SHOULD GO
+JUST
+YET{]}}\label{eyetool-assumptions-i-dont-know-where-this-should-go-just-yet}
+
+These are assumptions that are not built in as checks, primarily because
+it would not benefit anyone to have them coded.
+
+designed and tested using data formats of pixels and milliseconds.
+Whilst the functions are assumed to work for other measurements due to
+the underlying setup, it is not guaranteed. As well as frequency. Tested
+ar 300Hz, but theoretically it works for any frequency, but the saccade
+algorithms in particular are default to work around the 300Hz best
+
+any track loss, blinks are coded as NA in the data. Coding as {[}0,0{]}
+or other will result in inaccurate outputs
+
+\subsection{Visualisations made easy}\label{visualisations-made-easy}
+
+When working with eye data, it can be beneficial for the researcher to
+familiarise themselves with the dataset. Visualising the data through
+graphics can help to identify meaningful patterns that are obscured when
+relying on statisitical analyses alone
+(\citeproc{ref-kabacoffActionThirdEdition2022}{Kabacoff, 2022}).
+Graphics are also very effective at conveying information in a way that
+is easily grasped by a diverse audience. eyetools offers a selection of
+in-built plotting functions that work with data at most stages of
+processing. These plots are designed to aid in the researcher's
+processing and data analysis.
+
+The \texttt{plot\_AOI\_growth()} function offers the representation of
+how an individual (on a single trial) spends their time looking at the
+different AOIs. This can be useful to see how AOIs are interacted with
+over time, and this can be presented as either a cumulative over time,
+or as a proportion of the time spent in the trial.
+
+\begin{figure}[H]
+
+\caption{\label{fig-growth}Examples of the absolute and proportional
+time plots from \texttt{plot\_AOI\_growth()}}
+
+\begin{minipage}{0.50\linewidth}
+
+\subcaption{\label{fig-abs}}
+
+\centering{
+
+\includegraphics{BRM_ms_files/figure-pdf/fig-abs-1.pdf}
+
+}
+
+\end{minipage}%
+%
+\begin{minipage}{0.50\linewidth}
+
+\subcaption{\label{fig-prop}}
+
+\centering{
+
+\includegraphics{BRM_ms_files/figure-pdf/fig-prop-1.pdf}
+
+}
+
+\end{minipage}%
+
+\end{figure}%
+
+A heatmap of eye gaze positions can be generated using
+\texttt{plot\_heatmap()} which takes raw data as an input. As a
+function, and unlike many of the processing steps, it does not
+differentiate between trials or participants and plots any coordinate
+data it is given. This behaviour is allowed as the heatmap offers an
+excellent and fast ``sanity check'' that participants were, on the
+whole, looking at the expected areas of the experiment screen during the
+trials. As can be seen in Figure Figure~\ref{fig-heatmap}, we can be
+reassured that participants do indeed spend most of their time looking
+at the stimuli on screen rather than in the empty space.
+\texttt{plot\_heatmap()} also allows for the modification of the amount
+of data displayed, using the \texttt{alpha\_control} parameter. By
+decreasing \texttt{alpha\_control} in Figure
+Figure~\ref{fig-heatmap-alpha-update}, we gain more visualised
+information and we can still see that the majority of the data is kept
+within the stimuli and saccades between these areas.
+
+\begin{figure}[H]
+
+\caption{\label{fig-heatmap}A heatmap overlaid upon a sample stimuli
+image demonstrating where the participants looked most over all trials}
+
+\centering{
+
+\includegraphics{BRM_ms_files/figure-pdf/fig-heatmap-1.pdf}
+
+}
+
+\end{figure}%
+
+\begin{figure}[H]
+
+\caption{\label{fig-heatmap-alpha-update}A heatmap overlaid upon a
+sample stimuli image demonstrating where the participants looked most
+over all trials}
+
+\centering{
+
+\includegraphics{BRM_ms_files/figure-pdf/fig-heatmap-alpha-update-1.pdf}
+
+}
+
+\end{figure}%
+
+\texttt{plot\_AOI\_growth()} \texttt{plot\_seq()}
+\texttt{plot\_spatial()}
+
 \section{Analysing eye data}\label{analysing-eye-data}
 
 @tom
@@ -554,7 +678,21 @@ data analysis.
 Tools}\label{advantages-of-open-source-tools}
 
 eyetools offers an open-source toolset that holds no hidden nor
-proprietary functionality.
+proprietary functionality. The major benefits of open-source tools are
+extensive, but the main ones include the ability to explore and engage
+with the underlying functions to ensure that
+
+A collaborative community - with open source tools, if an unmet need is
+identified, then the community can work to provide a solution.
+
+\subsection{Good Science Practices with
+eyetools}\label{good-science-practices-with-eyetools}
+
+Creating savepoints (like having processed raw data, and then
+post-fixation calculation). Reduces the need to completely rework
+workflows if an issue is detected as savepoints can be used to ensure
+that computationally-intense or time-heavy processes are conducted as
+infrequently as possible.
 
 \section{Data Availability}\label{data-availability}
 
@@ -566,7 +704,8 @@ called HCL.
 \section{Code Availability}\label{code-availability}
 
 The code used in this tutorial is available in the reproducible
-manuscript file available at:
+manuscript file available at:(IF STORING IN GITHUB, THEN WE NEED TO
+CREATE A ZENODO SNAPSHOT FOR A DOI RATHER THAN JUST A GITHUB LINK)
 
 \section{References}\label{references}
 
@@ -580,6 +719,10 @@ methodology: Theory and practice}. Springer.
 Holmqvist, K., Nyström, M., Andersson, R., Dewhurst, R., Jarodzka, H.,
 \& Van de Weijer, J. (2011). \emph{Eye tracking: A comprehensive guide
 to methods and measures}. oup Oxford.
+
+\bibitem[\citeproctext]{ref-kabacoffActionThirdEdition2022}
+Kabacoff, R. I. (2022). \emph{R in action: Data analysis and graphics
+with r and tidyverse}. Simon; Schuster.
 
 \bibitem[\citeproctext]{ref-orquin2019primer}
 Orquin, J. L., \& Holmqvist, K. (2019). A primer on eye-tracking
