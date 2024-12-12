@@ -37,7 +37,6 @@ execute:
 editor_options: 
   chunk_output_type: console
 floatsintext: true
- 
 ---
 
 ```{r, include=FALSE, message=FALSE}
@@ -47,20 +46,19 @@ library(eyetools)
 
 ```
 
-
 # Introduction
 
-Eye tracking is now an established and widely used technique in the behavioural sciences. Perhaps the scientific discipline with the most invested interest in eye-data is Psychology, where eye-tracking systems are now commonplace in almost all university departments. Beyond academic institutions, eye-tracking continues to be a useful tool in understanding consumer behaviour, user-interface design, and entertainment. 
+Eye tracking is now an established and widely used technique in the behavioural sciences. Perhaps the scientific discipline with the most invested interest in eye-data is Psychology, where eye-tracking systems are now commonplace in almost all university departments. Beyond academic institutions, eye-tracking continues to be a useful tool in understanding consumer behaviour, user-interface design, and in various forms of entertainment.
 
-By recording the movement of an individual's gaze during research studies, researchers can quantify where and how long individual's look at particular regions of space (usually with a focus on stimuli presented on a 2D screen, but also within 3D space). Eye tracking provides a rich stream of continuous data and therefore can offer powerful insights into real-time cognitive processing. Such data allow researchers to inspect the interplay of cognitive processes such as attention, memory, and decision making, with high temporal precision [@duchowski2017eye]. 
+By recording the movement of an individual's gaze during research studies, researchers can quantify where and how long individual's look at particular regions of space (usually with a focus on stimuli presented on a 2D screen, but also within 3D space). Eye tracking provides a rich stream of continuous data and therefore can offer powerful insights into real-time cognitive processing. Such data allow researchers to inspect the interplay of cognitive processes such as attention, memory, and decision making, with high temporal precision [@duchowski2017eye].
 
-While there are abundant uses and benefits of collecting eye-movement data in psychology experiments, the continual stream of recording can lead to an overwhelming amount of raw data: modern eye-trackers can record data at 1000 Hz and above, which results in 3.6 million rows of data per hour. The provision of suitable computational software for data reduction and processing is an important part of eye-tracking research. The companies behind eye-tracking devices offer licensed software that will perform many of the necessary steps for eye-data analysis. However, there are several disadvantages to using such proprietary software in a research context. Firstly, the software will typically have an ongoing (annual) license cost for continual use. Secondly, the algorithms driving the operations within such software are not readily available for inspection. Both of these important constraints mean that the use of proprietary analysis software will lead to a failure to meet the basic open-science principle of analysis reproduction, for example as set out by the UK Reprodicibility Network: "We expect researchers to... make their research methods, software, outputs and data open, and available at the earliest possible point...The reproducibility of both research methods and research results ...is  critical to research in certain  contexts, particularly in the experimental sciences  with  a quantitative focus..." 
+While there are abundant uses and benefits of collecting eye-movement data in psychology experiments, the continual stream of recording can lead to an overwhelming amount of raw data: modern eye-trackers can record data at 1000 Hz and above, which results in 3.6 million rows of data per hour. The provision of suitable computational software for data reduction and processing is an important part of eye-tracking research. The companies behind eye-tracking devices offer licensed software that will perform many of the necessary steps for eye-data analysis. However, there are several disadvantages to using such proprietary software in a research context. Firstly, the software will typically have an ongoing (annual) license cost for continual use. Secondly, the algorithms driving the operations within such software are not readily available for inspection. Both of these important constraints mean that the use of proprietary analysis software will lead to a failure to meet the basic open-science principle of analysis reproduction, for example as set out by the UK Reprodicibility Network: "We expect researchers to... make their research methods, software, outputs and data open, and available at the earliest possible point...The reproducibility of both research methods and research results ...is critical to research in certain contexts, particularly in the experimental sciences with a quantitative focus..."
 
+In the current article we introduce a new toolkit for eye-data processing and analysis called "*eyetools*", which takes the form of an R package. R packages (like R itself) are free to use without licence and are therefore available for any user across the world. The package provides a (growing) number of functions that provide an efficient and effective means to conduct basic eye-data analysis. *eyetools* is built with academic researchers in the psychological sciences in mind, though there is no reason why the package would not be effective more generally. The functions within the package reflect steps in a comprehensive analysis workflow, taking the user from initial handling of raw eye data, to summarising data for each period of a procedure, to the visualisation of the data in plots. We hope that the functions are simple enough to mean that the package is easy to use for researchers who are unfamiliar with working with eye data. It should also appeal to researchers accustomed to working with eye data in other environments who wish to transfer to working in R.
 
+*eyetools* is, of course, not the only package in R that allows users to work with eye data. , a recent assessment of available packages on CRAN identified six additional (7?) packages that offer eye data relevant functions. **eyeTrackr** offers functionality for experiments from 'Eyelink' trackers, limiting the usability of the package. Similarly, **eyelinker** and **eyelinkReader** are constrained to eyelink data. In contrast, eyetools provides a hardware-agnostic design, relying on data being in a given format that is easily managed from any data source. The **emov** package offers a limited set of functions, including a fixation algorithm that is based upon the same algorithm used in eyetools, however emov is limited in continued functionality, and plotting and data preparation functions are absent. **eyeRead** is a package exclusively designed for eye tracking on reading exercises. Finally, the **eyetrackingR** package is perhaps the most comprehensive alternative package...
 
-The most common eye tracking systems use infrared light to detect reflections from the eyes enabling the calculation of gaze position on a screen. Once this data has been collected, it can be classified into fixations and saccades. Fixations are time periods where the eyes remain relatively stationary which enable focused attention on stimuli [@rayner1998eye]. Conversely, saccades are the rapid eye movements between fixations that are typically too fast to allow for new information processing [@holmqvist2011eye].
-
-A core element to utilising eye data effectively is in knowing how to process and analyse the information gathered, which is often comprised of hundreds of trials from multiple participants, and so datasets need to have processing stages applied consistently across participants and trials. Utilising reproducible workflows, such as implementing R-based pipelines for processing and analysis can offer this consistency as well as confidence in the outputs and results. Using R enables access to the Comprehensive R Archive Network (CRAN), a repository of packages containing functions designed to improve and optimise data processing and analysis workflows. It is here that we introduce eyetools, an R package designed to work with eye data and streamlines the processing and analysis pipeline.
+\[insert table of features here\]
 
 The aim of this tutorial is to demonstrate the functionality contained within eyetools. It should appeal to researchers unfamiliar with working with eye data, as we detail steps of converting raw data through to the analysis in a reproducible R environment. It should also appeal to researchers accustomed to working with eye data in other environments who wish to transfer to working in R. In using eyetools as the foundation data pipeline, we hope that this tutorial provides a comprehensive and clear approach to working with eye data.
 
@@ -75,6 +73,7 @@ First describe basic paradigms for collecting eye data. Also purpose etc. \@tom
 Then describe the specifics of the dataset we are using - I presume this is the HCL dataset in full? Should make mention of the fact that the workflow can be done either with the full dataset, or the two participant dataset provided in package.
 
 # Converting Raw Data
+
 \@matthew, \@tom
 
 Owing to the vast range of eye tracking hardware available, eyetools does not offer much in the way of converting raw data into the eyetools format of participant ID, trial number, timestamp, x, and y coordinates. In this section, we cover the stages of transforming the data from a TOBII eye tracker.
@@ -87,8 +86,7 @@ When you have data that is in a binocular format, that is you have a set of coor
 data_combined <- combine_eyes(HCL,method = "average")
 ```
 
-
-# Working with eyetools 
+# Working with eyetools
 
 In the last section, we finished with the data in a format that holds participant ID, trial number, a timestamp, along with x and y coordinates. This is the format expected by eyetools when working with multi-participant data, however if you some reason you are working with a single participant then the participant ID column is superfluous and can be dropped. This basic data format of ID, trial, time, x, and y ensures that eyetools is applicable to a variety of eye data sources and does not depend on specific eye trackers being used.
 
@@ -112,7 +110,7 @@ data_counterbalanced <- conditional_transform(data_merged,
 
 ## Repairing missing data and smoothing data
 
-Despite researcher's best efforts and hopes, participants are likely to blink during data collection, resulting in observations where no data is present for where the eyes would be looking. To mitigate this issue, the `interpolate()` function estimates the  path taken by the eyes based upon the eye coordinates before and after the missing data. There are two methods for estimating the path, linear interpolation ("approx", the default setting) and cubic spline ("spline"). The default method of linear interpolation replaces missing values with a line of constant slope and evenly spaced coordinates reaching the existing data. The cubic spline method applies piecewise cubic functions to enable a curve to be calculated as opposed to a line between points.
+Despite researcher's best efforts and hopes, participants are likely to blink during data collection, resulting in observations where no data is present for where the eyes would be looking. To mitigate this issue, the `interpolate()` function estimates the path taken by the eyes based upon the eye coordinates before and after the missing data. There are two methods for estimating the path, linear interpolation ("approx", the default setting) and cubic spline ("spline"). The default method of linear interpolation replaces missing values with a line of constant slope and evenly spaced coordinates reaching the existing data. The cubic spline method applies piecewise cubic functions to enable a curve to be calculated as opposed to a line between points.
 
 ```{r}
 data <- interpolate(data_counterbalanced, 
@@ -130,9 +128,9 @@ interpolate(data_counterbalanced,
             report = TRUE)[[2]]
 ```
 
-As shown, not all missing data has been replaced, this is because when gaps are larger than a given size they are kept as missing data due to it being unreasonable to try to estimate the path taken by the eye. The amount of missing data that will be estimated can be changed through the maxgap parameter. 
+As shown, not all missing data has been replaced, this is because when gaps are larger than a given size they are kept as missing data due to it being unreasonable to try to estimate the path taken by the eye. The amount of missing data that will be estimated can be changed through the maxgap parameter.
 
-Once missing data has been fixed, a common step is to smooth the eye data to remove particularly jerky eye movements. To do this,  `smoother()`  reduces the noise in the data by applying a moving averaging function. The degree of smoothing can be specified, as well as having a plot generated for random trials to observe how well the smoothed data fits the raw data.
+Once missing data has been fixed, a common step is to smooth the eye data to remove particularly jerky eye movements. To do this, `smoother()` reduces the noise in the data by applying a moving averaging function. The degree of smoothing can be specified, as well as having a plot generated for random trials to observe how well the smoothed data fits the raw data.
 
 ```{r, message=FALSE}
 data <- smoother(data,
@@ -143,7 +141,7 @@ data <- smoother(data,
 
 ## Fixations
 
-Once the data has been repaired and smoothed, a core step in eye data analysis is to identify fixations [@salvucci2000identifying], defined as when the gaze stops in a specific location for a given amount of time. When the eyes are moving between these fixations, they are considered to be saccades. Subsequently, data can be split into these two groups, fixations and saccades. In the eyetools package, there are two fixation algorithms offered; the first algorithm, `fixation_dispersion()` employs a dispersion-based approach that uses spatial and temporal data to determine fixations. By using a maximum dispersion range, the algorithm looks for sufficient periods of time that the eye gaze remains within this range and once this range is exceed, this is termed as a fixation. The second algorithm, `fixation_VTI()` takes advantage of the idea that data is either a fixation or a saccade and employs a velocity-threshold approach. It identifies data where the eye is moving at a minimum velocity and excludes this, before applying a dispersion check to ensure that the eye does not drift during the fixation period. If the range is broken, a new fixation is determined. Saccades must be of a given length to be removed, otherwise they are considered as micro-saccades [\@CITATION_NEEDED_HERE?].
+Once the data has been repaired and smoothed, a core step in eye data analysis is to identify fixations [@salvucci2000identifying], defined as when the gaze stops in a specific location for a given amount of time. When the eyes are moving between these fixations, they are considered to be saccades. Subsequently, data can be split into these two groups, fixations and saccades. In the eyetools package, there are two fixation algorithms offered; the first algorithm, `fixation_dispersion()` employs a dispersion-based approach that uses spatial and temporal data to determine fixations. By using a maximum dispersion range, the algorithm looks for sufficient periods of time that the eye gaze remains within this range and once this range is exceed, this is termed as a fixation. The second algorithm, `fixation_VTI()` takes advantage of the idea that data is either a fixation or a saccade and employs a velocity-threshold approach. It identifies data where the eye is moving at a minimum velocity and excludes this, before applying a dispersion check to ensure that the eye does not drift during the fixation period. If the range is broken, a new fixation is determined. Saccades must be of a given length to be removed, otherwise they are considered as micro-saccades \[\@CITATION_NEEDED_HERE?\].
 
 ```{r}
 fixations <- fixation_dispersion(data,
@@ -197,7 +195,6 @@ data_AOI_time_binned <- AOI_time_binned(data, AOIs = AOI_areas,
                                         participant_ID = "pNum")
 ```
 
-
 # Analysing eye data
 
 \@tom
@@ -220,11 +217,9 @@ The data required for reproducing this tutorial is available at: \@URL. A conden
 
 The code used in this tutorial is available in the reproducible manuscript file available at:
 
-
 # References
 
 <!-- References will auto-populate in the refs div below -->
 
 ::: {#refs}
 :::
-
