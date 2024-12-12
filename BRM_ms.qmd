@@ -149,6 +149,16 @@ fixations <- fixation_dispersion(data,
                                  participant_ID = "pNum") 
 ```
 
+Additionally, in certain analyses it may be useful to extract the saccades themselves. This can be acheived using the `saccade_VTI()` function
+
+```{r}
+saccades <- saccade_VTI(data, 
+                        threshold = 150, 
+                        min_dur = 20, 
+                        participant_ID = "pNum")
+```
+
+
 Once fixations have been calculated, they can be used in conjunction with Areas of Interest (AOIs) to determine the sequence in which the eye enters and exits these areas, as well as the time spent in these regions. When referring to AOIs, these often refer to the cues presented and the outcome object. In our example, the two cues at the top of the screen are the cues, and the outcome is at the bottom. We can define these areas in a separate dataframe object by giving the centrepoint of the AOI in x, y coordinates along with the width and height (if the AOIs are rectangular) or just the radius (if circular).
 
 ```{r}
@@ -193,11 +203,11 @@ data_AOI_time_binned <- AOI_time_binned(data, AOIs = AOI_areas,
 
 ## eyetool assumptions [I DON'T KNOW WHERE THIS SHOULD GO JUST YET]
 
-These are assumptions that are not built in as checks, primarily because it would not benefit anyone to have them coded.
+As with any data processing or analysis, there are certain assumptions made when developing the eyetools package. Some of these are built into the package directly, either as errors or warnings, such as the assumption that data is ordered by participant ID (if present) and trial, and some are not built in because they would limit the flexibility of the package functionality. One built-in assumption is the handling of missing data. eyetools expects track loss to be represented as NA within the data, and so any system that provides a different convention for recording track loss needs to be changed prior to using eyetools functions.
 
-designed and tested using data formats of pixels and milliseconds. Whilst the functions are assumed to work for other measurements due to the underlying setup, it is not guaranteed. As well as frequency. Tested ar 300Hz, but theoretically it works for any frequency, but the saccade algorithms in particular are default to work around the 300Hz best
+During development, eyetools was tested using data collected from a Tobii Pro Spectrum eye tracker recording at 300Hz. Screen resolutions were constant at 1080x1920 pixels, and the timestamps were recorded in milliseconds. Whilst most of the functions were designed to work with any hardware provided the data is formatted to eyetools expectations (with the exception of `hdf5_to_df()` and `hdf5_get_event()` as these convert Tobii data), as well as not relying on specific frequencies or resolutions (either through the function behaviour, or by supplying parameters for specificity), eyetools has not been tested on a diverse set of datasets. 
 
-any track loss, blinks are coded as NA in the data. Coding as [0,0] or other will result in inaccurate outputs
+Some default behaviours are in-built, but are easily overrided such as parameters for resolution in the plotting functions. Similarly `saccade_VTI()` and `fixation_VTI()` were tested with 300Hz data. For these functions, as the frequency increases, the relative saccadic velocities will be lower meaning that the thresholds need to be reduced. This is important to note when working with data that is not recorded at 300Hz. To circumvent the potential issue of sample rates being an issue, by default functions that require a sample rate will deduce the frequency from the data rather than needing it to be specified.
 
 ## Visualisations made easy
 
@@ -254,15 +264,26 @@ plot_seq(data = data[data$pNum == 118,], AOIs = HCL_AOIs,  bin_time = 5000, tria
 
 The final plotting function in eyetools is `plot_spatial()`. This can plot raw data, fixations, and saccades, either separately or in combination. `plot_spatial()` plots the location of the eye gaze of a trial, and when given raw data is very similar to the output of `plot_seq()`, when using fixation data, then an additional parameter can be used to label the fixations in their temporal order, enabling a better presentation of how fixations arise. Finally, providing saccade data allows for the length and direction of saccades to be presented. 
 
+::: {#fig-spatial layout-ncol=3}
+
 ```{r}
-plot_spatial(raw_data = data[data$pNum == 118,])
-# plot both raw and fixation data together
-plot_spatial(raw_data = data, fix_data = fixation_dispersion(data))
-#plot one trial
-plot_spatial(raw_data = data, fix_data = fixation_dispersion(data), trial_number = 1)
+plot_spatial(raw_data = data[data$pNum == 118,], trial_number = 1)
 ```
 
 
+```{r}
+# plot just fixation data together
+plot_spatial(fix_data = fixations[fixations$pNum == 118,], trial_number = 1)
+```
+
+
+```{r}
+#plot saccades
+plot_spatial(sac_data = saccades[saccades$pNum == 118,], trial_number = 1)
+
+```
+
+:::
 
 # Analysing eye data
 
