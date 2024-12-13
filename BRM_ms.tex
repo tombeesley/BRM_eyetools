@@ -367,28 +367,28 @@ data processing up to data analyses, making core tasks in the eye data
 processing easier and standardised.
 
 \begin{longtable}[]{@{}
-  >{\centering\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1172}}
-  >{\centering\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1484}}
-  >{\centering\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1484}}
-  >{\centering\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1406}}
-  >{\centering\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1562}}
-  >{\centering\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1484}}
-  >{\centering\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1406}}@{}}
+  >{\centering\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1136}}
+  >{\centering\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1439}}
+  >{\centering\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1439}}
+  >{\centering\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1364}}
+  >{\centering\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1515}}
+  >{\centering\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1439}}
+  >{\centering\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1667}}@{}}
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\centering
 Package
 \end{minipage} & \begin{minipage}[b]{\linewidth}\centering
 Hardware-agnostic
 \end{minipage} & \begin{minipage}[b]{\linewidth}\centering
-Imports
+Data Impor
 \end{minipage} & \begin{minipage}[b]{\linewidth}\centering
-Processes
+Data processing
 \end{minipage} & \begin{minipage}[b]{\linewidth}\centering
 Identifies events
 \end{minipage} & \begin{minipage}[b]{\linewidth}\centering
-Plots
+Plotting
 \end{minipage} & \begin{minipage}[b]{\linewidth}\centering
-Analyses
+Inferential Analysis
 \end{minipage} \\
 \midrule\noalign{}
 \endhead
@@ -396,13 +396,11 @@ Analyses
 \endlastfoot
 eyetools & \faIcon{check} & \faIcon{check}* & \faIcon{check} &
 \faIcon{check} & \faIcon{check} & \\
-eyeTrackr & & \faIcon{check} & \faIcon{check} & & & \faIcon{check} \\
+eyeTrackr & & \faIcon{check} & \faIcon{check} & & & \\
 eyelinker & & \faIcon{check} & & & & \\
 eyelinkReader & & \faIcon{check} & & & \faIcon{check} & \\
-eyeRead & \faIcon{check} & & \faIcon{check} & \faIcon{check}** & &
-\faIcon{check} \\
-emov & \faIcon{check} & & \faIcon{check} & \faIcon{check} & &
-\faIcon{check} \\
+eyeRead & \faIcon{check} & & \faIcon{check} & \faIcon{check}** & & \\
+emov & \faIcon{check} & & \faIcon{check} & \faIcon{check} & & \\
 eyetrackingR & \faIcon{check} & & \faIcon{check} & & \faIcon{check} &
 \faIcon{check} \\
 \end{longtable}
@@ -412,8 +410,6 @@ eyetrackingR & \faIcon{check} & & \faIcon{check} & & \faIcon{check} &
 \item
   for Tobii data only, ** for text reading experiments only
 \end{itemize}
-
-{[}insert table of features here{]}
 
 In this tutorial we demonstrate the pipeline of analysis functions
 within eyetools. The package has been designed to be simple to use by

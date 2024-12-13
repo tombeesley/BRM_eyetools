@@ -58,19 +58,17 @@ In the current article we introduce a new toolkit for eye-data processing and an
 
 *eyetools* is, of course, not the only package in R that allows users to work with eye data. A recent assessment of available packages on CRAN identified six other packages that offer relevant functions for the analysis of eye data. **eyeTrackr**, **eyelinker**, and **eyelinkReader**, all offer functionality for data only from experiments that have used 'EyeLink' trackers (S-R Research). In contrast, eyetools provides functions that are hardware-agnostic, relying on a format of data that can be achieved from any data source. The **eyeRead** package is designed for the analysis of eye data from reading exercises. The **emov** package offers a limited set of functions and is primarily designed for fixation detection, using the same dispersion algorithm used in eyetools. Finally, **eyetrackingR** is perhaps the most comprehensive alternative package available on CRAN. eyetrackingR offers a large suite of functionality and, like eyetools, can be applied across the entire pipeline. It has functions for cleaning data and various plotting functions, including analysis over time. It does not feature algorithms regarding the detection of events such as saccades or fixations. This limits the ability to conduct more bespoke and dataset specific processing or analysis steps. In comparison, eyetools enables easier data processing up to data analyses, making core tasks in the eye data processing easier and standardised.
 
-| Package       | Hardware-agnostic | Imports           | Processes        | Identifies events  | Plots             | Analyses         |
-|:-------------:|:-----------------:|:-----------------:|:----------------:|:------------------:|:-----------------:|:----------------:|
-| eyetools      | {{< fa check >}}  | {{< fa check >}}* | {{< fa check >}} | {{< fa check >}}   | {{< fa check >}}  |                  |
-| eyeTrackr     |                   | {{< fa check >}}  | {{< fa check >}} |                    |                   | {{< fa check >}} |
-| eyelinker     |                   | {{< fa check >}}  |                  |                    |                   |                  |
-| eyelinkReader |                   | {{< fa check >}}  |                  |                    | {{< fa check >}}  |                  |
-| eyeRead       | {{< fa check >}}  |                   | {{< fa check >}} | {{< fa check >}}** |                   | {{< fa check >}} |
-| emov          | {{< fa check >}}  |                   | {{< fa check >}} | {{< fa check >}}   |                   | {{< fa check >}} |
-| eyetrackingR  | {{< fa check >}}  |                   | {{< fa check >}} |                    | {{< fa check >}}  | {{< fa check >}} |
+| Package       | Hardware-agnostic | Data Impor        | Data processing  | Identifies events  | Plotting          | Inferential Analysis |
+|---------------|:-----------------:|:-----------------:|:----------------:|:------------------:|:-----------------:|:--------------------:|
+| eyetools      | {{< fa check >}}  | {{< fa check >}}* | {{< fa check >}} | {{< fa check >}}   | {{< fa check >}}  |                      |
+| eyeTrackr     |                   | {{< fa check >}}  | {{< fa check >}} | {{< fa check >}}   |                   |                      |
+| eyelinker     |                   | {{< fa check >}}  |                  |                    |                   |                      |
+| eyelinkReader |                   | {{< fa check >}}  |                  | {{< fa check >}}   | {{< fa check >}}  |                      |
+| eyeRead       | {{< fa check >}}  |                   | {{< fa check >}} | {{< fa check >}}** |                   |                      |
+| emov          | {{< fa check >}}  |                   | {{< fa check >}} | {{< fa check >}}   |                   |                      |
+| eyetrackingR  | {{< fa check >}}  |                   | {{< fa check >}} |                    | {{< fa check >}}  | {{< fa check >}}     |
 
 * for Tobii data only, ** for text reading experiments only
-
-\[insert table of features here\]
 
 In this tutorial we demonstrate the pipeline of analysis functions within eyetools. The package has been designed to be simple to use by someone with basic knowledge of data handling and analysis in R. It should appeal to researchers who are working with raw eye data for the first time, as well as those accustomed to working with eye data in other environments who wish to transfer to working in R.
 
@@ -84,13 +82,13 @@ Then describe the specifics of the dataset we are using - I presume this is the 
 
 # Converting Raw Data
 
-\@matthew, \@tom
-
-Owing to the vast range of eye tracking hardware available, eyetools does not offer much in the way of converting raw data into the eyetools format of participant ID, trial number, timestamp, x, and y coordinates. In this section, we cover the stages of transforming the data from a Tobii eye tracker.
+Owing to the vast range of eye tracking hardware available, eyetools does not offer much in the way of converting raw data into the eyetools format of participant ID, trial number, timestamp, x, and y coordinates. In this section, we briefly cover the stages of transforming the data from a Tobii eye tracker.
 
 Tobii-generated data is stored in an hdf5 format, which is a gold-standard method for managing large hierarchical datasets, such as eye gaze data, however due to its hierarchical, and somewhat complex structure, hdf5 is not easily worked with in R. eyetools contains two functions that convert the data into dataframes for easier data processing. `hdf5_to_df()` takes the Tobii-generated data and extracts any eye gaze information into a dataframe (or list of dataframes). When using a Tobii eyetracker in custom experimental code (such as PsychoPy), it is often beneficial to store timestamps of trial beginning and end, as well as markers for specific phases of the task. These are stored within the hdf5 file and can be accessed using the `hdf5_get_event()` function.
 
-When you have data that is in a binocular format, that is you have a set of coordinates for each eye, it needs to be converted into single x and y coordinates for both eyes combined. Using eyetools, this can be done in one of two ways, either taking an average of the coordinates from the two eyes, or by choosing the eye with the fewest missing samples is used to represent the data. An averaging of the two coordinates sets is the typical method of combining binocular data, and can be done using the `combine_eyes()` function in eyetools. This returns a flattened list of participant data that has x and y variables in place of the left\_\* and right\_\* variables.
+The eyetools functionality hinges upon data being formatted with trial numbers, timestamps, and x and y coordinates. The optional extra column of participant ID (unneeded when working with data from a single participant) enables researchers to work with large, multi-participant datasets without needing to deploy complex
+
+When you have data that is in a binocular format, that is you have a set of coordinates for each eye, it needs to be converted into single x and y coordinates for both eyes combined. Using eyetools, this can be done in one of two ways, either taking an average of the coordinates from the two eyes, or by choosing the eye with the fewest missing samples to represent the data. An averaging of the two coordinates sets is the typical method of combining binocular data, and can be done using the `combine_eyes()` function in eyetools. This returns a flattened list of participant data that has x and y variables in place of the left\_\* and right\_\* variables.
 
 ```{r}
 data_combined <- combine_eyes(HCL,method = "average")
