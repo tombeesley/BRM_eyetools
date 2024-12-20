@@ -33,13 +33,14 @@ format:
         path: "wordcount.lua"
 execute:
   echo: false
+  eval: false
   warning: false
 editor_options: 
   chunk_output_type: console
 floatsintext: true
 ---
 
-```{r, include=FALSE, message=FALSE}
+```{r, include=FALSE, eval=FALSE, message=FALSE}
 
 #install_github("tombeesley/eyetools@0.7.3.9000")
 library(eyetools)
@@ -113,6 +114,8 @@ Many psychology experiments will position stimuli on the screen in a counterbala
 In our example data, the stimuli were presented on either the left or the right side of the screen. Here we have merged the eye data with a set of "trial_events" data that describe the events on each trial. We can apply `conditional_transform()` and specify the relevant column (cue_order) hat controls the counterbalancing, and the relevant value that signals a switch of position (here "2"). The resulting transformation of the data will mean that the target stimulus is now always positioned on the same side of the screen.
 
 ```{r}
+
+
 
 data_merged <- merge(data_combined, HCL_behavioural) # merges with the common variables pNum and trial
 

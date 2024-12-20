@@ -81,15 +81,17 @@
 
 \usepackage{graphicx}
 \makeatletter
-\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
-\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
-\makeatother
-% Scale images if necessary, so that they will not overflow the page
-% margins by default, and it is still possible to overwrite the defaults
-% using explicit options in \includegraphics[width, height, ...]{}
-\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+\newsavebox\pandoc@box
+\newcommand*\pandocbounded[1]{% scales image to fit in text height/width
+  \sbox\pandoc@box{#1}%
+  \Gscale@div\@tempa{\textheight}{\dimexpr\ht\pandoc@box+\dp\pandoc@box\relax}%
+  \Gscale@div\@tempb{\linewidth}{\wd\pandoc@box}%
+  \ifdim\@tempb\p@<\@tempa\p@\let\@tempa\@tempb\fi% select the smaller of both
+  \ifdim\@tempa\p@<\p@\scalebox{\@tempa}{\usebox\pandoc@box}%
+  \else\usebox{\pandoc@box}%
+  \fi%
+}
 % Set default figure placement to htbp
-\makeatletter
 \def\fps@figure{htbp}
 \makeatother
 
@@ -284,8 +286,6 @@ University, UK, LA1 4YD, UK, Email: t.beesley@lancaster.ac.uk}
 
 \resetlinenumber[1]
 
-\section{Introduction}\label{introduction}
-
 Eye tracking is now an established and widely used technique in the
 behavioural sciences. Perhaps the scientific discipline with the most
 invested interest in eye-data is Psychology, where eye-tracking systems
@@ -367,15 +367,15 @@ data processing up to data analyses, making core tasks in the eye data
 processing easier and standardised.
 
 \begin{longtable}[]{@{}
-  >{\centering\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1136}}
-  >{\centering\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1439}}
-  >{\centering\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1439}}
-  >{\centering\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1364}}
-  >{\centering\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1515}}
-  >{\centering\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1439}}
-  >{\centering\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1667}}@{}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1136}}
+  >{\centering\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1439}}
+  >{\centering\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1439}}
+  >{\centering\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1364}}
+  >{\centering\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1515}}
+  >{\centering\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1439}}
+  >{\centering\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1667}}@{}}
 \toprule\noalign{}
-\begin{minipage}[b]{\linewidth}\centering
+\begin{minipage}[b]{\linewidth}\raggedright
 Package
 \end{minipage} & \begin{minipage}[b]{\linewidth}\centering
 Hardware-agnostic
@@ -396,9 +396,10 @@ Inferential Analysis
 \endlastfoot
 eyetools & \faIcon{check} & \faIcon{check}* & \faIcon{check} &
 \faIcon{check} & \faIcon{check} & \\
-eyeTrackr & & \faIcon{check} & \faIcon{check} & & & \\
+eyeTrackr & & \faIcon{check} & \faIcon{check} & \faIcon{check} & & \\
 eyelinker & & \faIcon{check} & & & & \\
-eyelinkReader & & \faIcon{check} & & & \faIcon{check} & \\
+eyelinkReader & & \faIcon{check} & & \faIcon{check} & \faIcon{check}
+& \\
 eyeRead & \faIcon{check} & & \faIcon{check} & \faIcon{check}** & & \\
 emov & \faIcon{check} & & \faIcon{check} & \faIcon{check} & & \\
 eyetrackingR & \faIcon{check} & & \faIcon{check} & & \faIcon{check} &
@@ -412,126 +413,151 @@ eyetrackingR & \faIcon{check} & & \faIcon{check} & & \faIcon{check} &
 \end{itemize}
 
 In this tutorial we demonstrate the pipeline of analysis functions
-within eyetools. The package has been designed to be simple to use by
-someone with basic knowledge of data handling and analysis in R. It
-should appeal to researchers who are working with raw eye data for the
-first time, as well as those accustomed to working with eye data in
+within \emph{eyetools}. The package has been designed to be simple to
+use by someone with basic knowledge of data handling and analysis in R.
+It should appeal to researchers who are working with raw eye data for
+the first time, as well as those accustomed to working with eye data in
 other environments who wish to transfer to working in R.
 
 This tutorial is separated into five distinct sections. In the first
 section, we briefly describe the basic methodology of collecting eye
 data in general, and in regard to the specific dataset we use to
-illustrate all the functionality of the eyetools package. The second
-section covers the process for getting data from an eye tracker into an
-eyetools-friendly format. The third section introduces the foundational
-functions of the eyetools package, from repairing and smoothing eye
-data, to calculating fixations and saccades, and detecting time spent in
-Areas of Interest (AOIs). The fourth section takes the processed data,
-and applies basic analysis techniques commonplace in eye data research.
-In the fifth and final section, we reflect on the benefits of the
-eyetools package, including contributions to open science practices,
-reproducibility, and providing clarity to eye data analysis.
+illustrate all the functionality of the \emph{eyetools} package. The
+second section covers the process for getting data from an eye tracker
+into an \emph{eyetools}-friendly format. The third section introduces
+the foundational functions of the \emph{eyetools} package, from
+repairing and smoothing eye data, to calculating fixations and saccades,
+and detecting time spent in Areas of Interest (AOIs). The fourth section
+takes the processed data, and applies basic analysis techniques
+commonplace in eye data research. In the fifth and final section, we
+reflect on the benefits of the \emph{eyetools} package, including
+contributions to open science practices, reproducibility, and providing
+clarity to eye data analysis.
 
-\section{Data Collection}\label{data-collection}
+\subsection{Installing eyetools}\label{installing-eyetools}
 
-First describe basic paradigms for collecting eye data. Also purpose
-etc. @tom
+\emph{eyetools} is available on CRAN and can be installed using:
+\texttt{install.packages("eyetools")} . Instructions for installing
+development versions can be found at the package repository:
+\url{https://github.com/tombeesley/eyetools/} . Once installed, the
+package can be loaded into R: \texttt{library(eyetools)}
 
-Then describe the specifics of the dataset we are using - I presume this
-is the HCL dataset in full? Should make mention of the fact that the
-workflow can be done either with the full dataset, or the two
-participant dataset provided in package.
+\subsection{Preparing data for
+eyetools}\label{preparing-data-for-eyetools}
 
-\section{Converting Raw Data}\label{converting-raw-data}
+Since there is a wide range of eye tracking hardware available for
+researchers to use, \emph{eyetools} does not currently offer much in the
+way of converting raw data from specific hardware. The
+\texttt{hdf5\_to\_dataframe()} function is designed to work with output
+from PsychoPy experiments connected to modern Tobii hardware, and will
+take this format and convert it into the simplified raw data format
+required for \emph{eyetools}.
 
-@matthew, @tom
+The \emph{eyetools} package has been developed primarily with the
+analysis of psychology experiments in mind. To this end, many of the
+functions expect a ``trial'' variable in the data, such that the
+algorithms will operate over multiple trials and produce output that
+retains this trial information. Similarly, data in psychology
+experiments tends to come from multiple participants, and so a
+participant ID column can be used (though isn't necessary), which allows
+many functions to be run automatically across multiple participants. It
+is also necessary to select the relevant ``periods'' of data within the
+recording. It is quite typical in psychology experiments for there to be
+multiple periods within a trial, e.g., fixation; stimulus presentation;
+response feedback; inter-trial-interval. \emph{eyetools} does not
+interpret these changes, and so it is necessary to first select the data
+for the period or periods that are of interest for analysis. Analysis on
+each separate period would be conducted separately using the functions
+in \emph{eyetools}.
 
-Owing to the vast range of eye tracking hardware available, eyetools
-does not offer much in the way of converting raw data into the eyetools
-format of participant ID, trial number, timestamp, x, and y coordinates.
-In this section, we cover the stages of transforming the data from a
-Tobii eye tracker.
+The starting point for the analysis pipeline is the preparation of the
+raw eye data, which will consist of recorded samples from the
+eye-tracker, with each row in the data reflecting a single time-stamped
+recording. If the eye-tracker is set at 1000Hz, then consecutive
+recordings will be 1 millisecond of time; at 300Hz, the recordings are
+3.33 milliseconds apart. The only requirement for the time column is
+that the values reflect a consistent and increasing set of values. There
+is no need to specify the sampling rate, since \emph{eyetools} functions
+will calculate this automatically.
 
-Tobii-generated data is stored in an hdf5 format, which is a
-gold-standard method for managing large hierarchical datasets, such as
-eye gaze data, however due to its hierarchical, and somewhat complex
-structure, hdf5 is not easily worked with in R. eyetools contains two
-functions that convert the data into dataframes for easier data
-processing. \texttt{hdf5\_to\_df()} takes the Tobii-generated data and
-extracts any eye gaze information into a dataframe (or list of
-dataframes). When using a Tobii eyetracker in custom experimental code
-(such as PsychoPy), it is often beneficial to store timestamps of trial
-beginning and end, as well as markers for specific phases of the task.
-These are stored within the hdf5 file and can be accessed using the
-\texttt{hdf5\_get\_event()} function.
+\emph{eyetools} expects raw data to have the following columns:
 
-When you have data that is in a binocular format, that is you have a set
-of coordinates for each eye, it needs to be converted into single x and
-y coordinates for both eyes combined. Using eyetools, this can be done
-in one of two ways, either taking an average of the coordinates from the
-two eyes, or by choosing the eye with the fewest missing samples is used
-to represent the data. An averaging of the two coordinates sets is the
-typical method of combining binocular data, and can be done using the
-\texttt{combine\_eyes()} function in eyetools. This returns a flattened
-list of participant data that has x and y variables in place of the
-left\_* and right\_* variables.
+x = horizontal spatial coordinate of the estimated eye position
 
-\section{Working with eyetools}\label{working-with-eyetools}
+y = vertical spatial coordinate of the estimated eye position
 
-In the previous section, we finished with the data in a format that
-holds participant ID, trial number, a timestamp, along with x and y
-coordinates. This is the format expected by eyetools when working with
-multi-participant data, however if you some reason you are working with
-a single participant then the participant ID column is superfluous and
-can be dropped. This basic data format of ID, trial, time, x, and y
-ensures that eyetools is applicable to a variety of eye data sources and
-does not depend on specific eye trackers being used.
+time = time-stamp of the recording
+
+trial = an index of the current trial in the data
+
+pID = an index of the current participant in the data (optional)
+
+Missing values in the x and y columns of the raw data should be
+expressed as ``NA''.
+
+For many methods of recording, the eye-data will be produced in
+binocular format. In such cases, \emph{eyetools} has a built in function
+for combining the data: \texttt{combine\_eyes()}. This function takes a
+raw data with coordinates for each eye (i.e., left\_x, right\_x,
+left\_y, right\_y), and converts the data into single x and y
+coordinates. By deafult, the function does this by taking the average of
+the coordinates from the two eyes, but it is also possible to select
+data from the eye with the fewest missing samples. This returns a
+flattened list of participant data that has x and y variables in place
+of the left\_* and right\_* variables.
+
+\subsection{Working with eyetools}\label{working-with-eyetools}
 
 \subsubsection{Counterbalanced designs}\label{counterbalanced-designs}
 
 Many psychology experiments will position stimuli on the screen in a
 counterbalanced fashion. For example, in the example data we are using,
-there are two stimuli, with one of these appearing on the left and one
-on the right. In our design, one of the cue stimuli is a ``target'' and
-one is a ``distractor'', and the experiment counterbalances whether
-these are positioned on the left or right across trials.
+there are two stimuli, with one of these appearing on the left of the
+screen and he other on the right. In the design of the experiment, one
+of these stimuli is a ``target'' and one is a ``distractor'', and the
+experiment counterbalances whether these are positioned on the left or
+right across trials. In order to provide a meaningful analysis of the
+data it is necessary to standardise the data across trials so that the
+resulting analyses can reflect meaningful eye gaze on relevant stimuli.
 
-Eyetools has a built in function which allows us to transform the x (or
-y) values of the stimuli to take into account a counterbalancing
+\emph{eyetools} has a built in function which allows us to transform the
+x (or y) values of the stimuli to take into account a counterbalancing
 variable: \texttt{conditional\_transform()}. This function currently
 allows for a single-dimensional flip across either the horizontal or
-vertical midline. It can be used on raw data or fixation data. It
-requires the spatial coordinates (x, y) and a specification of the
-counterbalancing variable. The result is a normalised set of data, in
-which the x (and/or y) position is consistent across counterbalanced
-conditions (e.g., in our example, we can transform the data so that the
-target cue is always on the left). This transformation is especially
-useful for future visualisations and calculation of time on areas of
-interest. Note that \texttt{conditional\_transform()} is another
-function that does not discriminate between multi-participant and
-single-participant data and so no participant\_ID parameter is required.
-To transform the data, we require knowledge of where predictive cues
-were presented. Using this, \texttt{conditional\_transform()} can align
-data across the x or y midline, depending on how stimuli were presented.
-In the experimental design used in our study, cues were presented either
-on the left or the right, so by applying
-\texttt{conditional\_transform()}, all the predictive cues in the
-dataset are recorded on the same side.
+vertical midline. It can be used on raw data or fixation data; we simply
+need to append a column to the data to reflect the counterbalancing
+variable. The result of the function is a set of data in which the x
+(and/or y) position is consistent across counterbalanced conditions
+(e.g., in our example, we can transform the data so that the target cue
+is always on the left). This transformation is especially useful for
+future visualisations and calculation of time on areas of interest. Note
+that \texttt{conditional\_transform()} is another function that does not
+discriminate between multi-participant and single-participant data and
+so no participant\_ID parameter is required.
+
+In our example data, the stimuli were presented on either the left or
+the right side of the screen. Here we have merged the eye data with a
+set of ``trial\_events'' data that describe the events on each trial. We
+can apply \texttt{conditional\_transform()} and specify the relevant
+column (cue\_order) hat controls the counterbalancing, and the relevant
+value that signals a switch of position (here ``2''). The resulting
+transformation of the data will mean that the target stimulus is now
+always positioned on the same side of the screen.
 
 \subsection{Repairing missing data and smoothing
 data}\label{repairing-missing-data-and-smoothing-data}
 
 Despite researcher's best efforts and hopes, participants are likely to
-blink during data collection, resulting in observations where no data is
-present for where the eyes would be looking. To mitigate this issue, the
-\texttt{interpolate()} function estimates the path taken by the eyes
-based upon the eye coordinates before and after the missing data. There
-are two methods for estimating the path, linear interpolation
-(``approx'', the default setting) and cubic spline (``spline''). The
-default method of linear interpolation replaces missing values with a
-line of constant slope and evenly spaced coordinates reaching the
-existing data. The cubic spline method applies piecewise cubic functions
-to enable a curve to be calculated as opposed to a line between points.
+blink during data collection, resulting in observations where there are
+NA values for the x and y coordinates. To mitigate this issue, the
+\texttt{interpolate()} function estimates the gaze path taken, based
+upon the eye coordinates before and after the missing data. There are
+two methods for estimating the path, linear interpolation (``approx'',
+the default setting) and cubic spline (``spline''). The default method
+of linear interpolation replaces missing values with a line of constant
+slope and evenly spaced coordinates reaching the existing data. The
+cubic spline method applies piecewise cubic functions to enable a curve
+to be calculated as opposed to a line between points.
 
 When using \texttt{interpolate()}, a report can be requested so that a
 researcher can measure how much missing data has been replaced. This
@@ -539,50 +565,50 @@ parameter changes the output format of the function, and returns a list
 of both the data and the report. The report can be easily accessed using
 the following code:
 
-\begin{verbatim}
-  pNum missing_perc_before missing_perc_after
-1  118          0.02314313        0.015838577
-2  119          0.01214128        0.005402579
-\end{verbatim}
-
-As shown, not all missing data has been replaced, this is because when
-gaps are larger than a given size they are kept as missing data due to
-it being unreasonable to try to estimate the path taken by the eye. The
-amount of missing data that will be estimated can be changed through the
-maxgap parameter.
+As shown, not all missing data has been replaced, since there are
+certain periods in which the missing data span a period longer than the
+default setting of the ``maxgap'' parameter, which is X ms. This default
+setting is based on a typical duration for a blink {[}ref{]}.
 
 Once missing data has been fixed, a common step is to smooth the eye
-data to remove particularly jerky eye movements. To do this,
+data to remove particularly jerky eye movements. The function
 \texttt{smoother()} reduces the noise in the data by applying a moving
-averaging function. The degree of smoothing can be specified, as well as
-having a plot generated for random trials to observe how well the
-smoothed data fits the raw data.
-
-\includegraphics{BRM_ms_files/figure-pdf/unnamed-chunk-6-1.pdf}
+averaging function. The degree of smoothing can be specified, and a plot
+can be generated (using data from a randomly selected trial) to observe
+how well the smoothed data fits the raw data.
 
 \subsection{Fixations}\label{fixations}
 
 Once the data has been repaired and smoothed, a core step in eye data
 analysis is to identify fixations
-(\citeproc{ref-salvucci2000identifying}{Salvucci \& Goldberg, 2000}),
-defined as when the gaze stops in a specific location for a given amount
-of time. When the eyes are moving between these fixations, they are
-considered to be saccades. Subsequently, data can be split into these
-two groups, fixations and saccades. In the eyetools package, there are
-two fixation algorithms offered; the first algorithm,
-\texttt{fixation\_dispersion()} employs a dispersion-based approach that
-uses spatial and temporal data to determine fixations. By using a
-maximum dispersion range, the algorithm looks for sufficient periods of
-time that the eye gaze remains within this range and once this range is
-exceed, this is termed as a fixation. The second algorithm,
-\texttt{fixation\_VTI()} takes advantage of the idea that data is either
-a fixation or a saccade and employs a velocity-threshold approach. It
-identifies data where the eye is moving at a minimum velocity and
-excludes this, before applying a dispersion check to ensure that the eye
-does not drift during the fixation period. If the range is broken, a new
-fixation is determined. Saccades must be of a given length to be
-removed, otherwise they are considered as micro-saccades
-{[}@CITATION\_NEEDED\_HERE?{]}.
+(\citeproc{ref-salvucci2000identifying}{Salvucci \& Goldberg, 2000}).
+Broadly, a fixation is defined as a period in which gaze stops in a
+specific location for a given amount of time. The period in which the
+eyes are moving between fixations reflects a ``saccade''. As such, raw
+data can be transformed into these meaningful eye data characteristics.
+These different properties of eye-data have important implications for
+behavioural research (see X for a review). Beyond their importance for
+understanding psychological processes, transforming the data into
+fixations and saccades leads to greater computational efficiency. For
+example, the built in HCL data in eyetools is 479 kb, which contains
+31,041 rows of data (12 trials of data). After processing the data for
+fixations, the resulting data is 269 rows and can be saved as 3.8 kb
+(less than 1\% the size of the raw data).
+
+In the \emph{eyetools} package, there are two fixation algorithms
+offered; the first algorithm, \texttt{fixation\_dispersion()} employs a
+dispersion-based approach that uses spatial and temporal data to
+determine fixations. By using a maximum dispersion range, the algorithm
+looks for sufficient periods of time that the eye gaze remains within
+this range and once this range is exceed, this is termed as a fixation.
+The second algorithm, \texttt{fixation\_VTI()} takes advantage of the
+idea that data is either a fixation or a saccade and employs a
+velocity-threshold approach. It identifies data where the eye is moving
+at a minimum velocity and excludes this, before applying a dispersion
+check to ensure that the eye does not drift during the fixation period.
+If the range is broken, a new fixation is determined. Saccades must be
+of a given length to be removed, otherwise they are considered as
+micro-saccades {[}@CITATION\_NEEDED\_HERE?{]}.
 
 Additionally, in certain analyses it may be useful to extract the
 saccades themselves. This can be achieved using the
@@ -676,30 +702,6 @@ or as a proportion of the time spent in the trial.
 \caption{\label{fig-growth}Examples of the absolute and proportional
 time plots from \texttt{plot\_AOI\_growth()}}
 
-\begin{minipage}{0.50\linewidth}
-
-\subcaption{\label{fig-abs}}
-
-\centering{
-
-\includegraphics{BRM_ms_files/figure-pdf/fig-abs-1.pdf}
-
-}
-
-\end{minipage}%
-%
-\begin{minipage}{0.50\linewidth}
-
-\subcaption{\label{fig-prop}}
-
-\centering{
-
-\includegraphics{BRM_ms_files/figure-pdf/fig-prop-1.pdf}
-
-}
-
-\end{minipage}%
-
 \end{figure}%
 
 A heatmap of eye gaze positions can be generated using
@@ -709,64 +711,24 @@ differentiate between trials or participants and plots any coordinate
 data it is given. This behaviour is allowed as the heatmap offers an
 excellent and fast ``sanity check'' that participants were, on the
 whole, looking at the expected areas of the experiment screen during the
-trials. As can be seen in Figure Figure~\ref{fig-heatmap}, we can be
+trials. As can be seen in Figure \textbf{?@fig-heatmap}, we can be
 reassured that participants do indeed spend most of their time looking
 at the stimuli on screen rather than in the empty space.
 \texttt{plot\_heatmap()} also allows for the modification of the amount
 of data displayed, using the \texttt{alpha\_control} parameter. By
 decreasing \texttt{alpha\_control} in Figure
-Figure~\ref{fig-heatmap-alpha-update}, we gain more visualised
-information and we can still see that the majority of the data is kept
-within the stimuli and saccades between these areas.
-
-\begin{figure}[H]
-
-\caption{\label{fig-heatmap}A heatmap overlaid upon a sample stimuli
-image demonstrating where the participants looked most over all trials}
-
-\centering{
-
-\includegraphics{BRM_ms_files/figure-pdf/fig-heatmap-1.pdf}
-
-}
-
-\end{figure}%
-
-\begin{figure}[H]
-
-\caption{\label{fig-heatmap-alpha-update}A heatmap overlaid upon a
-sample stimuli image demonstrating where the participants looked most
-over all trials}
-
-\centering{
-
-\includegraphics{BRM_ms_files/figure-pdf/fig-heatmap-alpha-update-1.pdf}
-
-}
-
-\end{figure}%
+\textbf{?@fig-heatmap-alpha-update}, we gain more visualised information
+and we can still see that the majority of the data is kept within the
+stimuli and saccades between these areas.
 
 The \texttt{plot\_seq()} function allows for the plotting of raw data to
 visualise the gaze pattern from a single trial and where the gaze fell
-on the screen across the entire trial. Figure~\ref{fig-seq} offers an
+on the screen across the entire trial. \textbf{?@fig-seq} offers an
 example trial split into time bins of 5000ms. This plot shows the time
 dimension as a change in colour that overlaps older data. This plot
 serves as a useful check, similar to \texttt{plot\_heatmap()}, as to
 where the eyes spent their time, but \texttt{plot\_seq()} has the
 benefit of showing the time dimension compared to a simple heatmap.
-
-\begin{figure}[H]
-
-\caption{\label{fig-seq}The output from plot\_seq() with included AOIs
-and time binned into 5 second sections}
-
-\centering{
-
-\includegraphics{BRM_ms_files/figure-pdf/fig-seq-1.pdf}
-
-}
-
-\end{figure}%
 
 The final plotting function in eyetools is \texttt{plot\_spatial()}.
 This can plot raw data, fixations, and saccades, either separately or in
@@ -783,42 +745,6 @@ to be presented.
 \caption{\label{fig-spatial}The three types of plot that can be created
 using \texttt{plot\_spatial()}}
 
-\begin{minipage}{0.33\linewidth}
-
-\subcaption{\label{fig-spatial-raw}}
-
-\centering{
-
-\includegraphics{BRM_ms_files/figure-pdf/fig-spatial-raw-1.pdf}
-
-}
-
-\end{minipage}%
-%
-\begin{minipage}{0.33\linewidth}
-
-\subcaption{\label{fig-spatial-fix}}
-
-\centering{
-
-\includegraphics{BRM_ms_files/figure-pdf/fig-spatial-fix-1.pdf}
-
-}
-
-\end{minipage}%
-%
-\begin{minipage}{0.33\linewidth}
-
-\subcaption{\label{fig-spatial-sac}}
-
-\centering{
-
-\includegraphics{BRM_ms_files/figure-pdf/fig-spatial-sac-1.pdf}
-
-}
-
-\end{minipage}%
-
 \end{figure}%
 
 \section{Analysing eye data}\label{analysing-eye-data}
@@ -831,11 +757,11 @@ In the present tutorial, we began by identifying the current gap in
 available tools for working with eye data in open-science pipelines. We
 then provided an overview of the general data collection process
 required for eye tracking research, before detailing the conversion of
-raw eye data into a useable eyetools format. We then covered the entire
-processing pipeline using functions available in the eyetools package
-that included the repairing and normalising the data, and the detection
-of events such as fixations, saccades, and AOI entries.
-@SOMETHING\_ON\_THE\_ANALYSIS\_GOES\_HERE.
+raw eye data into a useable \emph{eyetools} format. We then covered the
+entire processing pipeline using functions available in the
+\emph{eyetools} package that included the repairing and normalising the
+data, and the detection of events such as fixations, saccades, and AOI
+entries. @SOMETHING\_ON\_THE\_ANALYSIS\_GOES\_HERE.
 
 From a practical perspective, this tutorial offers a step-by-step
 walkthrough for handling eye data using R for open-science, reproducible
@@ -869,8 +795,8 @@ infrequently as possible.
 
 The data required for reproducing this tutorial is available at: @URL. A
 condensed version of the dataset (starting with the
-\texttt{combine\_eyes()} function) is a dataset in the eyetools package
-called HCL.
+\texttt{combine\_eyes()} function) is a dataset in the \emph{eyetools}
+package called HCL.
 
 \section{Code Availability}\label{code-availability}
 
