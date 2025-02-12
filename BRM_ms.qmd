@@ -97,7 +97,46 @@ Missing values in the x and y columns of the raw data should be expressed as "NA
 
 For many methods of eye-tracking, binocular data will be produced. In such cases, since the primary aim of our analyses is the estimation of the spatial coordinates of gaze, the function `combine_eyes()` should be used to combine the data to form a set of monocular data. This function takes raw data with coordinates for each eye (i.e., left_x, right_x, left_y, right_y), and converts the data into single x and y coordinates. By default, the function does this by taking an average of the coordinates from the two eyes of each timestamp, but it is also possible to select data from the eye with the lowest proportion of missing samples. This returns a flattened list of participant data that has x and y variables in place of the left\_\* and right\_\* variables.
 
-\[do we want interpolate and smooth in this step too?\]
+```{r}
+
+head(HCL,5) # first 5 rows of the built in data
+
+data <- combine_eyes(HCL) # create monocular data set
+
+```
+
+## Repairing missing data and smoothing data
+
+Despite the best efforts of the researcher, there are occasional failures in the accurate recording of the eye position during data collection (e.g., blinks). This results in missing data within the stream of samples, which must be represented in eyetools as NA values for the x and y coordinates. To mitigate the impact of missing data on further analysis, the `interpolate()` function can estimate the missing gaze data, based upon the eye coordinates before and after the missing data, and perform a repair. The default method of linear interpolation ("approx") replaces missing values with a line of constant slope and evenly spaced coordinates reaching the existing data (alternatively a cubic "spline" method can be applied).
+
+```{r}
+data <- interpolate(data, 
+                    method = "approx",
+                    participant_ID = "pNum")
+
+```
+
+When using `interpolate()`, a report can be requested on the proportion of missing data that has been replaced. This parameter changes the output format of the function, and returns a list of both the data and the report. The report alone can be easily accessed in the following way:
+
+```{r}
+interpolate(data, 
+            method = "approx",
+            participant_ID = "pNum", 
+            report = TRUE)[[2]]
+```
+
+As shown, not all missing data has been replaced, since there are certain periods in which the missing data span a period longer than the default setting of the "maxgap" parameter, which is 150 ms.
+
+Once interpolation has been performed, a common step is to smooth the eye data to minimise the effect of measurement error on the data. The function `smoother()` reduces the noise in the data by applying a moving averaging function. The degree of smoothing can be specified, and a plot can be generated (using data from a randomly selected trial) to observe how well the smoothed data fits the raw data[^1].
+
+[^1]: Note that this smoothing process is suitable for the broad analysis of events offered by eyetools, namely fixations and saccades. eyetools does not currently have
+
+```{r, message=FALSE}
+data <- smoother(data,
+                 span = .02,
+                 participant_ID = "pNum", 
+                 plot = TRUE)
+```
 
 ## Working with eyetools
 
@@ -115,46 +154,15 @@ In our example data, the stimuli were presented on either the left or the right 
 
 
 
-data_merged <- merge(data_combined, HCL_behavioural) # merges with the common variables pNum and trial
+data <- merge(data, HCL_behavioural) # merges with the common variables pNum and trial
 
-data_counterbalanced <- 
-  conditional_transform(data_merged, 
+data <- 
+  conditional_transform(data, 
                         flip = "x", #flip across x midline
                         cond_column = "cue_order", # counterbalance column 
                         cond_values = "2",# values to flip
                         message = FALSE) # suppress output message
 
-```
-
-## Repairing missing data and smoothing data
-
-Despite researcher's best efforts and hopes, participants are likely to blink during data collection, resulting in observations where there are NA values for the x and y coordinates. To mitigate this issue, the `interpolate()` function estimates the gaze path taken, based upon the eye coordinates before and after the missing data. There are two methods for estimating the path, linear interpolation ("approx", the default setting) and cubic spline ("spline"). The default method of linear interpolation replaces missing values with a line of constant slope and evenly spaced coordinates reaching the existing data. The cubic spline method applies piecewise cubic functions to enable a curve to be calculated as opposed to a line between points.
-
-```{r}
-data <- interpolate(data_counterbalanced, 
-                    method = "approx",
-                    participant_ID = "pNum")
-
-```
-
-When using `interpolate()`, a report can be requested so that a researcher can measure how much missing data has been replaced. This parameter changes the output format of the function, and returns a list of both the data and the report. The report can be easily accessed using the following code:
-
-```{r}
-interpolate(data_counterbalanced, 
-            method = "approx",
-            participant_ID = "pNum", 
-            report = TRUE)[[2]]
-```
-
-As shown, not all missing data has been replaced, since there are certain periods in which the missing data span a period longer than the default setting of the "maxgap" parameter, which is X ms. This default setting is based on a typical duration for a blink \[ref\].
-
-Once missing data has been fixed, a common step is to smooth the eye data to remove particularly jerky eye movements. The function `smoother()` reduces the noise in the data by applying a moving averaging function. The degree of smoothing can be specified, and a plot can be generated (using data from a randomly selected trial) to observe how well the smoothed data fits the raw data.
-
-```{r, message=FALSE}
-data <- smoother(data,
-                 span = .02,
-                 participant_ID = "pNum", 
-                 plot = TRUE)
 ```
 
 ## Fixations
@@ -166,22 +174,23 @@ There are two fixation algorithms offered in the *eyetools* package, both based 
 The second algorithm, `fixation_VTI()` takes advantage of the idea that data is either a fixation or a saccade and employs a velocity-threshold approach. It identifies data where the eye is moving at a minimum velocity and excludes this, before applying a dispersion check to ensure that the eye does not drift during the fixation period. If the range is broken, a new fixation is determined. Saccades must be of a given length to be removed, otherwise they are considered as micro-saccades \[\@CITATION_NEEDED_HERE?\].
 
 ```{r}
-fixations <- fixation_dispersion(data,
-                                 min_dur = 150, # Minimum duration (in milliseconds) of fixations
-                                 disp_tol = 100, # Maximum tolerance (in pixels) for the dispersion of values
-                                 run_interp = FALSE, # the default is true, but we have already run interpolate()
-                                 NA_tol = 0.25, # the proportion of NAs tolerated within a fixation window
-                                 progress = FALSE, # whether to display a progress bar or not
-                                 participant_ID = "pNum") 
+fixations <- 
+  fixation_dispersion(data,
+                      min_dur = 150, # Minimum duration (in milliseconds) of fixations
+                      disp_tol = 100, # Maximum tolerance (in pixels) for the dispersion of values
+                      NA_tol = 0.25, # the proportion of NAs tolerated within a fixation window
+                      progress = FALSE, # whether to display a progress bar or not
+                      participant_ID = "pNum") 
 ```
 
 Additionally, in certain analyses it may be useful to extract the saccades themselves. This can be achieved using the `saccade_VTI()` function.
 
 ```{r}
-saccades <- saccade_VTI(data, 
-                        threshold = 150, 
-                        min_dur = 20, 
-                        participant_ID = "pNum")
+saccades <- 
+  saccade_VTI(data, 
+              threshold = 150, 
+              min_dur = 20, 
+              participant_ID = "pNum")
 ```
 
 Once fixations have been calculated, they can be used in conjunction with Areas of Interest (AOIs) to determine the sequence in which the eye enters and exits these areas, as well as the time spent in these regions. When referring to AOIs, these often refer to the cues presented and the outcome object. In our example, the two cues at the top of the screen are the cues, and the outcome is at the bottom. We can define these areas in a separate dataframe object by giving the centrepoint of the AOI in x, y coordinates along with the width and height (if the AOIs are rectangular) or just the radius (if circular).
@@ -189,8 +198,7 @@ Once fixations have been calculated, they can be used in conjunction with Areas 
 ```{r}
 
 # set areas of interest
-AOI_areas <- data.frame(matrix(nrow = 3, ncol = 4))
-colnames(AOI_areas) <- c("x", "y", "width_radius", "height")
+AOI_areas <- create_AOI_df()
 
 AOI_areas[1,] <- c(460, 840, 400, 300) # Left cue
 AOI_areas[2,] <- c(1460, 840, 400, 300) # Right cue

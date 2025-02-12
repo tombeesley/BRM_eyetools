@@ -505,62 +505,6 @@ possible to select data from the eye with the lowest proportion of
 missing samples. This returns a flattened list of participant data that
 has x and y variables in place of the left\_* and right\_* variables.
 
-{[}do we want interpolate and smooth in this step too?{]}
-
-\subsection{Working with eyetools}\label{working-with-eyetools}
-
-Having explained these rudimentary steps of getting the data ready for
-processing with the functions in eyetools, we will now describe the core
-functions available in the latest version of eyetools. For illustration,
-eyetools has a built in data set that is in the required format. The
-dataset consists of data from two participants from a human causal
-learning study (\citeproc{ref-beesley2015}{Beesley et al., 2015}). The
-nature of this experiment is largely unimportant for the current
-purposes, but for clarity, the data were collected from the decision
-period of the procedure, where two rectangular cue stimuli were
-presented in the top half of the screen, one on the left side and one on
-the right side. Two response options were presented in the lower half of
-the screen, one on top of the other. These raw data can be accessed by
-calling \texttt{HCL} and the associated ``areas of interest'' (described
-later) can be called by using \texttt{HCL\_AOIs}.
-
-\subsubsection{Counterbalanced designs}\label{counterbalanced-designs}
-
-Many psychology experiments will position stimuli on the screen in a
-counterbalanced fashion. For example, in the example data we are using,
-there are two stimuli, with one of these appearing on the left of the
-screen and the other on the right. In the design of the experiment, one
-of these stimuli is a ``target'' and one is a ``distractor'', and the
-experiment counterbalances whether these are positioned on the left or
-right across trials. In order to provide a meaningful analysis of the
-data, it is necessary to standardise the data across trials so that the
-resulting analyses can reflect meaningful eye gaze on relevant stimuli.
-
-\emph{eyetools} has a built in function which allows us to transform the
-x (or y) values of the stimuli to take into account a counterbalancing
-variable: \texttt{conditional\_transform()}. This function currently
-allows for a single-dimensional flip across either the horizontal or
-vertical midline. It can be used on raw data or fixation data; we simply
-need to append a column to the data to reflect the counterbalancing
-variable. The result of the function is a set of data in which the x
-(and/or y) position is consistent across counterbalanced conditions
-(e.g., in our example, we can transform the data so that the target cue
-is always on the left). This transformation is especially useful for
-future visualisations and calculation of time on areas of interest. Note
-that \texttt{conditional\_transform()} is does not discriminate between
-multi-participant and single-participant data and so no participant\_ID
-parameter is required.
-
-In our example data, the stimuli were presented on either the left or
-the right side of the screen. Here we have merged the eye data with a
-set of ``trial\_events'' data that describe the events on each trial. We
-can apply \texttt{conditional\_transform()} and specify the relevant
-column (cue\_order) that controls the counterbalancing, and the relevant
-value that signals a switch of position (here ``2''). The resulting
-transformation of the data will mean that the data is normalised such
-that the target stimulus is always positioned on the left side of the
-screen.
-
 \subsection{Repairing missing data and smoothing
 data}\label{repairing-missing-data-and-smoothing-data}
 
@@ -594,25 +538,80 @@ averaging function. The degree of smoothing can be specified, and a plot
 can be generated (using data from a randomly selected trial) to observe
 how well the smoothed data fits the raw data.
 
+\subsection{Working with eyetools}\label{working-with-eyetools}
+
+Having explained these rudimentary steps of getting the data ready for
+processing with the functions in eyetools, we will now describe the core
+functions available in the latest version of eyetools. For illustration,
+eyetools has a built in data set that is in the required format. The
+dataset consists of data from two participants from a human causal
+learning study (\citeproc{ref-beesley2015}{Beesley et al., 2015}). The
+nature of this experiment is largely unimportant for the current
+purposes, but for clarity, the data were collected from the decision
+period of the procedure, where two rectangular cue stimuli were
+presented in the top half of the screen, one on the left side and one on
+the right side. Two smaller response options were presented in the lower
+half of the screen, one above the other. These raw data can be accessed
+by calling \texttt{HCL} and the associated ``areas of interest''
+(described later) can be called by using \texttt{HCL\_AOIs}.
+
+\subsubsection{Counterbalanced designs}\label{counterbalanced-designs}
+
+Many psychology experiments will position stimuli on the screen in a
+counterbalanced fashion. For example, in the example data we are using,
+there are two stimuli, with one of these appearing on the left of the
+screen and the other on the right. In the design of the experiment, one
+of these stimuli can be considered a ``target'' and the other a
+``distractor'', and the experiment counterbalances whether these are
+positioned in a left/right or a right/left arrangement across trials. In
+order to provide a meaningful analysis of the eye position over all
+trials, it is necessary to standardise the data such that the resulting
+analyses reflect meaningful eye gaze on each type of stimulus.
+
+\emph{eyetools} has a built in function,
+\texttt{conditional\_transform()}, which allows us to \emph{transform}
+the x (or y) values of the stimuli so as to take into account a
+counterbalancing variable. This function currently allows for a
+single-dimensional flip across either the horizontal or vertical
+midline. It can be used on raw data or fixation data; we simply need to
+append a column to the data to reflect the counterbalancing variable.
+The result of the function is a set of data in which the x (and/or y)
+position is consistent across counterbalanced conditions (e.g., in our
+example, we can transform the data so that the target cue is always on
+the left). This transformation is especially useful for future
+visualisations and calculation of time on areas of interest. Note that
+\texttt{conditional\_transform()} does not discriminate between
+multi-participant and single-participant data and so no participant\_ID
+parameter is required.
+
+In our example data, the stimuli were presented on either the left or
+the right side of the screen. Here we have merged the eye data with a
+set of ``trial\_events'' data that describe the events on each trial. We
+can apply \texttt{conditional\_transform()} and specify the relevant
+column (cue\_order) that controls the counterbalancing, and the relevant
+value that signals a switch of position (here ``2''). The resulting
+transformation of the data will mean that the data is normalised such
+that the target stimulus is always positioned on the left side of the
+screen.
+
 \subsection{Fixations}\label{fixations}
 
 Once the data has been repaired and smoothed, a core step in eye data
-analysis is to identify fixations
-(\citeproc{ref-salvucci2000identifying}{Salvucci \& Goldberg, 2000}).
-Broadly, a fixation is defined as a period in which gaze stops in a
-specific location for a given amount of time. The period in which the
-eyes are moving between fixations reflects a ``saccade''. As such, raw
-data can be transformed into these meaningful eye data characteristics.
-These different properties of eye-data have important implications for
-behavioural research (see X for a review). Beyond their importance for
-understanding psychological processes, transforming the data into
-fixations and saccades leads to greater computational efficiency. For
-example, the built in HCL data in eyetools is 479 kb, which contains
-31,041 rows of data (12 trials of data). After processing the data for
-fixations, the resulting data is 269 rows and can be saved as 3.8 kb
-(less than 1\% the size of the raw data). Not only is this more
-computationally efficient, but it also means the data are more suitable
-for storage in online data repositories.
+analysis is to identify fixations (\citeproc{ref-salvucci2000}{Salvucci
+\& Goldberg, 2000}). Broadly, a fixation is defined as a period in which
+gaze stops in a specific location for a given amount of time. The period
+in which the eyes are moving between fixations reflects a ``saccade''.
+As such, raw data can be transformed into these meaningful eye data
+characteristics. These different properties of eye-data have important
+implications for behavioural research (see X for a review). Beyond their
+importance for understanding psychological processes, transforming the
+data into fixations and saccades leads to greater computational
+efficiency. For example, the built in HCL data in eyetools is 479 kb,
+which contains 31,041 rows of data (12 trials of data). After processing
+the data for fixations, the resulting data is 269 rows and can be saved
+as 3.8 kb (less than 1\% the size of the raw data). Not only is this
+more computationally efficient, but it also means the data are more
+suitable for storage in online data repositories.
 
 There are two fixation algorithms offered in the \emph{eyetools}
 package, both based on methods presented by {[}salvucci\_XXXX{]}. The
@@ -847,10 +846,9 @@ pp. 1--30). Academic Press.
 Kabacoff, R. I. (2022). \emph{R in action: Data analysis and graphics
 with r and tidyverse}. Simon; Schuster.
 
-\bibitem[\citeproctext]{ref-salvucci2000identifying}
-Salvucci, D. D., \& Goldberg, J. H. (2000). Identifying fixations and
-saccades in eye-tracking protocols. \emph{Proceedings of the 2000
-Symposium on Eye Tracking Research \& Applications}, 71--78.
+\bibitem[\citeproctext]{ref-salvucci2000}
+Salvucci, D. D., \& Goldberg, J. H. (2000). \emph{the symposium}.
+71--78. \url{https://doi.org/10.1145/355017.355028}
 
 \end{CSLReferences}
 
