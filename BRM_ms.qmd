@@ -32,22 +32,23 @@ format:
       - at: pre-render
         path: "wordcount.lua"
 execute:
-  echo: false
-  eval: false
+  echo: true
+  eval: true
+  output: false
   warning: false
 editor_options: 
   chunk_output_type: console
 floatsintext: true
 ---
 
-```{r, include=FALSE, eval=FALSE, message=FALSE}
+```{r, include=FALSE, message=FALSE}
 
 #install_github("tombeesley/eyetools@0.7.3.9000")
 library(eyetools)
 
 ```
 
-Eye tracking is now an established and widely used technique in the behavioural sciences. Perhaps the scientific discipline with the most invested interest in eye-data is Psychology, where eye-tracking systems are now commonplace in centres of academic research. Beyond academic institutions, eye-tracking continues to be a useful tool in understanding consumer behaviour, user-interface design, and in various forms of entertainment.
+Eye tracking is now an established and widely used technique in the behavioural sciences. Psychology is perhaps the scientific discipline which has seen the most sustantial adoption of eye-data research, where eye-tracking systems are now commonplace in centres of academic research. Beyond academic institutions, eye-tracking continues to be a useful tool in understanding consumer behaviour, user-interface design, and in various forms of entertainment.
 
 By recording the movement of an individual's gaze during research studies, researchers can quantify where and how long individual's look at particular regions of space (usually with a focus on stimuli presented on a 2D screen, but also within 3D space). Eye-tracking provides a rich stream of continuous data and therefore can offer powerful insights into real-time cognitive processing. Such data allow researchers to inspect the interplay of cognitive processes such as attention, memory, and decision making, with high temporal precision [@beesley2019].
 
@@ -98,10 +99,13 @@ Missing values in the x and y columns of the raw data should be expressed as "NA
 For many methods of eye-tracking, binocular data will be produced. In such cases, since the primary aim of our analyses is the estimation of the spatial coordinates of gaze, the function `combine_eyes()` should be used to combine the data to form a set of monocular data. This function takes raw data with coordinates for each eye (i.e., left_x, right_x, left_y, right_y), and converts the data into single x and y coordinates. By default, the function does this by taking an average of the coordinates from the two eyes of each timestamp, but it is also possible to select data from the eye with the lowest proportion of missing samples. This returns a flattened list of participant data that has x and y variables in place of the left\_\* and right\_\* variables.
 
 ```{r}
+#| output: true
 
-head(HCL,5) # first 5 rows of the built in data
+head(HCL,4) # first 4 rows of the built-in data
 
-data <- combine_eyes(HCL) # create monocular data set
+data <- combine_eyes(HCL) # create monocular data 
+
+head(data, 4) # first 4 rows of the monocular data
 
 ```
 
@@ -110,6 +114,7 @@ data <- combine_eyes(HCL) # create monocular data set
 Despite the best efforts of the researcher, there are occasional failures in the accurate recording of the eye position during data collection (e.g., blinks). This results in missing data within the stream of samples, which must be represented in eyetools as NA values for the x and y coordinates. To mitigate the impact of missing data on further analysis, the `interpolate()` function can estimate the missing gaze data, based upon the eye coordinates before and after the missing data, and perform a repair. The default method of linear interpolation ("approx") replaces missing values with a line of constant slope and evenly spaced coordinates reaching the existing data (alternatively a cubic "spline" method can be applied).
 
 ```{r}
+#| eval: false
 data <- interpolate(data, 
                     method = "approx",
                     participant_ID = "pNum")
@@ -119,6 +124,7 @@ data <- interpolate(data,
 When using `interpolate()`, a report can be requested on the proportion of missing data that has been replaced. This parameter changes the output format of the function, and returns a list of both the data and the report. The report alone can be easily accessed in the following way:
 
 ```{r}
+#| output: true
 interpolate(data, 
             method = "approx",
             participant_ID = "pNum", 
@@ -127,9 +133,7 @@ interpolate(data,
 
 As shown, not all missing data has been replaced, since there are certain periods in which the missing data span a period longer than the default setting of the "maxgap" parameter, which is 150 ms.
 
-Once interpolation has been performed, a common step is to smooth the eye data to minimise the effect of measurement error on the data. The function `smoother()` reduces the noise in the data by applying a moving averaging function. The degree of smoothing can be specified, and a plot can be generated (using data from a randomly selected trial) to observe how well the smoothed data fits the raw data[^1].
-
-[^1]: Note that this smoothing process is suitable for the broad analysis of events offered by eyetools, namely fixations and saccades. eyetools does not currently have
+Once interpolation has been performed, a common step is to smooth the eye data to minimise the effect of measurement error on the data. The function `smoother()` reduces the noise in the data by applying a moving average function. The degree of smoothing can be specified, and a plot can be generated (using data from a randomly selected trial) to observe how well the smoothed data fits the raw data.
 
 ```{r, message=FALSE}
 data <- smoother(data,
@@ -140,15 +144,15 @@ data <- smoother(data,
 
 ## Working with eyetools
 
-Having explained these rudimentary steps of getting the data ready for processing with the functions in eyetools, we will now describe the core functions available in the latest version of eyetools. For illustration, eyetools has a built in data set that is in the required format. The dataset consists of data from two participants from a human causal learning study [@beesley2015]. The nature of this experiment is largely unimportant for the current purposes, but for clarity, the data were collected from the decision period of the procedure, where two rectangular cue stimuli were presented in the top half of the screen, one on the left side and one on the right side. Two smaller response options were presented in the lower half of the screen, one above the other. These raw data can be accessed by calling `HCL` and the associated "areas of interest" (described later) can be called by using `HCL_AOIs`.
+Having explained these rudimentary steps of getting the data ready analysis, we will now describe the core functions available in the latest version of eyetools. For illustration, eyetools has a built in data set that meets the required format. The data set consists of data from two participants from a human causal learning study [@beesley2015]. The nature of this experiment is largely unimportant for the current purposes, but for clarity, the data were collected from the decision period of the procedure, where two rectangular cue stimuli were presented in the top half of the screen, one on the left side and one on the right side. Two smaller response options were presented in the lower half of the screen, one above the other. Participants simply had to look at the cues and choose a response. These raw data can be accessed by calling `HCL` and the associated "areas of interest" (described later) can be called by using `HCL_AOIs`.
 
 ### Counterbalanced designs
 
-Many psychology experiments will position stimuli on the screen in a counterbalanced fashion. For example, in the example data we are using, there are two stimuli, with one of these appearing on the left of the screen and the other on the right. In the design of the experiment, one of these stimuli can be considered a "target" and the other a "distractor", and the experiment counterbalances whether these are positioned in a left/right or a right/left arrangement across trials. In order to provide a meaningful analysis of the eye position over all trials, it is necessary to standardise the data such that the resulting analyses reflect meaningful eye gaze on each type of stimulus.
+Many psychology experiments will counterbalance the position of important stimuli on the screen. For example, in the example data we are using, there are two stimuli, with one of these appearing on the left side of the screen and the other on the right. In the design of the experiment, one of these stimuli can be considered a "target" and the other a "distractor", and the experiment counterbalances whether these are positioned in a left/right or a right/left arrangement across trials. In order to provide a meaningful analysis of the eye position over all trials, it is necessary to standardise the data, such that the resulting analyses reflect meaningful eye gaze on each type of stimulus (target or distractor).
 
-*eyetools* has a built in function, `conditional_transform()`, which allows us to *transform* the x (or y) values of the stimuli so as to take into account a counterbalancing variable. This function currently allows for a single-dimensional flip across either the horizontal or vertical midline. It can be used on raw data or fixation data; we simply need to append a column to the data to reflect the counterbalancing variable. The result of the function is a set of data in which the x (and/or y) position is consistent across counterbalanced conditions (e.g., in our example, we can transform the data so that the target cue is always on the left). This transformation is especially useful for future visualisations and calculation of time on areas of interest. Note that `conditional_transform()` does not discriminate between multi-participant and single-participant data and so no participant_ID parameter is required.
+*eyetools* has a built in function, `conditional_transform()`, which allows us to *transform* the x and/or y values of the stimuli so as to take into account a counterbalancing variable. This function currently allows for a single-dimensional transformation, across either the horizontal or vertical midline. It can be used on raw data or fixation data; we simply need to append a column to the data to reflect the counterbalancing variable. The result of the function is a set of data in which the x (and/or y) position is consistent across counterbalanced conditions (e.g., in our example, we can transform the data so that the target cue is always on the left). This transformation is especially useful for future visualisations and calculation of time on areas of interest. Note that `conditional_transform()` operates on trials independently, and so does not discriminate between multi-participant and single-participant data and so no participant_ID parameter is required.
 
-In our example data, the stimuli were presented on either the left or the right side of the screen. Here we have merged the eye data with a set of "trial_events" data that describe the events on each trial. We can apply `conditional_transform()` and specify the relevant column (cue_order) that controls the counterbalancing, and the relevant value that signals a switch of position (here "2"). The resulting transformation of the data will mean that the data is normalised such that the target stimulus is always positioned on the left side of the screen.
+In our example data, the stimuli were presented on either the left or the right side of the screen. Here we have merged the eye data with a set of "trial_events" data that describe the events on each trial. We can apply `conditional_transform()` and specify the relevant column (cue_order) that controls the counterbalancing, and the relevant value that signals a switch of position (here the value "2"). The resulting transformation of the data will mean that the data is normalised such that the target stimulus is always positioned on the left side of the screen.
 
 ```{r}
 
@@ -167,31 +171,29 @@ data <-
 
 ## Fixations
 
-Once the data has been repaired and smoothed, a core step in eye data analysis is to identify fixations [@salvucci2000]. Broadly, a fixation is defined as a period in which gaze stops in a specific location for a given amount of time. The period in which the eyes are moving between fixations reflects a "saccade". As such, raw data can be transformed into these meaningful eye data characteristics. These different properties of eye-data have important implications for behavioural research (see X for a review). Beyond their importance for understanding psychological processes, transforming the data into fixations and saccades leads to greater computational efficiency. For example, the built in HCL data in eyetools is 479 kb, which contains 31,041 rows of data (12 trials of data). After processing the data for fixations, the resulting data is 269 rows and can be saved as 3.8 kb (less than 1% the size of the raw data). Not only is this more computationally efficient, but it also means the data are more suitable for storage in online data repositories.
+Once the data has been repaired and smoothed, a core step in eye data analysis is to identify fixations [@salvucci2000]. Broadly, a fixation is defined as a period in which gaze stops in a specific location for a given amount of time. The period in which the eyes are moving between fixations reflects a "saccade". As such, raw data can be transformed into these meaningful eye data characteristics. These different properties of eye-data have important implications for behavioural research (see X for a review). Beyond their importance for understanding psychological processes, transforming the data into fixations and saccades leads to greater computational efficiency. For example, the built in HCL data in eyetools is 479 kb, which contains 31,041 rows of data (12 trials of data). After processing the data for fixations, the resulting data is 269 rows and can be saved as 3.8 kb (less than 1% the size of the raw data). Not only is this more computationally efficient, but it also means the data are now in a far more practical format for storage in online data repositories.
 
-There are two fixation algorithms offered in the *eyetools* package, both based on methods presented by \[salvucci_XXXX\]. The first, `fixation_dispersion()` seeks periods of low variability in the spatial component of the data; the algorithm looks for sufficient periods of time in which the gaze position remains within a tolerated maximum range of dispersion. Once this range is exceeded, this is deemed the end of the possible period of fixation. If the total time of this fixation period is longer than the minimum required`min_dur`
+There are two fixation algorithms offered in the *eyetools* package, both based on methods presented by [@salvucci2000]. The first, `fixation_dispersion()` seeks periods of low variability in the spatial component of the data; the algorithm looks for sufficient periods of time in which the gaze position remains within a tolerated maximum range of dispersion. Once this range is exceeded, this is deemed to be the end of a possible period of fixation. If the total time of this fixation period is longer than the minimum required (set by the `min_dur` parameter), then the fixation is stored as a record in the returned object.
 
-The second algorithm, `fixation_VTI()` takes advantage of the idea that data is either a fixation or a saccade and employs a velocity-threshold approach. It identifies data where the eye is moving at a minimum velocity and excludes this, before applying a dispersion check to ensure that the eye does not drift during the fixation period. If the range is broken, a new fixation is determined. Saccades must be of a given length to be removed, otherwise they are considered as micro-saccades \[\@CITATION_NEEDED_HERE?\].
+The second algorithm, `fixation_VTI()` , employs a velocity-threshold approach to identifying fixations, based on the algorithm described in \[@salvucci2000\]. Since points of fixation occur when the eye is not in consistent motion, the algorithm computes the euclidean distance between points and then determines the velocity of the eye. Periods in which this velocity is consistently below the velocity threshold (for which the default is 100 degrees of visual angle per second) are identified as a potential period of fixation. The algorithm then applys a dispersion check to ensure that the eye maintains a relatively stable position across this period. If this dispersion threshold is exceeded, then a new fixation is determined. Fixations must be of a minimum length for classification (by default 150 ms).
+
+Here we can see the example data passed to the `fixation_dispersion()` algorithm and the resulting fixations that are returned.
 
 ```{r}
+#| output: true
+
 fixations <- 
   fixation_dispersion(data,
-                      min_dur = 150, # Minimum duration (in milliseconds) of fixations
-                      disp_tol = 100, # Maximum tolerance (in pixels) for the dispersion of values
-                      NA_tol = 0.25, # the proportion of NAs tolerated within a fixation window
-                      progress = FALSE, # whether to display a progress bar or not
+                      min_dur = 150, # Min duration in ms
+                      disp_tol = 100, # Max dispersion tolerance in pixels
+                      NA_tol = 0.25, # proportion of NAs tolerated 
+                      progress = FALSE, # toggle progress bar
                       participant_ID = "pNum") 
+
+head(fixations, 4)
 ```
 
-Additionally, in certain analyses it may be useful to extract the saccades themselves. This can be achieved using the `saccade_VTI()` function.
-
-```{r}
-saccades <- 
-  saccade_VTI(data, 
-              threshold = 150, 
-              min_dur = 20, 
-              participant_ID = "pNum")
-```
+## Area of interest (AOI) analysis
 
 Once fixations have been calculated, they can be used in conjunction with Areas of Interest (AOIs) to determine the sequence in which the eye enters and exits these areas, as well as the time spent in these regions. When referring to AOIs, these often refer to the cues presented and the outcome object. In our example, the two cues at the top of the screen are the cues, and the outcome is at the bottom. We can define these areas in a separate dataframe object by giving the centrepoint of the AOI in x, y coordinates along with the width and height (if the AOIs are rectangular) or just the radius (if circular).
 
@@ -233,6 +235,20 @@ data_AOI_time_binned <- AOI_time_binned(data, AOIs = AOI_areas,
                                         max_time = 2000, #in milliseconds
                                         participant_ID = "pNum")
 ```
+
+## Saccades
+
+Additionally, in certain analyses it may be useful to extract the saccades themselves. This can be achieved using the `saccade_VTI()` function.
+
+```{r}
+
+saccades <-    saccade_VTI(data,
+                           threshold = 150,
+                           min_dur = 20,
+                           participant_ID = "pNum")
+```
+
+## Visualisations
 
 ## eyetool assumptions \[I DON'T KNOW WHERE THIS SHOULD GO JUST YET\]
 
