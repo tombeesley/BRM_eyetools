@@ -82,7 +82,7 @@ Since there is a wide range of eye tracking hardware available for researchers t
 
 The *eyetools* package has been developed primarily with the analysis of experimental psychology data in mind. To this end, many of the functions expect a "trial" variable in the data, such that the algorithms will operate over multiple trials and produce output that retains this trial information. Similarly, data in psychology experiments tends to come from multiple participants, and to facilitate analysis, a participant ID column can be included (though this isn't necessary). This allows many functions to be run automatically across multiple participants (rather than running the same function on each participant's data). It is also necessary to select the relevant "periods" of data within the recording. It is quite typical in psychology experiments for there to be multiple periods within a trial, e.g., fixation; stimulus presentation; response feedback; inter-trial-interval. *eyetools* does not interpret these changes, and so it is necessary to first select the data for the period or periods that are of interest for analysis. Analysis on each period would be conducted separately using the functions in *eyetools*.
 
-The starting point for the analysis pipeline is the preparation of the raw eye data, which will consist of recorded samples from the eye-tracker, with each row in the data reflecting a single time-stamped recording. If the eye-tracker is set at 1000Hz, then consecutive recordings will be 1 millisecond of time apart; at 300Hz, the recordings are 3.33 milliseconds apart. The only requirement for the time column is that the values reflect a consistent and increasing set of values. There is no need to specify the sampling rate, since *eyetools* functions will calculate this automatically. *eyetools* expects raw data to have the following columns:
+The starting point for the analysis pipeline is the preparation of the raw eye data, which will consist of recorded samples from the eye-tracker, with each row in the data reflecting a single time-stamped recording. If the eye-tracker is set at 1000Hz, then consecutive recordings will be 1 millisecond of time apart; at 300Hz, the recordings are 3.33 milliseconds apart. The only requirement for the time column is that the values reflect a consistent and increasing set of values. There is no need to specify the sampling rate, since *eyetools* functions will calculate this automatically. *eyetools* expects raw data to have the following columns, with all columns set as type numeric:
 
 -   x = horizontal spatial coordinate of the estimated eye position
 
@@ -90,11 +90,13 @@ The starting point for the analysis pipeline is the preparation of the raw eye d
 
 -   time = timestamp of the recording
 
--   trial = an index of the current trial in the data
+-   trial = the index of the current trial in the data
 
--   pID = an index of the current participant in the data (optional)
+Missing values in the x and y columns of the raw data should be expressed as "NA". An optional 5th column can be included, with encodes the participant ID, which can be numeric or character type:
 
-Missing values in the x and y columns of the raw data should be expressed as "NA".
+-   pID = an index of the current participant in the data
+
+For many of the functions in *eyetools* the *participant_ID* column allows the user to run the function across data from multiple participants. This functionality means that the user can avoid having to generate additional programming steps to analyse and combine the data from multiple participants
 
 For many methods of eye-tracking, binocular data will be produced. In such cases, since the primary aim of our analyses is the estimation of the spatial coordinates of gaze, the function `combine_eyes()` should be used to combine the data to form a set of monocular data. This function takes raw data with coordinates for each eye (i.e., left_x, right_x, left_y, right_y), and converts the data into single x and y coordinates. By default, the function does this by taking an average of the coordinates from the two eyes of each timestamp, but it is also possible to select data from the eye with the lowest proportion of missing samples. This returns a flattened list of participant data that has x and y variables in place of the left\_\* and right\_\* variables.
 
@@ -156,16 +158,15 @@ In our example data, the stimuli were presented on either the left or the right 
 
 ```{r}
 
+# merges with the common variables pNum and trial
+data <- merge(data, HCL_behavioural) 
 
-
-data <- merge(data, HCL_behavioural) # merges with the common variables pNum and trial
-
-data <- 
-  conditional_transform(data, 
-                        flip = "x", #flip across x midline
-                        cond_column = "cue_order", # counterbalance column 
-                        cond_values = "2",# values to flip
-                        message = FALSE) # suppress output message
+# perform a transormation of the data across the x coordinate midline
+# for all trials with value 2 in the column cue_order
+data <- conditional_transform(data, 
+                              flip = "x", 
+                              cond_column = "cue_order", 
+                              cond_values = "2") 
 
 ```
 
@@ -175,7 +176,7 @@ Once the data has been repaired and smoothed, a core step in eye data analysis i
 
 There are two fixation algorithms offered in the *eyetools* package, both based on methods presented by [@salvucci2000]. The first, `fixation_dispersion()` seeks periods of low variability in the spatial component of the data; the algorithm looks for sufficient periods of time in which the gaze position remains within a tolerated maximum range of dispersion. Once this range is exceeded, this is deemed to be the end of a possible period of fixation. If the total time of this fixation period is longer than the minimum required (set by the `min_dur` parameter), then the fixation is stored as a record in the returned object.
 
-The second algorithm, `fixation_VTI()` , employs a velocity-threshold approach to identifying fixations, based on the algorithm described in \[@salvucci2000\]. Since points of fixation occur when the eye is not in consistent motion, the algorithm computes the euclidean distance between points and then determines the velocity of the eye. Periods in which this velocity is consistently below the velocity threshold (for which the default is 100 degrees of visual angle per second) are identified as a potential period of fixation. The algorithm then applys a dispersion check to ensure that the eye maintains a relatively stable position across this period. If this dispersion threshold is exceeded, then a new fixation is determined. Fixations must be of a minimum length for classification (by default 150 ms).
+The second algorithm, `fixation_VTI()` , employs a velocity-threshold approach to identifying fixations, based on the algorithm described in [@salvucci2000]. Since points of fixation occur when the eye is not in consistent motion, the algorithm computes the euclidean distance between points and then determines the velocity of the eye. Periods in which this velocity is consistently below the velocity threshold (for which the default is 100 degrees of visual angle per second) are identified as a potential period of fixation. The algorithm then applies a dispersion check to ensure that the eye maintains a relatively stable position across this period. Fixations must be of a minimum length for classification (by default 150 ms).
 
 Here we can see the example data passed to the `fixation_dispersion()` algorithm and the resulting fixations that are returned.
 
@@ -193,24 +194,55 @@ fixations <-
 head(fixations, 4)
 ```
 
+## Saccades
+
+Between periods of fixation, the velocity of the eye increases rapidly as it makes a saccade towards the next point of fixation. The `saccade_VTI()` function will extract saccades using the velocity threshold algorithm described above. Details of each saccade are given, such as the timing of the saccade onset, duration, and the origin and terminal coordinates.
+
+```{r}
+#| output: true
+
+saccades <- saccade_VTI(data,
+                        threshold = 150,
+                        min_dur = 20,
+                        participant_ID = "pNum")
+
+head(saccades, 4)
+```
+
+## Visualisations
+
+The eyetools package has a number of visualisations that allow for functional plots of the data, with minimal effort. All plots use the dominant graphical R package `ggplot`, which means that the resulting plots are ggplot objects and can be customised using the full suite of options for ggplot and its extensions.
+
+`plot_spatial()` offers a simple means to view raw data, fixation data, and saccades. In addition to eye data, an image can be added to the plot, which is useful for inspecting data over a representation of the experimental task. If AOIs have been defined, these can be plotted as well. By default the function will plot all of the data it is passed, but a trial number can be supplied to constrain the presentation of data.
+
+```{r}
+
+plot_spatial(fix_data = fixations,
+             sac_data = saccades,
+             trial_number = 3,
+             bg_image = "images/HCL_sample_image.jpg")
+
+
+```
+
 ## Area of interest (AOI) analysis
 
-Once fixations have been calculated, they can be used in conjunction with Areas of Interest (AOIs) to determine the sequence in which the eye enters and exits these areas, as well as the time spent in these regions. When referring to AOIs, these often refer to the cues presented and the outcome object. In our example, the two cues at the top of the screen are the cues, and the outcome is at the bottom. We can define these areas in a separate dataframe object by giving the centrepoint of the AOI in x, y coordinates along with the width and height (if the AOIs are rectangular) or just the radius (if circular).
+A critical component of much eye gaze analysis is the assessment of time spent in regions of space. eyetools has a number of functions for assessing the time spent in Areas of Interest (AOIs), as well as the sequence in which the eye enters and exits these areas. AOIs will typically reflect regions of space in which critical stimuli appear. AOIs are defined in eyetools using a dataframe object, which codes the centrepoint of the AOI in x, y coordinates along with the width and height (if the AOIs are rectangular) or just the radius (if circular). This object can be created using the function `create_AOI_df()`:
 
 ```{r}
 
 # set areas of interest
-AOI_areas <- create_AOI_df()
+AOI_areas <- create_AOI_df(3)
 
-AOI_areas[1,] <- c(460, 840, 400, 300) # Left cue
-AOI_areas[2,] <- c(1460, 840, 400, 300) # Right cue
-AOI_areas[3,] <- c(960, 270, 300, 500) # outcomes
+AOI_areas[1,] <- c(460, 840, 400, 300) # Left rectangualar AOI
+AOI_areas[2,] <- c(1460, 840, 200, NA) # Right circular AOI
+AOI_areas[3,] <- c(960, 840, 200, 400) # Right circular AOI
 
 ```
 
 In combination with the fixation data, the AOI information can be used to determine the sequence of AOI entries using the `AOI_seq()` function. This fucntion checks whether a fixation is detected within an AOI, and if not, it is dropped from the output, and then provides a list of the sequence of AOI entries, along with start and end timestamps, and the duration.
 
-```{r}
+```{r eval=FALSE, include=FALSE}
 data_AOI_entry <- AOI_seq(fixations, AOIs = AOI_areas,
                           AOI_names = c("predictive", "non-predictive", "target"),
                           participant_ID = "pNum")
@@ -234,18 +266,6 @@ data_AOI_time_binned <- AOI_time_binned(data, AOIs = AOI_areas,
                                         bin_length = 100,
                                         max_time = 2000, #in milliseconds
                                         participant_ID = "pNum")
-```
-
-## Saccades
-
-Additionally, in certain analyses it may be useful to extract the saccades themselves. This can be achieved using the `saccade_VTI()` function.
-
-```{r}
-
-saccades <-    saccade_VTI(data,
-                           threshold = 150,
-                           min_dur = 20,
-                           participant_ID = "pNum")
 ```
 
 ## Visualisations
