@@ -213,13 +213,29 @@ head(saccades, 4)
 
 The eyetools package has a number of visualisations that allow for functional plots of the data, with minimal effort. All plots use the dominant graphical R package `ggplot`, which means that the resulting plots are ggplot objects and can be customised using the full suite of options for ggplot and its extensions.
 
-`plot_spatial()` offers a simple means to view raw data, fixation data, and saccades. In addition to eye data, an image can be added to the plot, which is useful for inspecting data over a representation of the experimental task. If AOIs have been defined, these can be plotted as well. By default the function will plot all of the data it is passed, but a trial number can be supplied to constrain the presentation of data.
+`plot_spatial()` offers a simple means to view the data produced by *eyetools*. By default the plotting commands will plot all of the data that is passed to the function. However, trial and participant numbers can be specified. Here we plot the raw data from a single trial of one participant, with the detected fixations overlaid with the detected fixations. When using fixation data, the fixations are labelled in their temporal order (by default), enabling a clear presentation of how the fixations arose.
 
 ```{r}
+#| output: true
 
-plot_spatial(fix_data = fixations,
-             sac_data = saccades,
-             trial_number = 3,
+# will tidy this up once eyetools functions can filter to individual participants
+data <- data[data$pNum == 118,]
+fixations <- fixations[fixations$pNum == 118,]
+saccades <- saccades[saccades$pNum == 118,]
+
+plot_spatial(raw_data = data,
+             fix_data = fixations,
+             trial_number = 6)
+```
+
+In addition to eye data, an image can be added to the plot, which is useful for inspecting data over a representation of the experimental task. If AOIs have been defined, these can be plotted as well. Here we demonstrate the plotting of the saccades, AOIs, and a background image:
+
+```{r}
+#| output: true
+
+plot_spatial(sac_data = saccades,
+             AOIs = HCL_AOIs,
+             trial_number = 6,
              bg_image = "images/HCL_sample_image.jpg")
 
 
