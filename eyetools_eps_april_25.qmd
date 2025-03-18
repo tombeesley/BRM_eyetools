@@ -1,0 +1,100 @@
+---
+title: "eyetools - EPS April 2025"
+author: "Tom Beesley"
+format: revealjs
+
+---
+
+## Reproducible analyses
+
+UK Reproducibility Network: "We expect researchers to... make their research methods, software, outputs and data open, and available at the earliest possible point...The reproducibility of both research methods and research results ...is critical to research in certain contexts, particularly in the experimental sciences with a quantitative focus..."
+
+## R packages
+
+::: incremental
+-   Can be installed freely by anyone in the world
+-   Offer functions centred on a particular use case
+-   Provide documentation and full disclosure of methods
+:::
+
+## Current R packages for eye data analysis
+
+| Package | Hardware-agnostic | Data Import | Data processing | Identifies events | Plotting | Inferential Analysis |
+|-----------|:---------:|:---------:|:---------:|:---------:|:---------:|:---------:|
+| eyetools | {{< fa check >}} | {{< fa check >}}\* | {{< fa check >}} | {{< fa check >}} | {{< fa check >}} |  |
+| eyeTrackr |  | {{< fa check >}} | {{< fa check >}} | {{< fa check >}} |  |  |
+| eyelinker |  | {{< fa check >}} |  |  |  |  |
+| eyelinkReader |  | {{< fa check >}} |  | {{< fa check >}} | {{< fa check >}} |  |
+| eyeRead | {{< fa check >}} |  | {{< fa check >}} | {{< fa check >}}\*\* |  |  |
+| emov | {{< fa check >}} |  | {{< fa check >}} | {{< fa check >}} |  |  |
+| eyetrackingR | {{< fa check >}} |  | {{< fa check >}} |  | {{< fa check >}} | {{< fa check >}} |
+
+\* for Tobii data only, \*\* for text reading experiments only
+
+## Introducing "eyetools"
+
+eyetools is available on CRAN, so it is very easy to install and load:
+
+```{r}
+#| eval: false
+#| echo: true
+#| output: false
+
+install.packages("eyetools")
+
+library(eyetools) # load
+
+```
+
+```{r}
+#| eval: true
+#| echo: false
+library(eyetools)
+```
+
+It comes with some built in data:
+
+```{r}
+#| eval: true
+#| echo: true
+#| output: true
+ 
+head(HCL,4) # first 4 rows of the built-in data
+
+```
+
+Binocular data can be combined to produce monocular data:
+
+```{r}
+
+#| eval: true
+#| echo: true
+#| output: true
+ 
+data <- combine_eyes(HCL) # create monocular data
+
+```
+
+
+## Transforming data
+
+
+
+## Computing trial events
+
+A primary step in eye data analysis is the extraction of fixations and saccades. 
+
+For fixations you can use a "dispersion threshold" algorithm:
+
+```{r}
+#| eval: true
+#| echo: true
+#| output: true
+
+
+
+
+
+```
+
+
