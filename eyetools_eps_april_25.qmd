@@ -2,7 +2,28 @@
 title: "eyetools - EPS April 2025"
 author: "Tom Beesley"
 format: revealjs
-
+width: 1920
+height: 1080
+include-in-header:
+  - text: |
+      <style>
+      .reveal .col_3_7 > div.column:first-child {
+        width: 30%;
+      }
+      .reveal .col_3_7 div.column:not(:first-child) {
+        width: 70%;
+      }
+      </style>
+      <style>
+      .reveal .col_4_6 > div.column:first-child {
+        width: 40%;
+      }
+      .reveal .col_4_6 div.column:not(:first-child) {
+        width: 60%;
+      }
+      </style>
+editor_options: 
+  chunk_output_type: console
 ---
 
 ## Reproducible analyses
@@ -17,11 +38,11 @@ UK Reproducibility Network: "We expect researchers to... make their research met
 -   Provide documentation and full disclosure of methods
 :::
 
-## Current R packages for eye data analysis
+## R packages for eye data analysis {.smaller}
 
 | Package | Hardware-agnostic | Data Import | Data processing | Identifies events | Plotting | Inferential Analysis |
 |-----------|:---------:|:---------:|:---------:|:---------:|:---------:|:---------:|
-| eyetools | {{< fa check >}} | {{< fa check >}}\* | {{< fa check >}} | {{< fa check >}} | {{< fa check >}} |  |
+| **eyetools** | {{< fa check >}} | {{< fa check >}}\* | {{< fa check >}} | {{< fa check >}} | {{< fa check >}} |  |
 | eyeTrackr |  | {{< fa check >}} | {{< fa check >}} | {{< fa check >}} |  |  |
 | eyelinker |  | {{< fa check >}} |  |  |  |  |
 | eyelinkReader |  | {{< fa check >}} |  | {{< fa check >}} | {{< fa check >}} |  |
@@ -35,7 +56,7 @@ UK Reproducibility Network: "We expect researchers to... make their research met
 
 eyetools is available on CRAN, so it is very easy to install and load:
 
-```{r}
+```{r install}
 #| eval: false
 #| echo: true
 #| output: false
@@ -46,15 +67,16 @@ library(eyetools) # load
 
 ```
 
-```{r}
+```{r load}
 #| eval: true
 #| echo: false
 library(eyetools)
+
 ```
 
 It comes with some built in data:
 
-```{r}
+```{r show_data}
 #| eval: true
 #| echo: true
 #| output: true
@@ -65,7 +87,7 @@ head(HCL,4) # first 4 rows of the built-in data
 
 Binocular data can be combined to produce monocular data:
 
-```{r}
+```{r combine_eyes}
 
 #| eval: true
 #| echo: true
@@ -75,26 +97,198 @@ data <- combine_eyes(HCL) # create monocular data
 
 ```
 
+```{r int_smooth}
+#| eval: true
+#| echo: false
+
+# interpolation and smoothing stages not shown in presentation
+
+data <- interpolate(data)
+data <- smoother(data)
+```
 
 ## Transforming data
 
 
 
+
 ## Computing trial events
 
-A primary step in eye data analysis is the extraction of fixations and saccades. 
+A primary step in eye data analysis is the extraction of fixations and saccades. Eyetools features two fixation algorithms and one saccade algorithm:
 
-For fixations you can use a "dispersion threshold" algorithm:
+::: {.panel-tabset}
 
-```{r}
+### Fixations
+
+```{r fix_disp}
 #| eval: true
 #| echo: true
 #| output: true
 
+fix <- fixation_dispersion(data)
 
-
-
+head(fix, 4)
 
 ```
+
+
+### Saccades
+
+```{r sac}
+#| eval: false
+#| echo: true
+#| output: false
+
+sac <- saccade_VTI(data)
+
+head(sac, 4)
+
+```
+
+```{r sac_2}
+#| eval: true
+#| echo: false
+#| output: true
+
+# REMOVE WHEN FIXED SACCADE ALGORITHM IN LATEST VERSION
+load("dummy_sac_data.RData")
+
+head(sac, 4)
+
+```
+
+:::
+
+## Plotting data
+
+Eyetools has several built in visualisations:
+
+::: {.panel-tabset}
+
+### All data
+
+```{r plot_spatial_1}
+#| classes: col_3_7
+#| echo: true
+#| output-location: column
+
+plot_spatial(fix_data = fix,
+             show_fix_order = FALSE)
+
+```
+### Selected data
+
+```{r plot_spatial_2}
+#| classes: col_3_7
+#| echo: true
+#| output-location: column
+
+plot_spatial(fix_data = fix, 
+             pID_values = 118, 
+             trial_values = 2)
+```
+
+### + saccades
+
+```{r plot_spatial_3}
+#| classes: col_3_7
+#| echo: true
+#| output-location: column
+
+plot_spatial(fix_data = fix, 
+             sac_data = sac, 
+             pID_values = 118, 
+             trial_values = 2)
+
+```
+
+### + screenshot
+
+```{r plot_spatial_4}
+#| classes: col_3_7
+#| echo: true
+#| output-location: column
+
+plot_spatial(fix_data = fix, 
+             sac_data = sac, 
+             pID_values = 118, 
+             trial_values = 2, 
+             bg_image = "images/HCL_sample_image.png")
+
+```
+
+:::
+
+## Analysing areas of interest (AOIs)
+
+:::: {layout="[45,-10,45]"}
+
+::: {#first-column}
+
+AOIs can be defined. Here are the built in ones:
+```{r create_AOI}
+#| echo: true
+
+# Define AOIs
+HCL_AOIs
+```
+:::
+
+::: {#second-column}
+
+These can be plotted:
+
+```{r plot_AOI}
+#| echo: true
+
+# plot those AOIs
+plot_spatial(AOIs = HCL_AOIs)
+
+```
+:::
+
+::::
+
+
+## Analysing areas of interest (AOIs)
+
+These AOIs can be used in the following analysis functions:
+
+::: {.panel-tabset}
+
+### AOI_time
+
+Calculate time on areas of interest
+```{r}
+#| classes: col_4_6
+#| echo: true
+#| output-location: column
+
+aoi_time_result <- AOI_time(data = fix,
+                            data_type = "fix",
+                            AOIs = HCL_AOIs,
+                            AOI_names = c("left", "right", "lower"))
+
+head(aoi_time_result, 18)
+
+```
+
+### AOI_seq
+
+Calculate sequence of entries into areas of interest
+```{r}
+#| classes: col_4_6
+#| echo: true
+#| output-location: column
+
+aoi_seq_result <- AOI_seq(data = fix, 
+                          AOIs = HCL_AOIs, 
+                          AOI_names = c("left", "right", "lower"))
+
+head(aoi_seq_result, 11)
+
+```
+
+
 
 
