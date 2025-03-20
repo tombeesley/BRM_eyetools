@@ -1,27 +1,23 @@
 ---
 title: "eyetools - EPS April 2025"
-author: "Tom Beesley"
-format: revealjs
-width: 1920
-height: 1080
+author: "Tom Beesley and Matthew Ivory"
+format: 
+  revealjs:
+    theme: [serif, custom.scss]
+    
 include-in-header:
   - text: |
       <style>
-      .reveal .col_3_7 > div.column:first-child {
+      .reveal .col_4_6 > div.column:first-child {
         width: 30%;
       }
-      .reveal .col_3_7 div.column:not(:first-child) {
+      .reveal .col_4_6 div.column:not(:first-child) {
         width: 70%;
       }
       </style>
-      <style>
-      .reveal .col_4_6 > div.column:first-child {
-        width: 40%;
-      }
-      .reveal .col_4_6 div.column:not(:first-child) {
-        width: 60%;
-      }
-      </style>
+width: 1920
+height: 1080
+margin: 0.03
 editor_options: 
   chunk_output_type: console
 ---
@@ -30,9 +26,8 @@ editor_options:
 
 UK Reproducibility Network: "We expect researchers to... make their research methods, software, outputs and data open, and available at the earliest possible point...The reproducibility of both research methods and research results ...is critical to research in certain contexts, particularly in the experimental sciences with a quantitative focus..."
 
-## R packages
-
 ::: incremental
+### R packages:
 -   Can be installed freely by anyone in the world
 -   Offer functions centred on a particular use case
 -   Provide documentation and full disclosure of methods
@@ -54,6 +49,7 @@ UK Reproducibility Network: "We expect researchers to... make their research met
 
 ## Introducing "eyetools"
 
+
 eyetools is available on CRAN, so it is very easy to install and load:
 
 ```{r install}
@@ -74,28 +70,56 @@ library(eyetools)
 
 ```
 
-It comes with some built in data:
+Here's the complete list of available functions:
+
+```{r function_list}
+#| eval: true
+#| echo: true
+
+ls("package:eyetools")
+
+```
+
+## Data format
+
+:::: {.columns}
+
+::: {.column width="45%"}
+
+There is built in data from a simple experimental task, which shows you the requirements of the package:
+
+
 
 ```{r show_data}
 #| eval: true
 #| echo: true
 #| output: true
  
-head(HCL,4) # first 4 rows of the built-in data
+head(HCL,8) # first 4 rows of the built-in data
 
 ```
 
-Binocular data can be combined to produce monocular data:
+:::
+
+::: {.column width="10%"}
+:::
+
+::: {.column width="45%"}
+Binocular data needs to be combined to produce monocular data:
 
 ```{r combine_eyes}
-
 #| eval: true
 #| echo: true
 #| output: true
  
 data <- combine_eyes(HCL) # create monocular data
 
+head(data, 8)
+
 ```
+:::
+
+::::
 
 ```{r int_smooth}
 #| eval: true
@@ -124,6 +148,7 @@ A primary step in eye data analysis is the extraction of fixations and saccades.
 #| eval: true
 #| echo: true
 #| output: true
+#| cache: true
 
 fix <- fixation_dispersion(data)
 
@@ -161,16 +186,16 @@ head(sac, 4)
 
 ## Plotting data
 
-Eyetools has several built in visualisations:
-
 ::: {.panel-tabset}
 
 ### All data
 
 ```{r plot_spatial_1}
-#| classes: col_3_7
+#| classes: col_4_6
 #| echo: true
 #| output-location: column
+#| fig-width: 16
+#| fig-height: 9
 
 plot_spatial(fix_data = fix,
              show_fix_order = FALSE)
@@ -179,9 +204,11 @@ plot_spatial(fix_data = fix,
 ### Selected data
 
 ```{r plot_spatial_2}
-#| classes: col_3_7
+#| classes: col_4_6
 #| echo: true
 #| output-location: column
+#| fig-width: 16
+#| fig-height: 9
 
 plot_spatial(fix_data = fix, 
              pID_values = 118, 
@@ -191,9 +218,11 @@ plot_spatial(fix_data = fix,
 ### + saccades
 
 ```{r plot_spatial_3}
-#| classes: col_3_7
+#| classes: col_4_6
 #| echo: true
 #| output-location: column
+#| fig-width: 16
+#| fig-height: 9
 
 plot_spatial(fix_data = fix, 
              sac_data = sac, 
@@ -205,9 +234,10 @@ plot_spatial(fix_data = fix,
 ### + screenshot
 
 ```{r plot_spatial_4}
-#| classes: col_3_7
+#| classes: col_4_6
 #| echo: true
 #| output-location: column
+
 
 plot_spatial(fix_data = fix, 
              sac_data = sac, 
@@ -221,11 +251,12 @@ plot_spatial(fix_data = fix,
 
 ## Analysing areas of interest (AOIs)
 
-:::: {layout="[45,-10,45]"}
+:::: {.columns}
 
-::: {#first-column}
+::: {.column width="45%"}
 
 AOIs can be defined. Here are the built in ones:
+
 ```{r create_AOI}
 #| echo: true
 
@@ -234,7 +265,10 @@ HCL_AOIs
 ```
 :::
 
-::: {#second-column}
+::: {.column width="10%"}
+:::
+
+::: {.column width="45%"}
 
 These can be plotted:
 
