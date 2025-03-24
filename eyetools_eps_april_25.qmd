@@ -4,17 +4,6 @@ author: "Tom Beesley and Matthew Ivory"
 format: 
   revealjs:
     theme: [serif, custom.scss]
-    
-include-in-header:
-  - text: |
-      <style>
-      .reveal .col_4_6 > div.column:first-child {
-        width: 30%;
-      }
-      .reveal .col_4_6 div.column:not(:first-child) {
-        width: 70%;
-      }
-      </style>
 width: 1920
 height: 1080
 margin: 0.03
@@ -67,6 +56,10 @@ library(eyetools) # load
 #| eval: true
 #| echo: false
 library(eyetools)
+library(ggplot2)
+
+HCL_AOIs[3,2] <- 290
+HCL_AOIs[3,4] <- 520
 
 ```
 
@@ -184,45 +177,60 @@ head(sac, 4)
 
 :::
 
-## Plotting data
+## Plotting data 
 
-::: {.panel-tabset}
-
-### All data
+Plotting all the data from one participant:
 
 ```{r plot_spatial_1}
-#| classes: col_4_6
 #| echo: true
-#| output-location: column
 #| fig-width: 16
 #| fig-height: 9
 
-plot_spatial(fix_data = fix,
-             show_fix_order = FALSE)
+p <- plot_spatial(fix_data = fix,
+                  pID_values = 118,
+                  show_fix_order = FALSE)
+
+p + theme_classic(base_size = 18) # it's a ggplot object...
 
 ```
-### Selected data
+
+## Plotting data 
+
+Selecting data from participants and trials
 
 ```{r plot_spatial_2}
-#| classes: col_4_6
+#| eval: false
 #| echo: true
-#| output-location: column
-#| fig-width: 16
-#| fig-height: 9
+#| output: false
 
 plot_spatial(fix_data = fix, 
              pID_values = 118, 
              trial_values = 2)
+
 ```
 
-### + saccades
+```{r plot_spatial_2_eval}
+#| eval: true
+#| echo: false
+#| output: true
+#| fig-width: 16
+#| fig-height: 9
+
+p <- plot_spatial(fix_data = fix, 
+             pID_values = 118, 
+             trial_values = 2)
+
+p + theme_classic(base_size = 18)
+```
+
+## Plotting data
+
+Adding saccades to the plot:
 
 ```{r plot_spatial_3}
-#| classes: col_4_6
+#| eval: false
 #| echo: true
-#| output-location: column
-#| fig-width: 16
-#| fig-height: 9
+#| output: false
 
 plot_spatial(fix_data = fix, 
              sac_data = sac, 
@@ -231,24 +239,50 @@ plot_spatial(fix_data = fix,
 
 ```
 
-### + screenshot
+```{r plot_spatial_3_eval}
+#| eval: true
+#| echo: false
+#| output: true
+#| fig-width: 16
+#| fig-height: 9
+
+p <- plot_spatial(fix_data = fix, 
+             sac_data = sac, 
+             pID_values = 118, 
+             trial_values = 2)
+
+p + theme_classic(base_size = 18)
+```
+## Plotting data
+
+Adding a background image
 
 ```{r plot_spatial_4}
-#| classes: col_4_6
+#| eval: false
 #| echo: true
-#| output-location: column
-
+#| output: false
 
 plot_spatial(fix_data = fix, 
-             sac_data = sac, 
              pID_values = 118, 
              trial_values = 2, 
              bg_image = "images/HCL_sample_image.png")
 
 ```
 
-:::
+```{r plot_spatial_4_eval}
+#| eval: true
+#| echo: false
+#| output: true
+#| fig-width: 16
+#| fig-height: 9
 
+p <- plot_spatial(fix_data = fix, 
+             pID_values = 118, 
+             trial_values = 2, 
+             bg_image = "images/HCL_sample_image.png")
+
+p + theme_classic(base_size = 18)
+```
 ## Analysing areas of interest (AOIs)
 
 :::: {.columns}
@@ -273,10 +307,24 @@ HCL_AOIs
 These can be plotted:
 
 ```{r plot_AOI}
+#| eval: false
 #| echo: true
+#| output: false
 
 # plot those AOIs
-plot_spatial(AOIs = HCL_AOIs)
+plot_spatial(AOIs = HCL_AOIs,
+             bg_image = "images/HCL_sample_image.png")
+
+```
+```{r plot_AOI_eval}
+#| eval: true
+#| echo: false
+#| output: true
+
+# plot those AOIs
+plot_spatial(AOIs = HCL_AOIs,
+             bg_image = "images/HCL_sample_image.png") +
+  theme_classic(base_size = 18)
 
 ```
 :::
@@ -294,7 +342,6 @@ These AOIs can be used in the following analysis functions:
 
 Calculate time on areas of interest
 ```{r}
-#| classes: col_4_6
 #| echo: true
 #| output-location: column
 
@@ -311,7 +358,6 @@ head(aoi_time_result, 18)
 
 Calculate sequence of entries into areas of interest
 ```{r}
-#| classes: col_4_6
 #| echo: true
 #| output-location: column
 
@@ -323,6 +369,39 @@ head(aoi_seq_result, 11)
 
 ```
 
+### plot_seq
+
+We can also plot the progression of data over the course of a trial
+
+```{r plot_seq_1}
+#| eval: false
+#| echo: true
+#| output: false
+
+plot_seq(data = data,
+         AOIs = HCL_AOIs,
+         bg_image = "images/HCL_sample_image.png",
+         pID_values = 118, 
+         trial_values = 2,
+         bin_time = 1000)
+
+```
+
+```{r plot_seq_1_eval}
+#| eval: true
+#| echo: false
+#| output: true
+#| fig-width: 16
+#| fig-height: 9
+
+plot_seq(data = data,
+         AOIs = HCL_AOIs,
+         bg_image = "images/HCL_sample_image.png",
+         pID_values = 118, 
+         trial_values = 2,
+         bin_time = 1000) +
+  theme_classic(base_size = 18)
+```
 
 
 
