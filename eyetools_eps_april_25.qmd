@@ -1,26 +1,30 @@
 ---
 title: "eyetools - EPS April 2025"
 author: "Tom Beesley and Matthew Ivory"
+institute: Lancaster University
 format: 
   revealjs:
-    theme: [serif, custom.scss]
+    theme: [simple, custom.scss]
+    slide-number: c/t
+    footer: "github.com/tombeesley/eyetools | install.packages('eyetools')"
+    logo: LU_logo.jpg
+title-slide-attributes: 
+  data-background-image: LU_logo.jpg
+  data-background-size: 15%
+  data-background-position: 2% 80%
+highlight-style: arrow
 width: 1920
 height: 1080
-margin: 0.03
+margin: 0.1
 editor_options: 
   chunk_output_type: console
 ---
 
 ## Reproducible analyses
 
-UK Reproducibility Network: "We expect researchers to... make their research methods, software, outputs and data open, and available at the earliest possible point...The reproducibility of both research methods and research results ...is critical to research in certain contexts, particularly in the experimental sciences with a quantitative focus..."
+**UK Reproducibility Network:** "The reproducibility of both research methods and research results is critical to research in certain contexts, particularly in the experimental sciences with a quantitative focus."
 
-::: incremental
-### R packages:
--   Can be installed freely by anyone in the world
--   Offer functions centred on a particular use case
--   Provide documentation and full disclosure of methods
-:::
+![](github_ss.png){fig-align="left" width="550"}
 
 ## R packages for eye data analysis {.smaller}
 
@@ -36,10 +40,17 @@ UK Reproducibility Network: "We expect researchers to... make their research met
 
 \* for Tobii data only, \*\* for text reading experiments only
 
-## Introducing "eyetools"
+## Introducing "eyetools" {.nostretch}
 
+:::: columns
+::: {.column width="45%"}
+### R packages:
 
-eyetools is available on CRAN, so it is very easy to install and load:
+-   Can be installed freely by anyone in the world
+-   Offer functions centred on a particular use case
+-   Provide documentation and full disclosure of methods
+
+Eyetools is available on CRAN:
 
 ```{r install}
 #| eval: false
@@ -48,13 +59,15 @@ eyetools is available on CRAN, so it is very easy to install and load:
 
 install.packages("eyetools")
 
-library(eyetools) # load
+library(eyetools) 
 
 ```
 
 ```{r load}
 #| eval: true
 #| echo: false
+
+# hidden loading and setting of variables
 library(eyetools)
 library(ggplot2)
 
@@ -62,26 +75,20 @@ HCL_AOIs[3,2] <- 290
 HCL_AOIs[3,4] <- 520
 
 ```
+:::
 
-Here's the complete list of available functions:
-
-```{r function_list}
-#| eval: true
-#| echo: true
-
-ls("package:eyetools")
-
-```
-
-## Data format
-
-:::: {.columns}
+::: {.column width="5%"}
+:::
 
 ::: {.column width="45%"}
+![](mermaid_flow.png){width="800"}
+:::
+::::
 
+## Data format
+:::: columns
+::: {.column width="46%"}
 There is built in data from a simple experimental task, which shows you the requirements of the package:
-
-
 
 ```{r show_data}
 #| eval: true
@@ -91,13 +98,12 @@ There is built in data from a simple experimental task, which shows you the requ
 head(HCL,8) # first 4 rows of the built-in data
 
 ```
-
 :::
 
-::: {.column width="10%"}
+::: {.column width="8%"}
 :::
 
-::: {.column width="45%"}
+::: {.column width="46%"}
 Binocular data needs to be combined to produce monocular data:
 
 ```{r combine_eyes}
@@ -114,27 +120,11 @@ head(data, 8)
 
 ::::
 
-```{r int_smooth}
-#| eval: true
-#| echo: false
-
-# interpolation and smoothing stages not shown in presentation
-
-data <- interpolate(data)
-data <- smoother(data)
-```
-
-## Transforming data
-
-
-
-
 ## Computing trial events
 
 A primary step in eye data analysis is the extraction of fixations and saccades. Eyetools features two fixation algorithms and one saccade algorithm:
 
-::: {.panel-tabset}
-
+::: panel-tabset
 ### Fixations
 
 ```{r fix_disp}
@@ -148,7 +138,6 @@ fix <- fixation_dispersion(data)
 head(fix, 4)
 
 ```
-
 
 ### Saccades
 
@@ -174,10 +163,9 @@ load("dummy_sac_data.RData")
 head(sac, 4)
 
 ```
-
 :::
 
-## Plotting data 
+## Plotting data
 
 Plotting all the data from one participant:
 
@@ -194,7 +182,7 @@ p + theme_classic(base_size = 18) # it's a ggplot object...
 
 ```
 
-## Plotting data 
+## Plotting data
 
 Selecting data from participants and trials
 
@@ -253,6 +241,7 @@ p <- plot_spatial(fix_data = fix,
 
 p + theme_classic(base_size = 18)
 ```
+
 ## Plotting data
 
 Adding a background image
@@ -283,12 +272,107 @@ p <- plot_spatial(fix_data = fix,
 
 p + theme_classic(base_size = 18)
 ```
+
+## Plotting data
+
+Plotting data over the course of a trial: plot_seq()
+
+::::: columns
+::: {.column width="48%"}
+```{r plot_seq_1}
+#| eval: false
+#| echo: true
+#| output: false
+
+plot_seq(data = data,
+         AOIs = HCL_AOIs,
+         bg_image = "images/HCL_sample_image.png",
+         pID_values = 118, 
+         trial_values = 2,
+         bin_time = 1000)
+
+```
+:::
+
+::: {.column width="48%"}
+```{r plot_seq_1_eval}
+#| eval: true
+#| echo: false
+#| output: true
+#| fig-width: 20
+#| fig-height: 12
+
+plot_seq(data = data,
+         AOIs = HCL_AOIs,
+         bg_image = "images/HCL_sample_image.png",
+         pID_values = 118, 
+         trial_values = 2,
+         bin_time = 1000) +
+  theme_classic(base_size = 18)
+```
+:::
+:::::
+
+## Plotting data
+
+Plotting data over the course of a trial: plot_AOI_growth()
+
+```{r plot_AOI_growth}
+
+#| eval: true
+#| echo: false
+#| output: true
+#| fig-width: 16
+#| fig-height: 9
+#| 
+plot_AOI_growth(data = data, 
+                AOIs = HCL_AOIs, 
+                type = "abs", 
+                pID_values = 118, 
+                trial_values = 5,
+                AOI_names = c("left", "right", "lower"))
+```
+
+## Heatmaps!
+
+::::: columns
+::: {.column width="48%"}
+```{r}
+#| eval: true
+#| echo: true
+#| output: true
+#| fig-width: 10
+#| fig-height: 6
+
+plot_heatmap(data = data, 
+             plot_type = "density", 
+             bg_image = "images/HCL_sample_image.png")
+
+
+```
+:::
+
+::: {.column width="48%"}
+```{r}
+#| eval: true
+#| echo: true
+#| output: true
+#| fig-width: 10
+#| fig-height: 6
+
+plot_heatmap(data = data, 
+             plot_type = "hex", 
+             bg_image = "images/HCL_sample_image.png")
+
+
+```
+:::
+:::::
+
 ## Analysing areas of interest (AOIs)
 
-:::: {.columns}
-
+:::::: columns
 ::: {.column width="45%"}
-
 AOIs can be defined. Here are the built in ones:
 
 ```{r create_AOI}
@@ -303,7 +387,6 @@ HCL_AOIs
 :::
 
 ::: {.column width="45%"}
-
 These can be plotted:
 
 ```{r plot_AOI}
@@ -316,6 +399,7 @@ plot_spatial(AOIs = HCL_AOIs,
              bg_image = "images/HCL_sample_image.png")
 
 ```
+
 ```{r plot_AOI_eval}
 #| eval: true
 #| echo: false
@@ -328,35 +412,50 @@ plot_spatial(AOIs = HCL_AOIs,
 
 ```
 :::
-
-::::
-
+::::::
 
 ## Analysing areas of interest (AOIs)
 
-These AOIs can be used in the following analysis functions:
+::::: columns
+### AOI_time: Calculate time on areas of interest
 
-::: {.panel-tabset}
-
-### AOI_time
-
-Calculate time on areas of interest
+::: {.column width="60%"}
 ```{r}
 #| echo: true
-#| output-location: column
+#| output: false
+
 
 aoi_time_result <- AOI_time(data = fix,
                             data_type = "fix",
                             AOIs = HCL_AOIs,
                             AOI_names = c("left", "right", "lower"))
 
-head(aoi_time_result, 18)
+library(tidyverse)
+
+aoi_time_result %>% 
+  filter(pID == 118) %>% 
+  arrange(trial)
 
 ```
+:::
 
-### AOI_seq
+::: {.column width="40%"}
+```{r}
+#| echo: false
+#| output: true
 
-Calculate sequence of entries into areas of interest
+aoi_time_result %>% 
+  filter(pID == 118) %>% 
+  arrange(trial)
+
+```
+:::
+:::::
+
+## Analysing areas of interest (AOIs)
+
+### AOI_seq: Calculate sequence of entries into areas of interest
+
 ```{r}
 #| echo: true
 #| output-location: column
@@ -369,39 +468,16 @@ head(aoi_seq_result, 11)
 
 ```
 
-### plot_seq
+## eyetools summary
 
-We can also plot the progression of data over the course of a trial
+::: incremental
+-   open source R package for eye data analysis
 
-```{r plot_seq_1}
-#| eval: false
-#| echo: true
-#| output: false
+-   simple to use, with a basic understanding of R
 
-plot_seq(data = data,
-         AOIs = HCL_AOIs,
-         bg_image = "images/HCL_sample_image.png",
-         pID_values = 118, 
-         trial_values = 2,
-         bin_time = 1000)
+-   simplifies essential parts of the eye data workflow
 
-```
+-   creates standard objects, such as ggplot figures and dataframes/tibbles
 
-```{r plot_seq_1_eval}
-#| eval: true
-#| echo: false
-#| output: true
-#| fig-width: 16
-#| fig-height: 9
-
-plot_seq(data = data,
-         AOIs = HCL_AOIs,
-         bg_image = "images/HCL_sample_image.png",
-         pID_values = 118, 
-         trial_values = 2,
-         bin_time = 1000) +
-  theme_classic(base_size = 18)
-```
-
-
-
+-   in constant development
+:::

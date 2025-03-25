@@ -6,10 +6,10 @@
 <script src="eyetools_eps_april_25_files/libs/quarto-html/tippy.umd.min.js"></script>
 <link href="eyetools_eps_april_25_files/libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="eyetools_eps_april_25_files/libs/quarto-html/light-border.css" rel="stylesheet">
-<link href="eyetools_eps_april_25_files/libs/quarto-html/quarto-syntax-highlighting-07ba0ad10f5680c660e360ac31d2f3b6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="eyetools_eps_april_25_files/libs/quarto-html/quarto-syntax-highlighting-e26003cea8cd680ca0c55a263523d882.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <link href="eyetools_eps_april_25_files/libs/quarto-contrib/fontawesome6-1.2.0/all.min.css" rel="stylesheet">
 <link href="eyetools_eps_april_25_files/libs/quarto-contrib/fontawesome6-1.2.0/latex-fontsize.css" rel="stylesheet"><meta charset="utf-8">
-  <meta name="generator" content="quarto-1.6.33">
+  <meta name="generator" content="quarto-1.6.39">
 
   <meta name="author" content="Tom Beesley and Matthew Ivory">
   <title>eyetools - EPS April 2025</title>
@@ -96,7 +96,7 @@
     code span.vs { color: #20794d; } /* VerbatimString */
     code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   </style>
-  <link rel="stylesheet" href="eyetools_eps_april_25_files/libs/revealjs/dist/theme/quarto-9060c851690479635570f6b1ba6cd119.css">
+  <link rel="stylesheet" href="eyetools_eps_april_25_files/libs/revealjs/dist/theme/quarto-7cb042cf45b66b721d320c14e8aa6ee1.css">
   <link href="eyetools_eps_april_25_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
   <link href="eyetools_eps_april_25_files/libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
   <link href="eyetools_eps_april_25_files/libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
@@ -193,7 +193,7 @@
   <div class="reveal">
     <div class="slides">
 
-<section id="title-slide" class="quarto-title-block center">
+<section id="title-slide" data-background-image="LU_logo.jpg" data-background-position="2% 80%" data-background-size="15%" class="quarto-title-block center">
   <h1 class="title">eyetools - EPS April 2025</h1>
 
 <div class="quarto-title-authors">
@@ -201,22 +201,18 @@
 <div class="quarto-title-author-name">
 Tom Beesley and Matthew Ivory 
 </div>
-</div>
+        <p class="quarto-title-affiliation">
+            Lancaster University
+          </p>
+    </div>
 </div>
 
 </section>
 <section id="reproducible-analyses" class="slide level2">
 <h2>Reproducible analyses</h2>
-<p>UK Reproducibility Network: “We expect researchers to… make their research methods, software, outputs and data open, and available at the earliest possible point…The reproducibility of both research methods and research results …is critical to research in certain contexts, particularly in the experimental sciences with a quantitative focus…”</p>
-<section id="r-packages" class="incremental">
-<h3>R packages:</h3>
-<ul>
-<li>Can be installed freely by anyone in the world</li>
-<li>Offer functions centred on a particular use case</li>
-<li>Provide documentation and full disclosure of methods</li>
-</ul>
-</section>
-</section>
+<p><strong>UK Reproducibility Network:</strong> “The reproducibility of both research methods and research results is critical to research in certain contexts, particularly in the experimental sciences with a quantitative focus.”</p>
+
+<img data-src="github_ss.png" class="quarto-figure quarto-figure-left r-stretch" width="550"></section>
 <section id="r-packages-for-eye-data-analysis" class="slide level2 smaller">
 <h2>R packages for eye data analysis</h2>
 <table class="caption-top" style="width:100%;">
@@ -308,36 +304,35 @@ Tom Beesley and Matthew Ivory
 </table>
 <p>* for Tobii data only, ** for text reading experiments only</p>
 </section>
-<section id="introducing-eyetools" class="slide level2">
+<section id="introducing-eyetools" class="slide level2 nostretch">
 <h2>Introducing “eyetools”</h2>
-<p>eyetools is available on CRAN, so it is very easy to install and load:</p>
+<div class="columns">
+<div class="column" style="width:45%;">
+<h3 id="r-packages">R packages:</h3>
+<ul>
+<li>Can be installed freely by anyone in the world</li>
+<li>Offer functions centred on a particular use case</li>
+<li>Provide documentation and full disclosure of methods</li>
+</ul>
+<p>Eyetools is available on CRAN:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href=""></a><span class="fu">install.packages</span>(<span class="st">"eyetools"</span>)</span>
 <span id="cb1-2"><a href=""></a></span>
-<span id="cb1-3"><a href=""></a><span class="fu">library</span>(eyetools) <span class="co"># load</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-3"><a href=""></a><span class="fu">library</span>(eyetools) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>Here’s the complete list of available functions:</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href=""></a><span class="fu">ls</span>(<span class="st">"package:eyetools"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code> [1] "AOI_seq"               "AOI_time"              "AOI_time_binned"      
- [4] "combine_eyes"          "compare_algorithms"    "conditional_transform"
- [7] "create_AOI_df"         "dist_to_visual_angle"  "fixation_dispersion"  
-[10] "fixation_VTI"          "HCL"                   "HCL_AOIs"             
-[13] "HCL_behavioural"       "hdf5_get_event"        "hdf5_to_df"           
-[16] "interpolate"           "plot_AOI_growth"       "plot_heatmap"         
-[19] "plot_seq"              "plot_spatial"          "saccade_VTI"          
-[22] "smoother"             </code></pre>
-</div>
-</div>
+</div><div class="column" style="width:5%;">
+
+</div><div class="column" style="width:45%;">
+<p><img data-src="mermaid_flow.png" width="800"></p>
+</div></div>
 </section>
 <section id="data-format" class="slide level2">
 <h2>Data format</h2>
 <div class="columns">
-<div class="column" style="width:45%;">
+<div class="column" style="width:46%;">
 <p>There is built in data from a simple experimental task, which shows you the requirements of the package:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href=""></a><span class="fu">head</span>(HCL,<span class="dv">8</span>) <span class="co"># first 4 rows of the built-in data</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href=""></a><span class="fu">head</span>(HCL,<span class="dv">8</span>) <span class="co"># first 4 rows of the built-in data</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 8 × 7
   pID    time left_x left_y right_x right_y trial
@@ -352,14 +347,14 @@ Tom Beesley and Matthew Ivory
 8 118      23   912.   825.   1005.    806.     1</code></pre>
 </div>
 </div>
-</div><div class="column" style="width:10%;">
+</div><div class="column" style="width:8%;">
 
-</div><div class="column" style="width:45%;">
+</div><div class="column" style="width:46%;">
 <p>Binocular data needs to be combined to produce monocular data:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href=""></a>data <span class="ot">&lt;-</span> <span class="fu">combine_eyes</span>(HCL) <span class="co"># create monocular data</span></span>
-<span id="cb6-2"><a href=""></a></span>
-<span id="cb6-3"><a href=""></a><span class="fu">head</span>(data, <span class="dv">8</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href=""></a>data <span class="ot">&lt;-</span> <span class="fu">combine_eyes</span>(HCL) <span class="co"># create monocular data</span></span>
+<span id="cb4-2"><a href=""></a></span>
+<span id="cb4-3"><a href=""></a><span class="fu">head</span>(data, <span class="dv">8</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>  pID time trial        x        y
 1 118    0     1 955.8583 816.5646
@@ -374,9 +369,6 @@ Tom Beesley and Matthew Ivory
 </div>
 </div></div>
 </section>
-<section id="transforming-data" class="slide level2">
-<h2>Transforming data</h2>
-</section>
 <section id="computing-trial-events" class="slide level2">
 <h2>Computing trial events</h2>
 <p>A primary step in eye data analysis is the extraction of fixations and saccades. Eyetools features two fixation algorithms and one saccade algorithm:</p>
@@ -385,9 +377,9 @@ Tom Beesley and Matthew Ivory
 <div class="tab-content">
 <div id="tabset-1-1">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href=""></a>fix <span class="ot">&lt;-</span> <span class="fu">fixation_dispersion</span>(data)</span>
-<span id="cb8-2"><a href=""></a></span>
-<span id="cb8-3"><a href=""></a><span class="fu">head</span>(fix, <span class="dv">4</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href=""></a>fix <span class="ot">&lt;-</span> <span class="fu">fixation_dispersion</span>(data)</span>
+<span id="cb6-2"><a href=""></a></span>
+<span id="cb6-3"><a href=""></a><span class="fu">head</span>(fix, <span class="dv">4</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>  pID trial fix_n start  end duration   x   y prop_NA min_dur disp_tol
 1 118     1     1   200  350      150 984 608       0     150      100
@@ -399,9 +391,9 @@ Tom Beesley and Matthew Ivory
 </div>
 <div id="tabset-1-2">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href=""></a>sac <span class="ot">&lt;-</span> <span class="fu">saccade_VTI</span>(data)</span>
-<span id="cb10-2"><a href=""></a></span>
-<span id="cb10-3"><a href=""></a><span class="fu">head</span>(sac, <span class="dv">4</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href=""></a>sac <span class="ot">&lt;-</span> <span class="fu">saccade_VTI</span>(data)</span>
+<span id="cb8-2"><a href=""></a></span>
+<span id="cb8-3"><a href=""></a><span class="fu">head</span>(sac, <span class="dv">4</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="cell-output cell-output-stdout">
@@ -423,12 +415,13 @@ Tom Beesley and Matthew Ivory
 </section>
 <section id="plotting-data" class="slide level2">
 <h2>Plotting data</h2>
-<p>All the data from all partcicipants:</p>
+<p>Plotting all the data from one participant:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href=""></a>p <span class="ot">&lt;-</span> <span class="fu">plot_spatial</span>(<span class="at">fix_data =</span> fix,</span>
-<span id="cb12-2"><a href=""></a>                  <span class="at">show_fix_order =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb12-3"><a href=""></a></span>
-<span id="cb12-4"><a href=""></a>p <span class="sc">+</span> <span class="fu">theme_classic</span>(<span class="at">base_size =</span> <span class="dv">18</span>) <span class="co"># make text bigger</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href=""></a>p <span class="ot">&lt;-</span> <span class="fu">plot_spatial</span>(<span class="at">fix_data =</span> fix,</span>
+<span id="cb10-2"><a href=""></a>                  <span class="at">pID_values =</span> <span class="dv">118</span>,</span>
+<span id="cb10-3"><a href=""></a>                  <span class="at">show_fix_order =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb10-4"><a href=""></a></span>
+<span id="cb10-5"><a href=""></a>p <span class="sc">+</span> <span class="fu">theme_classic</span>(<span class="at">base_size =</span> <span class="dv">18</span>) <span class="co"># it's a ggplot object...</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 </div>
 <img data-src="eyetools_eps_april_25_files/figure-revealjs/plot_spatial_1-1.png" width="1536" class="r-stretch"></section>
@@ -436,9 +429,9 @@ Tom Beesley and Matthew Ivory
 <h2>Plotting data</h2>
 <p>Selecting data from participants and trials</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href=""></a><span class="fu">plot_spatial</span>(<span class="at">fix_data =</span> fix, </span>
-<span id="cb13-2"><a href=""></a>             <span class="at">pID_values =</span> <span class="dv">118</span>, </span>
-<span id="cb13-3"><a href=""></a>             <span class="at">trial_values =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href=""></a><span class="fu">plot_spatial</span>(<span class="at">fix_data =</span> fix, </span>
+<span id="cb11-2"><a href=""></a>             <span class="at">pID_values =</span> <span class="dv">118</span>, </span>
+<span id="cb11-3"><a href=""></a>             <span class="at">trial_values =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 
 <img data-src="eyetools_eps_april_25_files/figure-revealjs/plot_spatial_2_eval-1.png" width="1536" class="r-stretch"></section>
@@ -446,10 +439,10 @@ Tom Beesley and Matthew Ivory
 <h2>Plotting data</h2>
 <p>Adding saccades to the plot:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href=""></a><span class="fu">plot_spatial</span>(<span class="at">fix_data =</span> fix, </span>
-<span id="cb14-2"><a href=""></a>             <span class="at">sac_data =</span> sac, </span>
-<span id="cb14-3"><a href=""></a>             <span class="at">pID_values =</span> <span class="dv">118</span>, </span>
-<span id="cb14-4"><a href=""></a>             <span class="at">trial_values =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href=""></a><span class="fu">plot_spatial</span>(<span class="at">fix_data =</span> fix, </span>
+<span id="cb12-2"><a href=""></a>             <span class="at">sac_data =</span> sac, </span>
+<span id="cb12-3"><a href=""></a>             <span class="at">pID_values =</span> <span class="dv">118</span>, </span>
+<span id="cb12-4"><a href=""></a>             <span class="at">trial_values =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 
 <img data-src="eyetools_eps_april_25_files/figure-revealjs/plot_spatial_3_eval-1.png" width="1536" class="r-stretch"></section>
@@ -457,26 +450,87 @@ Tom Beesley and Matthew Ivory
 <h2>Plotting data</h2>
 <p>Adding a background image</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href=""></a><span class="fu">plot_spatial</span>(<span class="at">fix_data =</span> fix, </span>
-<span id="cb15-2"><a href=""></a>             <span class="at">pID_values =</span> <span class="dv">118</span>, </span>
-<span id="cb15-3"><a href=""></a>             <span class="at">trial_values =</span> <span class="dv">2</span>, </span>
-<span id="cb15-4"><a href=""></a>             <span class="at">bg_image =</span> <span class="st">"images/HCL_sample_image.png"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href=""></a><span class="fu">plot_spatial</span>(<span class="at">fix_data =</span> fix, </span>
+<span id="cb13-2"><a href=""></a>             <span class="at">pID_values =</span> <span class="dv">118</span>, </span>
+<span id="cb13-3"><a href=""></a>             <span class="at">trial_values =</span> <span class="dv">2</span>, </span>
+<span id="cb13-4"><a href=""></a>             <span class="at">bg_image =</span> <span class="st">"images/HCL_sample_image.png"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 
 <img data-src="eyetools_eps_april_25_files/figure-revealjs/plot_spatial_4_eval-1.png" width="1536" class="r-stretch"></section>
+<section id="plotting-data-4" class="slide level2">
+<h2>Plotting data</h2>
+<p>Plotting data over the course of a trial: plot_seq()</p>
+<div class="columns">
+<div class="column" style="width:48%;">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href=""></a><span class="fu">plot_seq</span>(<span class="at">data =</span> data,</span>
+<span id="cb14-2"><a href=""></a>         <span class="at">AOIs =</span> HCL_AOIs,</span>
+<span id="cb14-3"><a href=""></a>         <span class="at">bg_image =</span> <span class="st">"images/HCL_sample_image.png"</span>,</span>
+<span id="cb14-4"><a href=""></a>         <span class="at">pID_values =</span> <span class="dv">118</span>, </span>
+<span id="cb14-5"><a href=""></a>         <span class="at">trial_values =</span> <span class="dv">2</span>,</span>
+<span id="cb14-6"><a href=""></a>         <span class="at">bin_time =</span> <span class="dv">1000</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div><div class="column" style="width:48%;">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="eyetools_eps_april_25_files/figure-revealjs/plot_seq_1_eval-1.png" width="1920"></p>
+</figure>
+</div>
+</div>
+</div>
+</div></div>
+</section>
+<section id="plotting-data-5" class="slide level2">
+<h2>Plotting data</h2>
+<p>Plotting data over the course of a trial: plot_AOI_growth()</p>
+
+<img data-src="eyetools_eps_april_25_files/figure-revealjs/plot_AOI_growth-1.png" width="960" class="r-stretch"></section>
+<section id="heatmaps" class="slide level2">
+<h2>Heatmaps!</h2>
+<div class="columns">
+<div class="column" style="width:48%;">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href=""></a><span class="fu">plot_heatmap</span>(<span class="at">data =</span> data, </span>
+<span id="cb15-2"><a href=""></a>             <span class="at">plot_type =</span> <span class="st">"density"</span>, </span>
+<span id="cb15-3"><a href=""></a>             <span class="at">bg_image =</span> <span class="st">"images/HCL_sample_image.png"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="eyetools_eps_april_25_files/figure-revealjs/unnamed-chunk-1-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</div><div class="column" style="width:48%;">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href=""></a><span class="fu">plot_heatmap</span>(<span class="at">data =</span> data, </span>
+<span id="cb16-2"><a href=""></a>             <span class="at">plot_type =</span> <span class="st">"hex"</span>, </span>
+<span id="cb16-3"><a href=""></a>             <span class="at">bg_image =</span> <span class="st">"images/HCL_sample_image.png"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="eyetools_eps_april_25_files/figure-revealjs/unnamed-chunk-2-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</div></div>
+</section>
 <section id="analysing-areas-of-interest-aois" class="slide level2">
 <h2>Analysing areas of interest (AOIs)</h2>
 <div class="columns">
 <div class="column" style="width:45%;">
 <p>AOIs can be defined. Here are the built in ones:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href=""></a><span class="co"># Define AOIs</span></span>
-<span id="cb16-2"><a href=""></a>HCL_AOIs</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href=""></a><span class="co"># Define AOIs</span></span>
+<span id="cb17-2"><a href=""></a>HCL_AOIs</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>     x   y width_radius height
 1  460 840          400    300
 2 1460 840          400    300
-3  960 270          300    500</code></pre>
+3  960 290          300    520</code></pre>
 </div>
 </div>
 </div><div class="column" style="width:10%;">
@@ -484,12 +538,15 @@ Tom Beesley and Matthew Ivory
 </div><div class="column" style="width:45%;">
 <p>These can be plotted:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href=""></a><span class="co"># plot those AOIs</span></span>
-<span id="cb18-2"><a href=""></a><span class="fu">plot_spatial</span>(<span class="at">AOIs =</span> HCL_AOIs)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href=""></a><span class="co"># plot those AOIs</span></span>
+<span id="cb19-2"><a href=""></a><span class="fu">plot_spatial</span>(<span class="at">AOIs =</span> HCL_AOIs,</span>
+<span id="cb19-3"><a href=""></a>             <span class="at">bg_image =</span> <span class="st">"images/HCL_sample_image.png"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="eyetools_eps_april_25_files/figure-revealjs/plot_AOI-1.png" width="960"></p>
+<p><img data-src="eyetools_eps_april_25_files/figure-revealjs/plot_AOI_eval-1.png" width="960"></p>
 </figure>
 </div>
 </div>
@@ -498,78 +555,92 @@ Tom Beesley and Matthew Ivory
 </section>
 <section id="analysing-areas-of-interest-aois-1" class="slide level2">
 <h2>Analysing areas of interest (AOIs)</h2>
-<p>These AOIs can be used in the following analysis functions:</p>
-<div class="panel-tabset">
-<ul id="tabset-2" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-2-1">AOI_time</a></li><li><a href="#tabset-2-2">AOI_seq</a></li></ul>
-<div class="tab-content">
-<div id="tabset-2-1">
-<p>Calculate time on areas of interest</p>
-<div class="cell col_4_6 columns column-output-location">
-<div class="column">
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href=""></a>aoi_time_result <span class="ot">&lt;-</span> <span class="fu">AOI_time</span>(<span class="at">data =</span> fix,</span>
-<span id="cb19-2"><a href=""></a>                            <span class="at">data_type =</span> <span class="st">"fix"</span>,</span>
-<span id="cb19-3"><a href=""></a>                            <span class="at">AOIs =</span> HCL_AOIs,</span>
-<span id="cb19-4"><a href=""></a>                            <span class="at">AOI_names =</span> <span class="fu">c</span>(<span class="st">"left"</span>, <span class="st">"right"</span>, <span class="st">"lower"</span>))</span>
-<span id="cb19-5"><a href=""></a></span>
-<span id="cb19-6"><a href=""></a><span class="fu">head</span>(aoi_time_result, <span class="dv">18</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div><div class="column">
+<div class="columns">
+<h3 id="aoi_time-calculate-time-on-areas-of-interest">AOI_time: Calculate time on areas of interest</h3>
+<div class="column" style="width:60%;">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href=""></a>aoi_time_result <span class="ot">&lt;-</span> <span class="fu">AOI_time</span>(<span class="at">data =</span> fix,</span>
+<span id="cb20-2"><a href=""></a>                            <span class="at">data_type =</span> <span class="st">"fix"</span>,</span>
+<span id="cb20-3"><a href=""></a>                            <span class="at">AOIs =</span> HCL_AOIs,</span>
+<span id="cb20-4"><a href=""></a>                            <span class="at">AOI_names =</span> <span class="fu">c</span>(<span class="st">"left"</span>, <span class="st">"right"</span>, <span class="st">"lower"</span>))</span>
+<span id="cb20-5"><a href=""></a></span>
+<span id="cb20-6"><a href=""></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb20-7"><a href=""></a></span>
+<span id="cb20-8"><a href=""></a>aoi_time_result <span class="sc">%&gt;%</span> </span>
+<span id="cb20-9"><a href=""></a>  <span class="fu">filter</span>(pID <span class="sc">==</span> <span class="dv">118</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb20-10"><a href=""></a>  <span class="fu">arrange</span>(trial)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div><div class="column" style="width:40%;">
+<div class="cell">
 <div class="cell-output cell-output-stdout">
 <pre><code>   pID trial   AOI time
 1  118     1  left 2809
-2  118     2  left  656
-3  118     3  left  443
-4  118     4  left 1417
-5  118     5  left  164
-6  118     6  left  426
-7  118     1 right  811
-8  118     2 right  723
-9  118     3 right  360
-10 118     4 right 2323
-11 118     5 right  537
-12 118     6 right  563
-13 118     1 lower 2967
-14 118     2 lower 2621
-15 118     3 lower 2218
-16 118     4 lower 1439
-17 118     5 lower 1708
+2  118     1 right  811
+3  118     1 lower 3227
+4  118     2  left  656
+5  118     2 right  723
+6  118     2 lower 2621
+7  118     3  left  443
+8  118     3 right  360
+9  118     3 lower 2218
+10 118     4  left 1417
+11 118     4 right 2323
+12 118     4 lower 1439
+13 118     5  left  164
+14 118     5 right  537
+15 118     5 lower 1708
+16 118     6  left  426
+17 118     6 right  563
 18 118     6 lower 2022</code></pre>
 </div>
-</div></div>
 </div>
-<div id="tabset-2-2">
-<p>Calculate sequence of entries into areas of interest</p>
-<div class="cell col_4_6 columns column-output-location">
+</div></div>
+</section>
+<section id="analysing-areas-of-interest-aois-2" class="slide level2">
+<h2>Analysing areas of interest (AOIs)</h2>
+<h3 id="aoi_seq-calculate-sequence-of-entries-into-areas-of-interest">AOI_seq: Calculate sequence of entries into areas of interest</h3>
+<div class="cell columns column-output-location">
 <div class="column">
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href=""></a>aoi_seq_result <span class="ot">&lt;-</span> <span class="fu">AOI_seq</span>(<span class="at">data =</span> fix, </span>
-<span id="cb21-2"><a href=""></a>                          <span class="at">AOIs =</span> HCL_AOIs, </span>
-<span id="cb21-3"><a href=""></a>                          <span class="at">AOI_names =</span> <span class="fu">c</span>(<span class="st">"left"</span>, <span class="st">"right"</span>, <span class="st">"lower"</span>))</span>
-<span id="cb21-4"><a href=""></a></span>
-<span id="cb21-5"><a href=""></a><span class="fu">head</span>(aoi_seq_result, <span class="dv">11</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href=""></a>aoi_seq_result <span class="ot">&lt;-</span> <span class="fu">AOI_seq</span>(<span class="at">data =</span> fix, </span>
+<span id="cb22-2"><a href=""></a>                          <span class="at">AOIs =</span> HCL_AOIs, </span>
+<span id="cb22-3"><a href=""></a>                          <span class="at">AOI_names =</span> <span class="fu">c</span>(<span class="st">"left"</span>, <span class="st">"right"</span>, <span class="st">"lower"</span>))</span>
+<span id="cb22-4"><a href=""></a></span>
+<span id="cb22-5"><a href=""></a><span class="fu">head</span>(aoi_seq_result, <span class="dv">11</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div><div class="column">
 <div class="cell-output cell-output-stdout">
 <pre><code>   pID trial   AOI start   end duration entry_n
-1  118     1  left   817  1153      336       1
-2  118     1 lower  1750  2000      250       2
-3  118     1 right  2363  2603      240       3
-4  118     1 lower  3206  3489      283       4
-5  118     1 right  3896  4093      197       5
-6  118     1 lower  4393  5146      753       6
-7  118     1  left  5556  6642     1086       7
-8  118     1  left  7732  9129     1397       8
-9  118     1 lower  9452 10322      870       9
-10 118     1 lower 11015 11892      877      10
-11 118     1 right 12385 12762      377      11</code></pre>
+1  118     1 lower   353   613      260       1
+2  118     1  left   817  1153      336       2
+3  118     1 lower  1750  2000      250       3
+4  118     1 right  2363  2603      240       4
+5  118     1 lower  3206  3489      283       5
+6  118     1 right  3896  4093      197       6
+7  118     1 lower  4393  5146      753       7
+8  118     1  left  5556  6642     1086       8
+9  118     1  left  7732  9129     1397       9
+10 118     1 lower  9452 10322      870      10
+11 118     1 lower 11015 11892      877      11</code></pre>
 </div>
 </div></div>
+</section>
+<section id="eyetools-summary" class="slide level2">
+<h2>eyetools summary</h2>
+<div>
+<ul>
+<li class="fragment"><p>open source R package for eye data analysis</p></li>
+<li class="fragment"><p>simple to use, with a basic understanding of R</p></li>
+<li class="fragment"><p>simplifies essential parts of the eye data workflow</p></li>
+<li class="fragment"><p>creates standard objects, such as ggplot figures and dataframes/tibbles</p></li>
+<li class="fragment"><p>in constant development</p></li>
+</ul>
+</div>
 
-</div>
-</div>
-</div>
 </section>
     </div>
   <div class="quarto-auto-generated-content" style="display: none;">
+<p><img src="LU_logo.jpg" class="slide-logo"></p>
 <div class="footer footer-default">
-
+<p>github.com/tombeesley/eyetools | install.packages(‘eyetools’)</p>
 </div>
 </div></div>
 
@@ -622,7 +693,7 @@ Tom Beesley and Matthew Ivory
         progress: true,
 
         // Display the page number of the current slide
-        slideNumber: false,
+        slideNumber: 'c/t',
 
         // 'all', 'print', or 'speaker'
         showSlideNumber: 'all',
@@ -752,7 +823,7 @@ Tom Beesley and Matthew Ivory
         height: 1080,
 
         // Factor of the display size that should remain empty around the content
-        margin: 3.0e-2,
+        margin: 0.1,
 
         math: {
           mathjax: 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/MathJax.js',
@@ -936,8 +1007,6 @@ Tom Beesley and Matthew Ivory
       });
       clipboard.on('success', onCopySuccess);
       if (window.document.getElementById('quarto-embedded-source-code-modal')) {
-        // For code content inside modals, clipBoardJS needs to be initialized with a container option
-        // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
         const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
           text: getTextToCopy,
           container: window.document.getElementById('quarto-embedded-source-code-modal')
