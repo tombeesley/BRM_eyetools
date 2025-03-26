@@ -1,30 +1,36 @@
 ---
-title: "eyetools - EPS April 2025"
+title: "eyetools: A set of tools for eye data processing, analysis and visualisation in R"
+subtitle: "EPS - Lancaster - 4th April 2025"
 author: "Tom Beesley and Matthew Ivory"
-institute: Lancaster University
 format: 
   revealjs:
     theme: [simple, custom.scss]
     slide-number: c/t
     footer: "github.com/tombeesley/eyetools | install.packages('eyetools')"
     logo: LU_logo.jpg
+  html:
+    mermaid:
+      theme: forest
 title-slide-attributes: 
   data-background-image: LU_logo.jpg
   data-background-size: 15%
-  data-background-position: 2% 80%
+  data-background-position: 5% 80%
 highlight-style: arrow
 width: 1920
 height: 1080
 margin: 0.1
 editor_options: 
   chunk_output_type: console
+execute: 
+  cache: true
+bibliography: references.bib
 ---
 
-## Reproducible analyses
+## Reproducible analyses {.nostretch}
 
 **UK Reproducibility Network:** "The reproducibility of both research methods and research results is critical to research in certain contexts, particularly in the experimental sciences with a quantitative focus."
-
-![](github_ss.png){fig-align="left" width="550"}
+<br/><br/>
+![](github_ss.png){fig-align="left" width="700"}
 
 ## R packages for eye data analysis {.smaller}
 
@@ -120,12 +126,10 @@ head(data, 8)
 
 ::::
 
-## Computing trial events
+## Computing trial events - Fixations
 
-A primary step in eye data analysis is the extraction of fixations and saccades. Eyetools features two fixation algorithms and one saccade algorithm:
-
-::: panel-tabset
-### Fixations
+Eyetools features two fixation algorithms, one based on dispersion of data, the other based on velocity. 
+Algorithms are based on methods in [@salvucci2000].
 
 ```{r fix_disp}
 #| eval: true
@@ -135,11 +139,13 @@ A primary step in eye data analysis is the extraction of fixations and saccades.
 
 fix <- fixation_dispersion(data)
 
-head(fix, 4)
+head(fix, 6)
 
 ```
 
-### Saccades
+## Computing trial events - Saccades
+
+Eyetools can also extract saccades. Again, based on methods in [@salvucci2000].
 
 ```{r sac}
 #| eval: false
@@ -163,7 +169,7 @@ load("dummy_sac_data.RData")
 head(sac, 4)
 
 ```
-:::
+
 
 ## Plotting data
 
@@ -273,12 +279,12 @@ p <- plot_spatial(fix_data = fix,
 p + theme_classic(base_size = 18)
 ```
 
-## Plotting data
+## Plotting data {.nostretch}
 
 Plotting data over the course of a trial: plot_seq()
 
 ::::: columns
-::: {.column width="48%"}
+::: {.column width="40%"}
 ```{r plot_seq_1}
 #| eval: false
 #| echo: true
@@ -286,7 +292,8 @@ Plotting data over the course of a trial: plot_seq()
 
 plot_seq(data = data,
          AOIs = HCL_AOIs,
-         bg_image = "images/HCL_sample_image.png",
+         bg_image = 
+           "images/HCL_sample_image.png",
          pID_values = 118, 
          trial_values = 2,
          bin_time = 1000)
@@ -294,13 +301,16 @@ plot_seq(data = data,
 ```
 :::
 
-::: {.column width="48%"}
+::: {.column width="5%"}
+:::
+
+::: {.column width="55%"}
 ```{r plot_seq_1_eval}
 #| eval: true
 #| echo: false
 #| output: true
-#| fig-width: 20
-#| fig-height: 12
+#| fig-width: 15
+#| fig-height: 10
 
 plot_seq(data = data,
          AOIs = HCL_AOIs,
@@ -471,13 +481,27 @@ head(aoi_seq_result, 11)
 ## eyetools summary
 
 ::: incremental
--   open source R package for eye data analysis
+-   open source R package for reproducible eye data analysis
 
--   simple to use, with a basic understanding of R
+-   simple to use, with just a basic understanding of R
 
 -   simplifies essential parts of the eye data workflow
 
 -   creates standard objects, such as ggplot figures and dataframes/tibbles
 
--   in constant development
+-   BRM manuscript forthcoming
+
+-   install with: `install.packages("eyetools")`
+
+-   suggest features at: **github.com/tombeesley/eyetools**
+
 :::
+
+::: {.fragment}
+
+Thank you! 
+
+Tom Beesley - Lancaster University - t.beesley@lancaster.ac.uk
+::: 
+
+## References

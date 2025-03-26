@@ -6,13 +6,13 @@
 <script src="eyetools_eps_april_25_files/libs/quarto-html/tippy.umd.min.js"></script>
 <link href="eyetools_eps_april_25_files/libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="eyetools_eps_april_25_files/libs/quarto-html/light-border.css" rel="stylesheet">
-<link href="eyetools_eps_april_25_files/libs/quarto-html/quarto-syntax-highlighting-e26003cea8cd680ca0c55a263523d882.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="eyetools_eps_april_25_files/libs/quarto-html/quarto-syntax-highlighting-07ba0ad10f5680c660e360ac31d2f3b6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <link href="eyetools_eps_april_25_files/libs/quarto-contrib/fontawesome6-1.2.0/all.min.css" rel="stylesheet">
 <link href="eyetools_eps_april_25_files/libs/quarto-contrib/fontawesome6-1.2.0/latex-fontsize.css" rel="stylesheet"><meta charset="utf-8">
-  <meta name="generator" content="quarto-1.6.39">
+  <meta name="generator" content="quarto-1.6.33">
 
   <meta name="author" content="Tom Beesley and Matthew Ivory">
-  <title>eyetools - EPS April 2025</title>
+  <title>eyetools: A set of tools for eye data processing, analysis and visualisation in R</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
@@ -95,8 +95,28 @@
     code span.va { color: #111111; } /* Variable */
     code span.vs { color: #20794d; } /* VerbatimString */
     code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
-  </style>
-  <link rel="stylesheet" href="eyetools_eps_april_25_files/libs/revealjs/dist/theme/quarto-7cb042cf45b66b721d320c14e8aa6ee1.css">
+    /* CSS for citations */
+    div.csl-bib-body { }
+    div.csl-entry {
+      clear: both;
+      margin-bottom: 0em;
+    }
+    .hanging-indent div.csl-entry {
+      margin-left:2em;
+      text-indent:-2em;
+    }
+    div.csl-left-margin {
+      min-width:2em;
+      float:left;
+    }
+    div.csl-right-inline {
+      margin-left:2em;
+      padding-left:1em;
+    }
+    div.csl-indent {
+      margin-left: 2em;
+    }  </style>
+  <link rel="stylesheet" href="eyetools_eps_april_25_files/libs/revealjs/dist/theme/quarto-08c62622d7acca53e05b293ee8cc2ff7.css">
   <link href="eyetools_eps_april_25_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
   <link href="eyetools_eps_april_25_files/libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
   <link href="eyetools_eps_april_25_files/libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
@@ -193,26 +213,23 @@
   <div class="reveal">
     <div class="slides">
 
-<section id="title-slide" data-background-image="LU_logo.jpg" data-background-position="2% 80%" data-background-size="15%" class="quarto-title-block center">
-  <h1 class="title">eyetools - EPS April 2025</h1>
+<section id="title-slide" data-background-image="LU_logo.jpg" data-background-position="5% 80%" data-background-size="15%" class="quarto-title-block center">
+  <h1 class="title">eyetools: A set of tools for eye data processing, analysis and visualisation in R</h1>
+  <p class="subtitle">EPS - Lancaster - 4th April 2025</p>
 
 <div class="quarto-title-authors">
 <div class="quarto-title-author">
 <div class="quarto-title-author-name">
 Tom Beesley and Matthew Ivory 
 </div>
-        <p class="quarto-title-affiliation">
-            Lancaster University
-          </p>
-    </div>
+</div>
 </div>
 
 </section>
-<section id="reproducible-analyses" class="slide level2">
+<section id="reproducible-analyses" class="slide level2 nostretch">
 <h2>Reproducible analyses</h2>
-<p><strong>UK Reproducibility Network:</strong> “The reproducibility of both research methods and research results is critical to research in certain contexts, particularly in the experimental sciences with a quantitative focus.”</p>
-
-<img data-src="github_ss.png" class="quarto-figure quarto-figure-left r-stretch" width="550"></section>
+<p><strong>UK Reproducibility Network:</strong> “The reproducibility of both research methods and research results is critical to research in certain contexts, particularly in the experimental sciences with a quantitative focus.” <br><br> <img data-src="github_ss.png" class="quarto-figure quarto-figure-left" width="700"></p>
+</section>
 <section id="r-packages-for-eye-data-analysis" class="slide level2 smaller">
 <h2>R packages for eye data analysis</h2>
 <table class="caption-top" style="width:100%;">
@@ -369,27 +386,27 @@ Tom Beesley and Matthew Ivory
 </div>
 </div></div>
 </section>
-<section id="computing-trial-events" class="slide level2">
-<h2>Computing trial events</h2>
-<p>A primary step in eye data analysis is the extraction of fixations and saccades. Eyetools features two fixation algorithms and one saccade algorithm:</p>
-<div class="panel-tabset">
-<ul id="tabset-1" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-1-1">Fixations</a></li><li><a href="#tabset-1-2">Saccades</a></li></ul>
-<div class="tab-content">
-<div id="tabset-1-1">
+<section id="computing-trial-events---fixations" class="slide level2">
+<h2>Computing trial events - Fixations</h2>
+<p>Eyetools features two fixation algorithms, one based on dispersion of data, the other based on velocity. Algorithms are based on methods in <span class="citation" data-cites="salvucci2000">(<a href="#/references" role="doc-biblioref" onclick="">Salvucci and Goldberg 2000</a>)</span>.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href=""></a>fix <span class="ot">&lt;-</span> <span class="fu">fixation_dispersion</span>(data)</span>
 <span id="cb6-2"><a href=""></a></span>
-<span id="cb6-3"><a href=""></a><span class="fu">head</span>(fix, <span class="dv">4</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb6-3"><a href=""></a><span class="fu">head</span>(fix, <span class="dv">6</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>  pID trial fix_n start  end duration   x   y prop_NA min_dur disp_tol
-1 118     1     1   200  350      150 984 608       0     150      100
-2 118     1     2   353  613      260 940 540       0     150      100
-3 118     1     3   817  967      150 637 751       0     150      100
-4 118     1     4   970 1153      183 611 783       0     150      100</code></pre>
+1 118     1     1     0  180      180 961 812       0     150      100
+2 118     1     2   190  433      243 959 585       0     150      100
+3 118     1     3   437  750      313 960 477       0     150      100
+4 118     1     4   783 1013      230 561 838       0     150      100
+5 118     1     5  1016 1183      167 519 829       0     150      100
+6 118     1     6  1210 1380      170 915 555       0     150      100</code></pre>
 </div>
 </div>
-</div>
-<div id="tabset-1-2">
+</section>
+<section id="computing-trial-events---saccades" class="slide level2">
+<h2>Computing trial events - Saccades</h2>
+<p>Eyetools can also extract saccades. Again, based on methods in <span class="citation" data-cites="salvucci2000">(<a href="#/references" role="doc-biblioref" onclick="">Salvucci and Goldberg 2000</a>)</span>.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href=""></a>sac <span class="ot">&lt;-</span> <span class="fu">saccade_VTI</span>(data)</span>
 <span id="cb8-2"><a href=""></a></span>
@@ -407,9 +424,6 @@ Tom Beesley and Matthew Ivory
 2      316.5920      453.7707
 3      386.7776      625.4370
 4      302.3138      469.6868</code></pre>
-</div>
-</div>
-</div>
 </div>
 </div>
 </section>
@@ -457,25 +471,28 @@ Tom Beesley and Matthew Ivory
 </div>
 
 <img data-src="eyetools_eps_april_25_files/figure-revealjs/plot_spatial_4_eval-1.png" width="1536" class="r-stretch"></section>
-<section id="plotting-data-4" class="slide level2">
+<section id="plotting-data-4" class="slide level2 nostretch">
 <h2>Plotting data</h2>
 <p>Plotting data over the course of a trial: plot_seq()</p>
 <div class="columns">
-<div class="column" style="width:48%;">
+<div class="column" style="width:40%;">
 <div class="cell">
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href=""></a><span class="fu">plot_seq</span>(<span class="at">data =</span> data,</span>
 <span id="cb14-2"><a href=""></a>         <span class="at">AOIs =</span> HCL_AOIs,</span>
-<span id="cb14-3"><a href=""></a>         <span class="at">bg_image =</span> <span class="st">"images/HCL_sample_image.png"</span>,</span>
-<span id="cb14-4"><a href=""></a>         <span class="at">pID_values =</span> <span class="dv">118</span>, </span>
-<span id="cb14-5"><a href=""></a>         <span class="at">trial_values =</span> <span class="dv">2</span>,</span>
-<span id="cb14-6"><a href=""></a>         <span class="at">bin_time =</span> <span class="dv">1000</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb14-3"><a href=""></a>         <span class="at">bg_image =</span> </span>
+<span id="cb14-4"><a href=""></a>           <span class="st">"images/HCL_sample_image.png"</span>,</span>
+<span id="cb14-5"><a href=""></a>         <span class="at">pID_values =</span> <span class="dv">118</span>, </span>
+<span id="cb14-6"><a href=""></a>         <span class="at">trial_values =</span> <span class="dv">2</span>,</span>
+<span id="cb14-7"><a href=""></a>         <span class="at">bin_time =</span> <span class="dv">1000</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-</div><div class="column" style="width:48%;">
+</div><div class="column" style="width:5%;">
+
+</div><div class="column" style="width:55%;">
 <div class="cell">
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="eyetools_eps_april_25_files/figure-revealjs/plot_seq_1_eval-1.png" width="1920"></p>
+<p><img data-src="eyetools_eps_april_25_files/figure-revealjs/plot_seq_1_eval-1.png" width="1440"></p>
 </figure>
 </div>
 </div>
@@ -627,14 +644,28 @@ Tom Beesley and Matthew Ivory
 <h2>eyetools summary</h2>
 <div>
 <ul>
-<li class="fragment"><p>open source R package for eye data analysis</p></li>
-<li class="fragment"><p>simple to use, with a basic understanding of R</p></li>
+<li class="fragment"><p>open source R package for reproducible eye data analysis</p></li>
+<li class="fragment"><p>simple to use, with just a basic understanding of R</p></li>
 <li class="fragment"><p>simplifies essential parts of the eye data workflow</p></li>
 <li class="fragment"><p>creates standard objects, such as ggplot figures and dataframes/tibbles</p></li>
-<li class="fragment"><p>in constant development</p></li>
+<li class="fragment"><p>BRM manuscript forthcoming</p></li>
+<li class="fragment"><p>install with: <code>install.packages("eyetools")</code></p></li>
+<li class="fragment"><p>suggest features at: <strong>github.com/tombeesley/eyetools</strong></p></li>
 </ul>
 </div>
+<div class="fragment">
+<p>Thank you!</p>
+<p>Tom Beesley - Lancaster University - t.beesley@lancaster.ac.uk</p>
+</div>
+</section>
+<section id="references" class="slide level2 smaller scrollable">
+<h2>References</h2>
 
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
+<div id="ref-salvucci2000" class="csl-entry" role="listitem">
+Salvucci, Dario D., and Joseph H. Goldberg. 2000. <span>“Identifying Fixations and Saccades in Eye-Tracking Protocols.”</span> In <em>Proceedings of the Symposium on <span>Eye</span> Tracking Research &amp; Applications - <span>ETRA</span> ’00</em>, 71–78. Palm Beach Gardens, Florida, United States: ACM Press. <a href="https://doi.org/10.1145/355017.355028">https://doi.org/10.1145/355017.355028</a>.
+</div>
+</div>
 </section>
     </div>
   <div class="quarto-auto-generated-content" style="display: none;">
@@ -1007,6 +1038,8 @@ Tom Beesley and Matthew Ivory
       });
       clipboard.on('success', onCopySuccess);
       if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+        // For code content inside modals, clipBoardJS needs to be initialized with a container option
+        // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
         const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
           text: getTextToCopy,
           container: window.document.getElementById('quarto-embedded-source-code-modal')
