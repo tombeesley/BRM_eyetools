@@ -8,6 +8,7 @@ format:
     slide-number: c/t
     footer: "github.com/tombeesley/eyetools | install.packages('eyetools')"
     logo: LU_logo.jpg
+    transition: fade
   html:
     mermaid:
       theme: forest
@@ -129,7 +130,7 @@ head(data, 8)
 ## Computing trial events - Fixations
 
 Eyetools features two fixation algorithms, one based on dispersion of data, the other based on velocity. 
-Algorithms are based on methods in [@salvucci2000].
+Algorithms are based on methods in @salvucci2000.
 
 ```{r fix_disp}
 #| eval: true
@@ -139,13 +140,13 @@ Algorithms are based on methods in [@salvucci2000].
 
 fix <- fixation_dispersion(data)
 
-head(fix, 6)
+head(fix, 10)
 
 ```
 
 ## Computing trial events - Saccades
 
-Eyetools can also extract saccades. Again, based on methods in [@salvucci2000].
+Eyetools can also extract saccades. Again, based on methods in @salvucci2000.
 
 ```{r sac}
 #| eval: false
@@ -154,7 +155,7 @@ Eyetools can also extract saccades. Again, based on methods in [@salvucci2000].
 
 sac <- saccade_VTI(data)
 
-head(sac, 4)
+head(sac, 10)
 
 ```
 
@@ -163,10 +164,12 @@ head(sac, 4)
 #| echo: false
 #| output: true
 
+options(width = 200)
+
 # REMOVE WHEN FIXED SACCADE ALGORITHM IN LATEST VERSION
 load("dummy_sac_data.RData")
 
-head(sac, 4)
+head(sac, 10)
 
 ```
 
@@ -183,7 +186,6 @@ Plotting all the data from one participant:
 p <- plot_spatial(fix_data = fix,
                   pID_values = 118,
                   show_fix_order = FALSE)
-
 p + theme_classic(base_size = 18) # it's a ggplot object...
 
 ```
@@ -200,7 +202,7 @@ Selecting data from participants and trials
 plot_spatial(fix_data = fix, 
              pID_values = 118, 
              trial_values = 2)
-
+#
 ```
 
 ```{r plot_spatial_2_eval}
