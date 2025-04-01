@@ -23,7 +23,7 @@ margin: 0.1
 editor_options: 
   chunk_output_type: console
 execute: 
-  cache: true
+  cache: false
 bibliography: references.bib
 ---
 
