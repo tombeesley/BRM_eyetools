@@ -23,7 +23,7 @@ margin: 0.1
 editor_options: 
   chunk_output_type: console
 execute: 
-  cache: false
+  cache: true
 bibliography: references.bib
 ---
 
@@ -31,8 +31,16 @@ bibliography: references.bib
 
 **UK Reproducibility Network:** "The reproducibility of both research methods and research results is critical to research in certain contexts, particularly in the experimental sciences with a quantitative focus."
 <br/><br/>
-![](github_ss.png){fig-align="left" width="700"}
-
+:::: columns
+::: {.column width="45%"}
+![](github_ss.png){width="700"}
+:::
+::: {.column width="5%"}
+:::
+::: {.column width="45%"}
+![](documentation.png){width="700"}
+:::
+::::
 ## R packages for eye data analysis {.smaller}
 
 | Package | Hardware-agnostic | Data Import | Data processing | Identifies events | Plotting | Inferential Analysis |
@@ -77,6 +85,8 @@ library(eyetools)
 # hidden loading and setting of variables
 library(eyetools)
 library(ggplot2)
+
+options(width = 200)
 
 HCL_AOIs[3,2] <- 290
 HCL_AOIs[3,4] <- 520
@@ -149,9 +159,11 @@ head(fix, 10)
 Eyetools can also extract saccades. Again, based on methods in @salvucci2000.
 
 ```{r sac}
-#| eval: false
+#| eval: true
 #| echo: true
-#| output: false
+#| output: true
+
+
 
 sac <- saccade_VTI(data)
 
@@ -160,9 +172,9 @@ head(sac, 10)
 ```
 
 ```{r sac_2}
-#| eval: true
+#| eval: false
 #| echo: false
-#| output: true
+#| output: false
 
 options(width = 200)
 

@@ -6,10 +6,10 @@
 <script src="eyetools_eps_april_25_files/libs/quarto-html/tippy.umd.min.js"></script>
 <link href="eyetools_eps_april_25_files/libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="eyetools_eps_april_25_files/libs/quarto-html/light-border.css" rel="stylesheet">
-<link href="eyetools_eps_april_25_files/libs/quarto-html/quarto-syntax-highlighting-e26003cea8cd680ca0c55a263523d882.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="eyetools_eps_april_25_files/libs/quarto-html/quarto-syntax-highlighting-07ba0ad10f5680c660e360ac31d2f3b6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <link href="eyetools_eps_april_25_files/libs/quarto-contrib/fontawesome6-1.2.0/all.min.css" rel="stylesheet">
 <link href="eyetools_eps_april_25_files/libs/quarto-contrib/fontawesome6-1.2.0/latex-fontsize.css" rel="stylesheet"><meta charset="utf-8">
-  <meta name="generator" content="quarto-1.6.39">
+  <meta name="generator" content="quarto-1.6.33">
 
   <meta name="author" content="Tom Beesley and Matthew Ivory">
   <title>eyetools: A set of tools for eye data processing, analysis and visualisation in R</title>
@@ -116,7 +116,7 @@
     div.csl-indent {
       margin-left: 2em;
     }  </style>
-  <link rel="stylesheet" href="eyetools_eps_april_25_files/libs/revealjs/dist/theme/quarto-7cb042cf45b66b721d320c14e8aa6ee1.css">
+  <link rel="stylesheet" href="eyetools_eps_april_25_files/libs/revealjs/dist/theme/quarto-08c62622d7acca53e05b293ee8cc2ff7.css">
   <link href="eyetools_eps_april_25_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
   <link href="eyetools_eps_april_25_files/libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
   <link href="eyetools_eps_april_25_files/libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
@@ -228,10 +228,7 @@ Tom Beesley and Matthew Ivory
 </section>
 <section id="reproducible-analyses" class="slide level2 nostretch">
 <h2>Reproducible analyses</h2>
-<p><strong>UK Reproducibility Network:</strong> “The reproducibility of both research methods and research results is critical to research in certain contexts, particularly in the experimental sciences with a quantitative focus.” <br><br> <img data-src="github_ss.png" class="quarto-figure quarto-figure-left" width="700"></p>
-</section>
-<section id="r-packages-for-eye-data-analysis" class="slide level2 smaller">
-<h2>R packages for eye data analysis</h2>
+<p><strong>UK Reproducibility Network:</strong> “The reproducibility of both research methods and research results is critical to research in certain contexts, particularly in the experimental sciences with a quantitative focus.” <br><br> :::: columns ::: {.column width=“45%”} <img data-src="github_ss.png" width="700"> ::: ::: {.column width=“5%”} ::: ::: {.column width=“45%”} <img data-src="documentation.png" width="700"> ::: :::: ## R packages for eye data analysis {.smaller}</p>
 <table class="caption-top" style="width:100%;">
 <colgroup>
 <col style="width: 14%">
@@ -415,8 +412,6 @@ Tom Beesley and Matthew Ivory
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href=""></a>sac <span class="ot">&lt;-</span> <span class="fu">saccade_VTI</span>(data)</span>
 <span id="cb8-2"><a href=""></a></span>
 <span id="cb8-3"><a href=""></a><span class="fu">head</span>(sac, <span class="dv">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<div class="cell">
 <div class="cell-output cell-output-stdout">
 <pre><code>   pID trial sac_n start  end duration  origin_x origin_y terminal_x terminal_y mean_velocity peak_velocity
 1  118     1     1   747  790       43  924.8913 502.8802   572.8710   808.0427      271.9532      395.7753
@@ -550,9 +545,9 @@ Tom Beesley and Matthew Ivory
 <span id="cb17-2"><a href=""></a>HCL_AOIs</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>     x   y width_radius height
-1  460 840          420    320
-2 1460 840          420    320
-3  960 290          220    520</code></pre>
+1  460 840          400    300
+2 1460 840          400    300
+3  960 290          300    520</code></pre>
 </div>
 </div>
 </div><div class="column" style="width:10%;">
@@ -596,24 +591,24 @@ Tom Beesley and Matthew Ivory
 <div class="cell">
 <div class="cell-output cell-output-stdout">
 <pre><code>   pID trial   AOI time
-1  118     1  left 3500
-2  118     1 right 1598
-3  118     1 lower 5886
-4  118     2  left 1400
-5  118     2 right 1292
-6  118     2 lower 3924
-7  118     3  left  576
-8  118     3 right  743
-9  118     3 lower 2932
-10 118     4  left 2563
-11 118     4 right 3574
-12 118     4 lower 2609
-13 118     5  left  253
-14 118     5 right 1101
-15 118     5 lower 2136
-16 118     6  left  789
-17 118     6 right  909
-18 118     6 lower 2564</code></pre>
+1  118     1  left 2809
+2  118     1 right  811
+3  118     1 lower 3227
+4  118     2  left  656
+5  118     2 right  723
+6  118     2 lower 2621
+7  118     3  left  443
+8  118     3 right  360
+9  118     3 lower 2218
+10 118     4  left 1417
+11 118     4 right 2323
+12 118     4 lower 1439
+13 118     5  left  164
+14 118     5 right  537
+15 118     5 lower 1708
+16 118     6  left  426
+17 118     6 right  563
+18 118     6 lower 2022</code></pre>
 </div>
 </div>
 </div></div>
@@ -631,17 +626,17 @@ Tom Beesley and Matthew Ivory
 </div><div class="column">
 <div class="cell-output cell-output-stdout">
 <pre><code>   pID trial   AOI start   end duration entry_n
-1  118     1 lower   437   750      313       1
-2  118     1  left   783  1183      400       2
-3  118     1 lower  1383  2190      807       3
-4  118     1 right  2236  2693      457       4
-5  118     1 lower  2743  3676      933       5
-6  118     1 right  3726  4223      497       6
-7  118     1 lower  4269  5339     1070       7
-8  118     1  left  5379  6792     1413       8
-9  118     1  left  7632  9295     1663       9
-10 118     1 lower  9325 10439     1114      10
-11 118     1  left 10495 10705      210      11</code></pre>
+1  118     1 lower   353   613      260       1
+2  118     1  left   817  1153      336       2
+3  118     1 lower  1750  2000      250       3
+4  118     1 right  2363  2603      240       4
+5  118     1 lower  3206  3489      283       5
+6  118     1 right  3896  4093      197       6
+7  118     1 lower  4393  5146      753       7
+8  118     1  left  5556  6642     1086       8
+9  118     1  left  7732  9129     1397       9
+10 118     1 lower  9452 10322      870      10
+11 118     1 lower 11015 11892      877      11</code></pre>
 </div>
 </div></div>
 </section>
@@ -1043,6 +1038,8 @@ Salvucci, Dario D., and Joseph H. Goldberg. 2000. <span>“Identifying Fixations
       });
       clipboard.on('success', onCopySuccess);
       if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+        // For code content inside modals, clipBoardJS needs to be initialized with a container option
+        // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
         const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
           text: getTextToCopy,
           container: window.document.getElementById('quarto-embedded-source-code-modal')
