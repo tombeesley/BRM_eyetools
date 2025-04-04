@@ -23,24 +23,27 @@ margin: 0.1
 editor_options: 
   chunk_output_type: console
 execute: 
-  cache: true
+  cache: false
 bibliography: references.bib
 ---
 
 ## Reproducible analyses {.nostretch}
 
-**UK Reproducibility Network:** "The reproducibility of both research methods and research results is critical to research in certain contexts, particularly in the experimental sciences with a quantitative focus."
-<br/><br/>
+UK Reproducibility Network: "The reproducibility of both research methods and research results is critical to research in certain contexts, particularly in the experimental sciences with a quantitative focus."
+
 :::: columns
-::: {.column width="45%"}
-![](github_ss.png){width="700"}
+
+::: {.column}
+![](github_ss.png){width="800"}
 :::
-::: {.column width="5%"}
-:::
-::: {.column width="45%"}
-![](documentation.png){width="700"}
+
+::: {.column}
+![](documentation.png){width="800"} 
+
 :::
 ::::
+
+
 ## R packages for eye data analysis {.smaller}
 
 | Package | Hardware-agnostic | Data Import | Data processing | Identifies events | Plotting | Inferential Analysis |
@@ -184,6 +187,70 @@ load("dummy_sac_data.RData")
 head(sac, 10)
 
 ```
+
+## Adjusting fixation parameters
+::::: columns
+::: {.column}
+```{r}
+#| eval: false
+#| echo: true
+#| output: false
+
+plot_spatial(raw_data = data, 
+             fix_data = fix, 
+             pID_values = 118, 
+             trial_values = 6)
+```
+
+```{r}
+#| eval: true
+#| echo: false
+#| output: true
+#| fig-width: 16
+#| fig-height: 9
+
+p <- plot_spatial(raw_data = data,
+                  fix_data = fix, 
+                  pID_values = 118, 
+                  trial_values = 6)
+
+p + theme_classic(base_size = 18)
+```
+:::
+
+::: {.column}
+```{r}
+#| eval: false
+#| echo: true
+#| output: false
+
+fix <- fixation_dispersion(data, min_dur = 100)
+
+plot_spatial(raw_data = data, 
+             fix_data = fix, 
+             pID_values = 118, 
+             trial_values = 6)
+
+```
+
+```{r}
+#| eval: true
+#| echo: false
+#| output: true
+#| fig-width: 16
+#| fig-height: 9
+
+fix <- fixation_dispersion(data, min_dur = 100)
+
+p <- plot_spatial(raw_data = data, 
+                  fix_data = fix, 
+                  pID_values = 118, 
+                  trial_values = 6)
+
+p + theme_classic(base_size = 18)
+```
+:::
+::::
 
 
 ## Plotting data
@@ -492,6 +559,10 @@ head(aoi_seq_result, 11)
 
 ```
 
+## Example use of AOI_seq()
+
+![](seq_AOI_dist_anim.gif)
+
 ## eyetools summary
 
 ::: incremental
@@ -512,6 +583,10 @@ head(aoi_seq_result, 11)
 :::
 
 ::: {.fragment}
+
+Please cite:
+
+`citation("eyetools")`
 
 Thank you! 
 
