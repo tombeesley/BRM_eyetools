@@ -4,14 +4,12 @@ subtitle: "EPS - Lancaster - 4th April 2025"
 author: "Tom Beesley and Matthew Ivory"
 format: 
   revealjs:
+    self-contained: true
     theme: [simple, custom.scss]
     slide-number: c/t
     footer: "github.com/tombeesley/eyetools | install.packages('eyetools')"
     logo: LU_logo.jpg
     transition: fade
-  html:
-    mermaid:
-      theme: forest
 title-slide-attributes: 
   data-background-image: LU_logo.jpg
   data-background-size: 15%
