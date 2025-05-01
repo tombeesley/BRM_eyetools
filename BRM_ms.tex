@@ -422,7 +422,7 @@ Package
 \end{minipage} & \begin{minipage}[b]{\linewidth}\centering
 Hardware-agnostic
 \end{minipage} & \begin{minipage}[b]{\linewidth}\centering
-Data Impor
+Data Import
 \end{minipage} & \begin{minipage}[b]{\linewidth}\centering
 Data processing
 \end{minipage} & \begin{minipage}[b]{\linewidth}\centering
@@ -515,7 +515,7 @@ are 3.33 milliseconds apart. The only requirement for the time column is
 that the values reflect a consistent and increasing set of values. There
 is no need to specify the sampling rate, since \emph{eyetools} functions
 will calculate this automatically. \emph{eyetools} expects raw data to
-have the following columns, with all columns set as type numeric:
+have the following columns:
 
 \begin{itemize}
 \item
@@ -526,23 +526,20 @@ have the following columns, with all columns set as type numeric:
   time = timestamp of the recording
 \item
   trial = the index of the current trial in the data
-\end{itemize}
-
-Missing values in the x and y columns of the raw data should be
-expressed as ``NA''. An optional 5th column can be included, with
-encodes the participant ID, which can be numeric or character type:
-
-\begin{itemize}
-\tightlist
 \item
-  pID = an index of the current participant in the data
+  pID = the unique identifier for the data from each participant
 \end{itemize}
 
-For many of the functions in \emph{eyetools} the \emph{participant\_ID}
-column allows the user to run the function across data from multiple
+The first four columns should be set as type numeric, while ``pID'' can
+be numeric, character, or factor. The order of the columns is not
+important. Missing values in the x and y columns of the raw data must be
+expressed as ``NA''.
+
+For many of the functions in \emph{eyetools} the \emph{pID} column
+allows the user to run the function across data from multiple
 participants. This functionality means that the user can avoid having to
 generate additional programming steps to analyse and combine the data
-from multiple participants
+from multiple participants.
 
 For many methods of eye-tracking, binocular data will be produced. In
 such cases, since the primary aim of our analyses is the estimation of
@@ -564,7 +561,7 @@ has x and y variables in place of the left\_* and right\_* variables.
 
 \begin{verbatim}
 # A tibble: 4 x 7
-  pNum   time left_x left_y right_x right_y trial
+  pID    time left_x left_y right_x right_y trial
   <chr> <dbl>  <dbl>  <dbl>   <dbl>   <dbl> <dbl>
 1 118       0   909.   826.   1003.    808.     1
 2 118       3   912.   829.   1001.    812.     1
@@ -581,11 +578,11 @@ has x and y variables in place of the left\_* and right\_* variables.
 \end{Shaded}
 
 \begin{verbatim}
-  pNum time trial        x        y
-1  118    0     1 955.8583 816.5646
-2  118    3     1 956.5178 820.6221
-3  118    7     1 960.7383 819.7616
-4  118   10     1 956.9727 815.3331
+  pID time trial        x        y
+1 118    0     1 955.8583 816.5646
+2 118    3     1 956.5178 820.6221
+3 118    7     1 960.7383 819.7616
+4 118   10     1 956.9727 815.3331
 \end{verbatim}
 
 \subsection{Repairing missing data and smoothing
@@ -606,8 +603,7 @@ constant slope and evenly spaced coordinates reaching the existing data
 \begin{Shaded}
 \begin{Highlighting}[]
 \NormalTok{data }\OtherTok{\textless{}{-}} \FunctionTok{interpolate}\NormalTok{(data, }
-                    \AttributeTok{method =} \StringTok{"approx"}\NormalTok{,}
-                    \AttributeTok{participant\_ID =} \StringTok{"pNum"}\NormalTok{)}
+                    \AttributeTok{method =} \StringTok{"approx"}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
@@ -620,16 +616,15 @@ following way:
 \begin{Shaded}
 \begin{Highlighting}[]
 \FunctionTok{interpolate}\NormalTok{(data, }
-            \AttributeTok{method =} \StringTok{"approx"}\NormalTok{,}
-            \AttributeTok{participant\_ID =} \StringTok{"pNum"}\NormalTok{, }
+            \AttributeTok{method =} \StringTok{"approx"}\NormalTok{, }
             \AttributeTok{report =} \ConstantTok{TRUE}\NormalTok{)[[}\DecValTok{2}\NormalTok{]]}
 \end{Highlighting}
 \end{Shaded}
 
 \begin{verbatim}
-  pNum missing_perc_before missing_perc_after
-1  118          0.02314313        0.001157156
-2  119          0.01214128        0.000000000
+  pID missing_perc_before missing_perc_after
+1 118          0.02314313        0.001157156
+2 119          0.01214128        0.000000000
 \end{verbatim}
 
 As shown, not all missing data has been replaced, since there are
@@ -647,20 +642,19 @@ observe how well the smoothed data fits the raw data.
 \begin{Highlighting}[]
 \NormalTok{data }\OtherTok{\textless{}{-}} \FunctionTok{smoother}\NormalTok{(data,}
                  \AttributeTok{span =}\NormalTok{ .}\DecValTok{02}\NormalTok{,}
-                 \AttributeTok{participant\_ID =} \StringTok{"pNum"}\NormalTok{, }
                  \AttributeTok{plot =} \ConstantTok{TRUE}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
 \subsection{Working with eyetools}\label{working-with-eyetools}
 
-Having explained these rudimentary steps of getting the data ready
-analysis, we will now describe the core functions available in the
-latest version of eyetools. For illustration, eyetools has a built in
-data set that meets the required format. The data set consists of data
-from two participants from a human causal learning study
-(\citeproc{ref-beesley2015}{Beesley et al., 2015}). The nature of this
-experiment is largely unimportant for the current purposes, but for
+Having explained these rudimentary steps of getting the data ready for
+the main analysis, we will now describe the core functions available in
+the latest version of eyetools. For illustration, eyetools has a built
+in data set that meets the required format. The data set consists of
+data from two participants from a few trials of a human causal learning
+study (\citeproc{ref-beesley2015}{Beesley et al., 2015}). The nature of
+this experiment is largely unimportant for the current purposes, but for
 clarity, the data were collected from the decision period of the
 procedure, where two rectangular cue stimuli were presented in the top
 half of the screen, one on the left side and one on the right side. Two
@@ -668,7 +662,7 @@ smaller response options were presented in the lower half of the screen,
 one above the other. Participants simply had to look at the cues and
 choose a response. These raw data can be accessed by calling
 \texttt{HCL} and the associated ``areas of interest'' (described later)
-can be called by using \texttt{HCL\_AOIs}.
+can be called with \texttt{HCL\_AOIs}.
 
 \subsubsection{Counterbalanced designs}\label{counterbalanced-designs}
 
@@ -695,10 +689,7 @@ variable. The result of the function is a set of data in which the x
 (and/or y) position is consistent across counterbalanced conditions
 (e.g., in our example, we can transform the data so that the target cue
 is always on the left). This transformation is especially useful for
-future visualisations and calculation of time on areas of interest. Note
-that \texttt{conditional\_transform()} operates on trials independently,
-and so does not discriminate between multi-participant and
-single-participant data and so no participant\_ID parameter is required.
+future visualisations and calculation of time on areas of interest.
 
 In our example data, the stimuli were presented on either the left or
 the right side of the screen. Here we have merged the eye data with a
@@ -715,7 +706,7 @@ left side of the screen.
 \CommentTok{\# merges with the common variables pNum and trial}
 \NormalTok{data }\OtherTok{\textless{}{-}} \FunctionTok{merge}\NormalTok{(data, HCL\_behavioural) }
 
-\CommentTok{\# perform a transormation of the data across the x coordinate midline}
+\CommentTok{\# perform a transformation of the data across the x coordinate midline}
 \CommentTok{\# for all trials with value 2 in the column cue\_order}
 \NormalTok{data }\OtherTok{\textless{}{-}} \FunctionTok{conditional\_transform}\NormalTok{(data, }
                               \AttributeTok{flip =} \StringTok{"x"}\NormalTok{, }
@@ -779,19 +770,19 @@ that are returned.
                       \AttributeTok{min\_dur =} \DecValTok{150}\NormalTok{, }\CommentTok{\# Min duration in ms}
                       \AttributeTok{disp\_tol =} \DecValTok{100}\NormalTok{, }\CommentTok{\# Max dispersion tolerance in pixels}
                       \AttributeTok{NA\_tol =} \FloatTok{0.25}\NormalTok{, }\CommentTok{\# proportion of NAs tolerated }
-                      \AttributeTok{progress =} \ConstantTok{FALSE}\NormalTok{, }\CommentTok{\# toggle progress bar}
-                      \AttributeTok{participant\_ID =} \StringTok{"pNum"}\NormalTok{) }
+                      \AttributeTok{progress =} \ConstantTok{FALSE}\NormalTok{) }\CommentTok{\# toggle progress bar}
+                   
 
 \FunctionTok{head}\NormalTok{(fixations, }\DecValTok{4}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
 \begin{verbatim}
-  pNum trial fix_n start  end duration    x   y prop_NA min_dur disp_tol
-1  118     1     1     0  173      173  959 811       0     150      100
-2  118     1     2   197  397      200  961 590       0     150      100
-3  118     1     3   400  653      253  958 490       0     150      100
-4  118     1     4   803 1083      280 1372 839       0     150      100
+  pID trial fix_n start  end duration    x   y prop_NA min_dur disp_tol
+1 118     1     1     0  173      173  959 811       0     150      100
+2 118     1     2   197  397      200  961 590       0     150      100
+3 118     1     3   400  653      253  958 490       0     150      100
+4 118     1     4   803 1083      280 1372 839       0     150      100
 \end{verbatim}
 
 \subsection{Saccades}\label{saccades}
@@ -807,28 +798,30 @@ origin and terminal coordinates.
 \begin{Highlighting}[]
 \NormalTok{saccades }\OtherTok{\textless{}{-}} \FunctionTok{saccade\_VTI}\NormalTok{(data,}
                         \AttributeTok{threshold =} \DecValTok{150}\NormalTok{,}
-                        \AttributeTok{min\_dur =} \DecValTok{20}\NormalTok{,}
-                        \AttributeTok{participant\_ID =} \StringTok{"pNum"}\NormalTok{)}
+                        \AttributeTok{min\_dur =} \DecValTok{20}\NormalTok{)}
 
 \FunctionTok{head}\NormalTok{(saccades, }\DecValTok{4}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
-\subsection{Visualisations}\label{visualisations}
-
-The eyetools package has a number of visualisations that allow for
-functional plot of the data, with minimal effort. All plots use the
-dominant graphical R package \texttt{ggplot}, which means that the
-resulting plots are ggplot objects and can be customised using the full
-suite of options for ggplot and its extensions.
-
-\texttt{plot\_spatial()} offers a simple means to view
+\begin{verbatim}
+  pID trial sac_n start  end duration origin_x origin_y terminal_x terminal_y
+1 118     1     1  2180 2240       60 833.2688 296.7871   487.3967   705.9158
+2 118     1     2  2710 2750       40 614.5028 605.7001   862.3837   408.3421
+3 118     1     3  3673 3726       53 885.6256 253.4150   558.1883   655.7776
+4 118     1     4  4213 4233       20 460.3286 722.8386   577.2034   617.8567
+  mean_velocity peak_velocity
+1      225.0736      331.8455
+2      200.3353      263.8863
+3      243.7927      340.3059
+4      195.6512      251.7763
+\end{verbatim}
 
 \subsection{Area of interest (AOI)
 analysis}\label{area-of-interest-aoi-analysis}
 
 A critical component of much eye gaze analysis is the assessment of time
-spent in regions of space. eyetools has a number of functions for
+spent in regions of space. \emph{eyetools} has a number of functions for
 assessing the time spent in Areas of Interest (AOIs), as well as the
 sequence in which the eye enters and exits these areas. AOIs will
 typically reflect regions of space in which critical stimuli appear.
@@ -849,42 +842,185 @@ This object can be created using the function
 \end{Highlighting}
 \end{Shaded}
 
-In combination with the fixation data, the AOI information can be used
-to determine the sequence of AOI entries using the \texttt{AOI\_seq()}
-function. This fucntion checks whether a fixation is detected within an
-AOI, and if not, it is dropped from the output, and then provides a list
-of the sequence of AOI entries, along with start and end timestamps, and
-the duration.
-
 Time spent in AOIs can also be calculated from fixations or raw data
-using the \texttt{AOI\_time()} function available. This calculates the
-time spent in each AOI in each trial, based on the data type given, in
-our case fixation data.
+using the \texttt{AOI\_time()} function. This calculates the time spent
+in each AOI per trial. Output can be expressed in the form of absolute
+time, or by passing a vector of times to the ``trial\_time'' parameter,
+can be expressed as proportional time.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{data\_AOI\_time }\OtherTok{\textless{}{-}} \FunctionTok{AOI\_time}\NormalTok{(fixations, }\AttributeTok{data\_type =} \StringTok{"fix"}\NormalTok{, }\AttributeTok{AOIs =}\NormalTok{ AOI\_areas,}
-                          \AttributeTok{AOI\_names =} \FunctionTok{c}\NormalTok{(}\StringTok{"predictive"}\NormalTok{, }\StringTok{"non{-}predictive"}\NormalTok{, }\StringTok{"target"}\NormalTok{),}
-                          \AttributeTok{participant\_ID =} \StringTok{"pNum"}\NormalTok{)}
+\NormalTok{data\_AOI\_time }\OtherTok{\textless{}{-}} 
+  \FunctionTok{AOI\_time}\NormalTok{(}\AttributeTok{data =}\NormalTok{ fixations, }
+           \AttributeTok{data\_type =} \StringTok{"fix"}\NormalTok{, }
+           \AttributeTok{AOIs =}\NormalTok{ HCL\_AOIs, }
+           \AttributeTok{AOI\_names =} \FunctionTok{c}\NormalTok{(}\StringTok{"target"}\NormalTok{, }\StringTok{"distractor"}\NormalTok{, }\StringTok{"outcomes"}\NormalTok{),}
+           \AttributeTok{as\_prop =} \ConstantTok{TRUE}\NormalTok{,}
+           \AttributeTok{trial\_time =}\NormalTok{ HCL\_behavioural}\SpecialCharTok{$}\NormalTok{RT) }
+
+\FunctionTok{head}\NormalTok{(data\_AOI\_time, }\DecValTok{9}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
-If choosing to work with the raw data, there is also the option of using
-\texttt{AOI\_time\_binned()} which allows for the trials to be split
-into bins of a given length, and the time spent in AOIs calculated as a
-result.
+The \texttt{AOI\_time\_binned()} function can assess total duration of
+time on AOIs, divided into sequential time bins. Since fixations will
+naturally overlap these segments in many circumstances, this functions
+works only with raw data. Here we are assessing time in the three AOIs
+for periods of 1000 ms, limiting analysis to the first 8000 ms.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{data\_AOI\_time\_binned }\OtherTok{\textless{}{-}} \FunctionTok{AOI\_time\_binned}\NormalTok{(data, }\AttributeTok{AOIs =}\NormalTok{ AOI\_areas,}
-                                        \AttributeTok{AOI\_names =} \FunctionTok{c}\NormalTok{(}\StringTok{"predictive"}\NormalTok{, }\StringTok{"non{-}predictive"}\NormalTok{, }\StringTok{"target"}\NormalTok{),}
-                                        \AttributeTok{bin\_length =} \DecValTok{100}\NormalTok{,}
-                                        \AttributeTok{max\_time =} \DecValTok{2000}\NormalTok{, }\CommentTok{\#in milliseconds}
-                                        \AttributeTok{participant\_ID =} \StringTok{"pNum"}\NormalTok{)}
+\NormalTok{data\_AOI\_time\_binned }\OtherTok{\textless{}{-}} 
+  \FunctionTok{AOI\_time\_binned}\NormalTok{(data, }
+                  \AttributeTok{AOIs =}\NormalTok{ HCL\_AOIs,}
+                  \AttributeTok{AOI\_names =} \FunctionTok{c}\NormalTok{(}\StringTok{"predictive"}\NormalTok{, }\StringTok{"non{-}predictive"}\NormalTok{, }\StringTok{"target"}\NormalTok{),}
+                  \AttributeTok{bin\_length =} \DecValTok{1000}\NormalTok{,}
+                  \AttributeTok{max\_time =} \DecValTok{8000}\NormalTok{) }\CommentTok{\#in milliseconds}
 \end{Highlighting}
 \end{Shaded}
 
-\subsection{Visualisations}\label{visualisations-1}
+It is also possible to determine the sequence of entries into AOIs using
+the \texttt{AOI\_seq()} function. This function currently works only
+with fixation data. For a given trial, the sequence of fixations is
+assessed against the AOIs provided, where consecutive fixations within
+the same AOI are combined into one ``entry period''. The result of this
+function is a sequence of AOI entries per trial for each participant,
+providing data on the sampling order of AOIs. The resulting output
+provides start and end times and duration of each entry.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{data\_AOI\_entry }\OtherTok{\textless{}{-}} 
+  \FunctionTok{AOI\_seq}\NormalTok{(fixations, }
+          \AttributeTok{AOIs =}\NormalTok{ HCL\_AOIs,}
+          \AttributeTok{AOI\_names =} \FunctionTok{c}\NormalTok{(}\StringTok{"target"}\NormalTok{, }\StringTok{"distractor"}\NormalTok{, }\StringTok{"outcomes"}\NormalTok{))}
+
+\FunctionTok{head}\NormalTok{(data\_AOI\_entry, }\DecValTok{9}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\subsection{Visualisations}\label{visualisations}
+
+The eyetools package has a number of built in visualisations that allow
+for functional plots of the data, with minimal effort. All plots use the
+dominant graphical R package \texttt{ggplot}, which means that the
+resulting plots from these functions are ggplot objects and can
+therefore be customised using the full suite of options for ggplot and
+its extensions.
+
+\texttt{plot\_spatial()} offers a simple means to view the data produced
+by \emph{eyetools}. By default this will plot all of the data that is
+passed to the function, but participant IDs and trial values can be
+specified in order to plot specific data. Here we plot the raw data from
+a single trial for one participant, with the detected fixations
+overlaid. When using fixation data, the fixations are labelled in their
+temporal order (by default), enabling a clear presentation of how the
+fixations arose.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# will tidy this up once eyetools functions can filter to individual participants}
+
+\FunctionTok{plot\_spatial}\NormalTok{(}\AttributeTok{raw\_data =}\NormalTok{ data,}
+             \AttributeTok{fix\_data =}\NormalTok{ fixations,}
+             \AttributeTok{pID\_values =} \DecValTok{118}\NormalTok{,}
+             \AttributeTok{trial\_values =} \DecValTok{6}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\pandocbounded{\includegraphics[keepaspectratio]{BRM_ms_files/figure-pdf/unnamed-chunk-13-1.pdf}}
+
+In addition to eye data, an image can be added to the plot, which is
+useful for inspecting data over a representation of the experimental
+task. If AOIs have been defined, these can be plotted as well. Here we
+demonstrate the plotting of the saccades, AOIs, and a background image:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{plot\_spatial}\NormalTok{(}\AttributeTok{sac\_data =}\NormalTok{ saccades,}
+             \AttributeTok{AOIs =}\NormalTok{ HCL\_AOIs,}
+             \AttributeTok{pID\_values =} \DecValTok{118}\NormalTok{,}
+             \AttributeTok{trial\_values =} \DecValTok{6}\NormalTok{,}
+             \AttributeTok{bg\_image =} \StringTok{"images/HCL\_sample\_image.png"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\pandocbounded{\includegraphics[keepaspectratio]{BRM_ms_files/figure-pdf/unnamed-chunk-14-1.pdf}}
+
+The function \texttt{plot\_seq()} is useful for visualising example data
+as a series of plots, mapping out eye movements over the course of a
+single trial. By default this function will plot a randomly selected
+trial from the raw data that is passed to the function. Otherwise,
+specific trials and participant values can be specified. The function
+requires a ``bin\_time'' parameter, that specifies the length of each
+time-period within the trial. An optional parameter of ``bin\_range''
+can be specified to restrict the range of these periods that are
+presented. For example here we plot data in periods of 1000 ms across
+the first four of these periods.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{plot\_seq}\NormalTok{(}\AttributeTok{data =}\NormalTok{ data,}
+         \AttributeTok{bin\_time =} \DecValTok{1000}\NormalTok{,}
+         \AttributeTok{bin\_range =} \FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{4}\NormalTok{),}
+         \AttributeTok{trial\_values =} \DecValTok{1}\NormalTok{,}
+         \AttributeTok{pID\_values =} \DecValTok{118}\NormalTok{,}
+         \AttributeTok{AOIs =}\NormalTok{ HCL\_AOIs,}
+         \AttributeTok{bg\_image =} \StringTok{"images/HCL\_sample\_image.png"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+The \texttt{plot\_AOI\_growth()} function offers the representation of
+how an individual (on a single trial) spends their time looking at the
+different AOIs. This can be useful to see how AOIs are interacted with
+over time, and this can be presented as either a cumulative over time,
+or as a proportion of the time spent in the trial.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# plot absolute and then proportional}
+\FunctionTok{plot\_AOI\_growth}\NormalTok{(}\AttributeTok{data =}\NormalTok{ data, }
+                \AttributeTok{AOIs =}\NormalTok{ HCL\_AOIs, }
+                \AttributeTok{type =} \StringTok{"abs"}\NormalTok{, }
+                \AttributeTok{pID\_values =} \DecValTok{118}\NormalTok{,}
+                \AttributeTok{trial\_values =} \DecValTok{1}\NormalTok{)}
+\FunctionTok{plot\_AOI\_growth}\NormalTok{(}\AttributeTok{data =}\NormalTok{ data, }
+                \AttributeTok{AOIs =}\NormalTok{ HCL\_AOIs, }
+                \AttributeTok{type =} \StringTok{"prop"}\NormalTok{,  }
+                \AttributeTok{pID\_values =} \DecValTok{118}\NormalTok{,}
+                \AttributeTok{trial\_values =} \DecValTok{1}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}[H]
+
+\caption{\label{fig-growth}Examples of the absolute and proportional
+time plots from \texttt{plot\_AOI\_growth()}}
+
+\end{figure}%
+
+A heatmap of eye gaze positions can be generated using
+\texttt{plot\_heatmap()} which takes raw data as an input. As a
+function, and unlike many of the processing steps, it does not
+differentiate between trials or participants and plots any coordinate
+data it is given. This behaviour is allowed as the heatmap offers an
+excellent and fast ``sanity check'' that participants were, on the
+whole, looking at the expected areas of the experiment screen during the
+trials. As can be seen in Figure \textbf{?@fig-heatmap}, we can be
+reassured that participants do indeed spend most of their time looking
+at the stimuli on screen rather than in the empty space.
+\texttt{plot\_heatmap()} also allows for the modification of the amount
+of data displayed, using the \texttt{alpha\_control} parameter. By
+decreasing \texttt{alpha\_control} in Figure
+\textbf{?@fig-heatmap-alpha-update}, we gain more visualised information
+and we can still see that the majority of the data is kept within the
+stimuli and saccades between these areas.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{plot\_heatmap}\NormalTok{(data, }\AttributeTok{bg\_image =} \StringTok{"images/HCL\_sample\_image.png"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
 
 \subsection{eyetool assumptions {[}I DON'T KNOW WHERE THIS SHOULD GO
 JUST
@@ -922,112 +1058,6 @@ that is not recorded at 300Hz. To circumvent the potential issue of
 sample rates being an issue, by default functions that require a sample
 rate will deduce the frequency from the data rather than needing it to
 be specified.
-
-\subsection{Visualisations made easy}\label{visualisations-made-easy}
-
-When working with eye data, it can be beneficial for the researcher to
-familiarise themselves with the dataset. Visualising the data through
-graphics can help to identify meaningful patterns that are obscured when
-relying on statisitical analyses alone
-(\citeproc{ref-kabacoffActionThirdEdition2022}{Kabacoff, 2022}).
-Graphics are also very effective at conveying information in a way that
-is easily grasped by a diverse audience. eyetools offers a selection of
-in-built plotting functions that work with data at most stages of
-processing. These plots are designed to aid in the researcher's
-processing and data analysis.
-
-The \texttt{plot\_AOI\_growth()} function offers the representation of
-how an individual (on a single trial) spends their time looking at the
-different AOIs. This can be useful to see how AOIs are interacted with
-over time, and this can be presented as either a cumulative over time,
-or as a proportion of the time spent in the trial.
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\CommentTok{\# plot absolute and then proportional}
-\FunctionTok{plot\_AOI\_growth}\NormalTok{(}\AttributeTok{data =}\NormalTok{ data, }\AttributeTok{AOIs =}\NormalTok{ HCL\_AOIs, }\AttributeTok{type =} \StringTok{"abs"}\NormalTok{, }\AttributeTok{trial\_number =} \DecValTok{1}\NormalTok{)}
-\FunctionTok{plot\_AOI\_growth}\NormalTok{(}\AttributeTok{data =}\NormalTok{ data, }\AttributeTok{AOIs =}\NormalTok{ HCL\_AOIs, }\AttributeTok{type =} \StringTok{"prop"}\NormalTok{, }\AttributeTok{trial\_number =} \DecValTok{1}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{figure}[H]
-
-\caption{\label{fig-growth}Examples of the absolute and proportional
-time plots from \texttt{plot\_AOI\_growth()}}
-
-\end{figure}%
-
-A heatmap of eye gaze positions can be generated using
-\texttt{plot\_heatmap()} which takes raw data as an input. As a
-function, and unlike many of the processing steps, it does not
-differentiate between trials or participants and plots any coordinate
-data it is given. This behaviour is allowed as the heatmap offers an
-excellent and fast ``sanity check'' that participants were, on the
-whole, looking at the expected areas of the experiment screen during the
-trials. As can be seen in Figure \textbf{?@fig-heatmap}, we can be
-reassured that participants do indeed spend most of their time looking
-at the stimuli on screen rather than in the empty space.
-\texttt{plot\_heatmap()} also allows for the modification of the amount
-of data displayed, using the \texttt{alpha\_control} parameter. By
-decreasing \texttt{alpha\_control} in Figure
-\textbf{?@fig-heatmap-alpha-update}, we gain more visualised information
-and we can still see that the majority of the data is kept within the
-stimuli and saccades between these areas.
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\FunctionTok{plot\_heatmap}\NormalTok{(data, }\AttributeTok{bg\_image =} \StringTok{"images/HCL\_sample\_image.jpg"}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\FunctionTok{plot\_heatmap}\NormalTok{(data, }\AttributeTok{alpha\_control =}\NormalTok{ .}\DecValTok{001}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
-
-The \texttt{plot\_seq()} function allows for the plotting of raw data to
-visualise the gaze pattern from a single trial and where the gaze fell
-on the screen across the entire trial. \textbf{?@fig-seq} offers an
-example trial split into time bins of 5000ms. This plot shows the time
-dimension as a change in colour that overlaps older data. This plot
-serves as a useful check, similar to \texttt{plot\_heatmap()}, as to
-where the eyes spent their time, but \texttt{plot\_seq()} has the
-benefit of showing the time dimension compared to a simple heatmap.
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\CommentTok{\# plot raw data with bins}
-\FunctionTok{plot\_seq}\NormalTok{(}\AttributeTok{data =}\NormalTok{ data[data}\SpecialCharTok{$}\NormalTok{pNum }\SpecialCharTok{==} \DecValTok{118}\NormalTok{,], }\AttributeTok{AOIs =}\NormalTok{ HCL\_AOIs,  }\AttributeTok{bin\_time =} \DecValTok{5000}\NormalTok{, }\AttributeTok{trial\_number =} \DecValTok{1}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
-
-The final plotting function in eyetools is \texttt{plot\_spatial()}.
-This can plot raw data, fixations, and saccades, either separately or in
-combination. \texttt{plot\_spatial()} plots the location of the eye gaze
-of a trial, and when given raw data is very similar to the output of
-\texttt{plot\_seq()}, when using fixation data, then an additional
-parameter can be used to label the fixations in their temporal order,
-enabling a better presentation of how fixations arise. Finally,
-providing saccade data allows for the length and direction of saccades
-to be presented.
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\FunctionTok{plot\_spatial}\NormalTok{(}\AttributeTok{raw\_data =}\NormalTok{ data[data}\SpecialCharTok{$}\NormalTok{pNum }\SpecialCharTok{==} \DecValTok{118}\NormalTok{,], }\AttributeTok{trial\_number =} \DecValTok{1}\NormalTok{)}
-\CommentTok{\# plot just fixation data together}
-\FunctionTok{plot\_spatial}\NormalTok{(}\AttributeTok{fix\_data =}\NormalTok{ fixations[fixations}\SpecialCharTok{$}\NormalTok{pNum }\SpecialCharTok{==} \DecValTok{118}\NormalTok{,], }\AttributeTok{trial\_number =} \DecValTok{1}\NormalTok{)}
-\CommentTok{\#plot saccades}
-\FunctionTok{plot\_spatial}\NormalTok{(}\AttributeTok{sac\_data =}\NormalTok{ saccades[saccades}\SpecialCharTok{$}\NormalTok{pNum }\SpecialCharTok{==} \DecValTok{118}\NormalTok{,], }\AttributeTok{trial\_number =} \DecValTok{1}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{figure}[H]
-
-\caption{\label{fig-spatial}The three types of plot that can be created
-using \texttt{plot\_spatial()}}
-
-\end{figure}%
 
 \section{Analysing eye data}\label{analysing-eye-data}
 
@@ -1102,10 +1132,6 @@ Beesley, T., Pearson, D., \& Le Pelley, M. (2019). \emph{Chapter 1 - eye
 tracking as a tool for examining cognitive processes} (G. Foster, Ed.;
 pp. 1--30). Academic Press.
 \url{https://doi.org/10.1016/B978-0-12-813092-6.00002-2}
-
-\bibitem[\citeproctext]{ref-kabacoffActionThirdEdition2022}
-Kabacoff, R. I. (2022). \emph{R in action: Data analysis and graphics
-with r and tidyverse}. Simon; Schuster.
 
 \bibitem[\citeproctext]{ref-salvucci2000}
 Salvucci, D. D., \& Goldberg, J. H. (2000). \emph{the symposium}.
