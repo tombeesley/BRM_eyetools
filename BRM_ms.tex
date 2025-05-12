@@ -379,34 +379,32 @@ in a comprehensive analysis workflow, taking the user from initial
 handling of raw eye data, to summarising data for each period of a
 procedure, to the visualisation of the data in plots. We hope that the
 functions are simple enough to mean that the package is easy to use for
-researchers who are unfamiliar with working with eye data. It should
-also appeal to researchers accustomed to working with eye data in other
+researchers who are unfamiliar with eye data analysis. It should also
+appeal to researchers accustomed to working with eye data in other
 environments who wish to transfer to working in R.
 
 \emph{eyetools} is, of course, not the only package in R that allows
-users to work with eye data. A recent assessment of available packages
-on CRAN identified six other packages that offer relevant functions for
-the analysis of eye data. \textbf{eyeTrackr}, \textbf{eyelinker}, and
-\textbf{eyelinkReader}, all offer functionality for data only from
-experiments that have used `EyeLink' trackers (S-R Research). In
-contrast, eyetools provides functions that are hardware-agnostic,
-relying on a format of data that can be achieved from any data source.
-The \textbf{eyeRead} package is designed for the analysis of eye data
-from reading exercises. The \textbf{emov} package offers a limited set
-of functions and is primarily designed for fixation detection, using the
-same dispersion method employed in eyetools. Finally,
-\textbf{eyetrackingR} is perhaps the most comprehensive alternative
-package available on CRAN. eyetrackingR offers a large suite of
-functionality and, like eyetools, can be applied across the entire
+users to work with eye data. A recent survey of CRAN (The Comprehensive
+R Archive Network) identified six other packages that offer relevant
+functions for the analysis of eye data. \textbf{eyeTrackr},
+\textbf{eyelinker}, and \textbf{eyelinkReader}, all offer functionality
+for data only from experiments that have used `EyeLink' trackers (S-R
+Research). In contrast, eyetools provides functions that are
+hardware-agnostic, relying on a format of data that can be achieved from
+any source. The \textbf{eyeRead} package is designed for the analysis of
+eye data from reading exercises. The \textbf{emov} package offers a
+limited set of functions and is primarily designed for fixation
+detection, using the same dispersion method employed in eyetools.
+Finally, \textbf{eyetrackingR} is perhaps the most comprehensive
+alternative package available on CRAN. eyetrackingR offers a large suite
+of functionality and, like eyetools, can be applied across the entire
 pipeline. It has functions for cleaning data and various plotting
 functions, including analysis over time. It does not feature algorithms
 regarding the detection of events such as saccades or fixations. This
 limits the ability to conduct more bespoke analysis steps and it means
 that analysis needs to be conducted on raw data. This is disadvantageous
 both in terms of computing time and in the open sharing of data (event
-data are an order of magnitude smaller in size than raw data). In
-comparison, eyetools enables easier data processing up to data analyses,
-making core tasks in the eye data processing easier and standardised.
+data are an order of magnitude smaller in size than raw data).
 
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1429}}
@@ -453,15 +451,16 @@ eyetrackingR & \faIcon{check} & & \faIcon{check} & & \faIcon{check} &
 In this tutorial we demonstrate the pipeline of analysis functions
 within \emph{eyetools}. The package has been designed to be simple to
 use by someone with basic knowledge of data handling and analysis in R.
-This tutorial is separated into five distinct sections. In the first
-section, we briefly describe the basic methodology of collecting eye
-data in general, and in regard to the specific dataset we use to
-illustrate all the functionality of the \emph{eyetools} package. The
-second section covers the process for getting data from an eye tracker
-into an \emph{eyetools}-friendly format. The third section introduces
-the foundational functions of the \emph{eyetools} package, from
-repairing and smoothing eye data, to calculating fixations and saccades,
-and detecting time spent in Areas of Interest (AOIs). The fourth section
+This tutorial is separated into X distinct sections. {[}this next will
+need to be updated once the ms is complete{]} In the first section, we
+briefly describe the basic methodology of collecting eye data in
+general, and in regard to the specific dataset we use to illustrate all
+the functionality of the \emph{eyetools} package. The second section
+covers the process for getting data from an eye tracker into an
+\emph{eyetools}-friendly format. The third section introduces the
+foundational functions of the \emph{eyetools} package, from repairing
+and smoothing eye data, to calculating fixations and saccades, and
+detecting time spent in Areas of Interest (AOIs). The fourth section
 takes the processed data, and applies basic analysis techniques
 commonplace in eye data research. In the fifth and final section, we
 reflect on the benefits of the \emph{eyetools} package, including
@@ -494,17 +493,17 @@ the functions expect a ``trial'' variable in the data, such that the
 algorithms will operate over multiple trials and produce output that
 retains this trial information. Similarly, data in psychology
 experiments tends to come from multiple participants, and to facilitate
-analysis, a participant ID column can be included (though this isn't
-necessary). This allows many functions to be run automatically across
-multiple participants (rather than running the same function on each
-participant's data). It is also necessary to select the relevant
-``periods'' of data within the recording. It is quite typical in
-psychology experiments for there to be multiple periods within a trial,
-e.g., fixation; stimulus presentation; response feedback;
-inter-trial-interval. \emph{eyetools} does not interpret these changes,
-and so it is necessary to first select the data for the period or
-periods that are of interest for analysis. Analysis on each period would
-be conducted separately using the functions in \emph{eyetools}.
+analysis, a ``pID'' column is required (even if data from only a single
+participant is used). This means that the user can avoid having to
+generate additional programming steps to analyse and combine the data
+from multiple participants. It is quite typical in psychology
+experiments for there to be multiple periods within a trial, e.g.,
+fixation; stimulus presentation; response feedback;
+inter-trial-interval. \emph{eyetools} does not interpret these changes
+automatically, and so it is necessary to first select the data for the
+period or periods that are of interest for analysis. Analysis on each
+period would be conducted separately using the functions in
+\emph{eyetools}.
 
 The starting point for the analysis pipeline is the preparation of the
 raw eye data, which will consist of recorded samples from the
@@ -534,12 +533,6 @@ The first four columns should be set as type numeric, while ``pID'' can
 be numeric, character, or factor. The order of the columns is not
 important. Missing values in the x and y columns of the raw data must be
 expressed as ``NA''.
-
-For many of the functions in \emph{eyetools} the \emph{pID} column
-allows the user to run the function across data from multiple
-participants. This functionality means that the user can avoid having to
-generate additional programming steps to analyse and combine the data
-from multiple participants.
 
 For many methods of eye-tracking, binocular data will be produced. In
 such cases, since the primary aim of our analyses is the estimation of
@@ -667,16 +660,16 @@ can be called with \texttt{HCL\_AOIs}.
 \subsubsection{Counterbalanced designs}\label{counterbalanced-designs}
 
 Many psychology experiments will counterbalance the position of
-important stimuli on the screen. For example, in the example data we are
-using, there are two stimuli, with one of these appearing on the left
-side of the screen and the other on the right. In the design of the
-experiment, one of these stimuli can be considered a ``target'' and the
-other a ``distractor'', and the experiment counterbalances whether these
-are positioned in a left/right or a right/left arrangement across
-trials. In order to provide a meaningful analysis of the eye position
-over all trials, it is necessary to standardise the data, such that the
-resulting analyses reflect meaningful eye gaze on each type of stimulus
-(target or distractor).
+important stimuli on the screen. In the example data, there are two
+stimuli, with one of these appearing on the left side of the screen and
+the other on the right. In the design of the experiment, one of these
+stimuli can be considered a ``target'' and the other a ``distractor'',
+and the experiment counterbalances whether these are positioned in a
+left/right or a right/left arrangement across trials. In order to
+provide a meaningful analysis of the eye position over all trials, it is
+necessary to standardise the data, such that the resulting analyses
+reflect meaningful eye gaze on each type of stimulus (target or
+distractor).
 
 \emph{eyetools} has a built in function,
 \texttt{conditional\_transform()}, which allows us to \emph{transform}
@@ -691,15 +684,15 @@ variable. The result of the function is a set of data in which the x
 is always on the left). This transformation is especially useful for
 future visualisations and calculation of time on areas of interest.
 
-In our example data, the stimuli were presented on either the left or
-the right side of the screen. Here we have merged the eye data with a
-set of ``trial\_events'' data that describe the events on each trial. We
-can apply \texttt{conditional\_transform()} and specify the relevant
-column (cue\_order) that controls the counterbalancing, and the relevant
-value that signals a switch of position (here the value ``2''). The
-resulting transformation of the data will mean that the data is
-normalised such that the target stimulus is always positioned on the
-left side of the screen.
+In the example code, we have merged the eye data with a set of
+``trial\_events'' data that describe the events on each trial. We can
+apply \texttt{conditional\_transform()} and specify the relevant column
+(cue\_order) that controls the counterbalancing, and the relevant value
+that signals a switch of position (here the value ``2''). By default the
+function expects a resultion of 1920x1080, but custom resolutions can be
+specified. The resulting transformation of the data will mean that the
+data is normalised such that the target stimulus is always positioned on
+the left side of the screen.
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -720,19 +713,29 @@ left side of the screen.
 Once the data has been repaired and smoothed, a core step in eye data
 analysis is to identify fixations (\citeproc{ref-salvucci2000}{Salvucci
 \& Goldberg, 2000}). Broadly, a fixation is defined as a period in which
-gaze stops in a specific location for a given amount of time. The period
-in which the eyes are moving between fixations reflects a ``saccade''.
-As such, raw data can be transformed into these meaningful eye data
-characteristics. These different properties of eye-data have important
-implications for behavioural research (see X for a review). Beyond their
-importance for understanding psychological processes, transforming the
-data into fixations and saccades leads to greater computational
-efficiency. For example, the built in HCL data in eyetools is 479 kb,
-which contains 31,041 rows of data (12 trials of data). After processing
-the data for fixations, the resulting data is 269 rows and can be saved
-as 3.8 kb (less than 1\% the size of the raw data). Not only is this
-more computationally efficient, but it also means the data are now in a
-far more practical format for storage in online data repositories.
+the eye stops moving and is held in a specific location for a
+significant period of time (typically longer than 100 ms, Salvucci and
+Goldberg (\citeproc{ref-salvucci2000}{2000})). The period in which the
+eyes are moving between fixations reflects a ``saccade''. While the eyes
+move during these brief (typically less than 50 ms) periods of movement,
+significant perceptual suppression occurs and there is minimal
+information processing (\citeproc{ref-vanduren1995}{Duren \& Sanders,
+1995}; \citeproc{ref-irwin1995}{Irwin et al., 1995};
+\citeproc{ref-sanders1985}{Sanders \& Houtmans, 1985}). Therefore for
+many cognitive psychologists, the periods of fixation are particularly
+important and reflect the most relevant periods of information
+processing in a task.
+
+The raw data can be transformed into these meaningful eye data
+characteristics. Beyond their importance for understanding psychological
+processes, transforming the data into fixations and saccades leads to
+greater computational efficiency. For example, the built in HCL data in
+eyetools is 479 kb, which contains 31,041 rows of data (from just 12
+trials of data). After processing the data for fixations, the resulting
+data is 269 rows and can be saved as 3.8 kb, less than 1\% the size of
+the raw data. Not only is this more computationally efficient, but it
+also means the data are now in a far more practical format for storage
+in online data repositories.
 
 There are two fixation algorithms offered in the \emph{eyetools}
 package, both based on methods presented by
@@ -743,8 +746,8 @@ periods of time in which the gaze position remains within a tolerated
 maximum range of dispersion. Once this range is exceeded, this is deemed
 to be the end of a possible period of fixation. If the total time of
 this fixation period is longer than the minimum required (set by the
-\texttt{min\_dur} parameter), then the fixation is stored as a record in
-the returned object.
+\texttt{min\_dur} parameter), then this fixation is stored as an entry
+in the returned object.
 
 The second algorithm, \texttt{fixation\_VTI()} , employs a
 velocity-threshold approach to identifying fixations, based on the
@@ -792,7 +795,9 @@ as it makes a saccade towards the next point of fixation. The
 \texttt{saccade\_VTI()} function will extract saccades using the
 velocity threshold algorithm described above. Details of each saccade
 are given, such as the timing of the saccade onset, duration, and the
-origin and terminal coordinates.
+origin and terminal coordinates. As with the fixation algorithms,
+default parameters have been chosen, but can be adapted to fit the
+requirements of the user.
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -820,15 +825,15 @@ origin and terminal coordinates.
 \subsection{Area of interest (AOI)
 analysis}\label{area-of-interest-aoi-analysis}
 
-A critical component of much eye gaze analysis is the assessment of time
-spent in regions of space. \emph{eyetools} has a number of functions for
-assessing the time spent in Areas of Interest (AOIs), as well as the
-sequence in which the eye enters and exits these areas. AOIs will
-typically reflect regions of space in which critical stimuli appear.
-AOIs are defined in eyetools using a dataframe object, which codes the
-centrepoint of the AOI in x, y coordinates along with the width and
-height (if the AOIs are rectangular) or just the radius (if circular).
-This object can be created using the function
+A critical component in many analyses of eye gaze is the assessment of
+time spent in regions of space. \emph{eyetools} has a number of
+functions for assessing the time spent in Areas of Interest (AOIs), as
+well as the sequence in which the eye enters and exits these areas. AOIs
+will typically reflect regions of space in which critical stimuli
+appear. AOIs are defined in eyetools using a dataframe object, which
+codes the centrepoint of the AOI in x, y coordinates along with the
+width and height (if the AOIs are rectangular) or just the radius (if
+circular). This object can be created using the function
 \texttt{create\_AOI\_df()}:
 
 \begin{Shaded}
@@ -836,17 +841,19 @@ This object can be created using the function
 \CommentTok{\# set areas of interest}
 \NormalTok{AOI\_areas }\OtherTok{\textless{}{-}} \FunctionTok{create\_AOI\_df}\NormalTok{(}\DecValTok{3}\NormalTok{)}
 
+\CommentTok{\# populate this dataframe with AOI dimensions }
+\CommentTok{\# (x, y, width/radius, height)}
 \NormalTok{AOI\_areas[}\DecValTok{1}\NormalTok{,] }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\DecValTok{460}\NormalTok{, }\DecValTok{840}\NormalTok{, }\DecValTok{400}\NormalTok{, }\DecValTok{300}\NormalTok{) }\CommentTok{\# Left rectangualar AOI}
 \NormalTok{AOI\_areas[}\DecValTok{2}\NormalTok{,] }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\DecValTok{1460}\NormalTok{, }\DecValTok{840}\NormalTok{, }\DecValTok{200}\NormalTok{, }\ConstantTok{NA}\NormalTok{) }\CommentTok{\# Right circular AOI}
-\NormalTok{AOI\_areas[}\DecValTok{3}\NormalTok{,] }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\DecValTok{960}\NormalTok{, }\DecValTok{840}\NormalTok{, }\DecValTok{200}\NormalTok{, }\DecValTok{400}\NormalTok{) }\CommentTok{\# Right circular AOI}
+\NormalTok{AOI\_areas[}\DecValTok{3}\NormalTok{,] }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\DecValTok{960}\NormalTok{, }\DecValTok{840}\NormalTok{, }\DecValTok{200}\NormalTok{, }\DecValTok{400}\NormalTok{) }\CommentTok{\# Centre rectangular AOI}
 \end{Highlighting}
 \end{Shaded}
 
-Time spent in AOIs can also be calculated from fixations or raw data
-using the \texttt{AOI\_time()} function. This calculates the time spent
-in each AOI per trial. Output can be expressed in the form of absolute
-time, or by passing a vector of times to the ``trial\_time'' parameter,
-can be expressed as proportional time.
+Time spent in AOIs can also be calculated from either fixations or raw
+data using the \texttt{AOI\_time()} function. This calculates the time
+spent in each AOI per trial. The resulting output can be expressed in
+the form of absolute time, or, by passing a vector of times to the
+``trial\_time'' parameter, can be expressed as proportional time.
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -862,6 +869,45 @@ can be expressed as proportional time.
 \end{Highlighting}
 \end{Shaded}
 
+\begin{verbatim}
+  pID trial        AOI      time
+1 118     1     target 0.1043446
+2 118     1 distractor 0.2488674
+3 118     1   outcomes 0.4041589
+4 118     2     target 0.1380248
+5 118     2 distractor 0.1702220
+6 118     2   outcomes 0.4816758
+7 118     3     target 0.1391737
+8 118     3 distractor 0.1080352
+9 118     3   outcomes 0.5397965
+\end{verbatim}
+
+We can see from the resulting data that the function provides time on
+each AOI for each trial. Used in combination with the
+\texttt{conditional\_transform()} function, \texttt{AOI\_time()}
+provides a very efficient way to quickly assess time on critical regions
+of space. Since the data is in long format, it can be easily processed
+further with common techniques in R:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(dplyr)}
+
+\NormalTok{data\_AOI\_time }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{group\_by}\NormalTok{(AOI) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{summarise}\NormalTok{(}\AttributeTok{mean\_time =} \FunctionTok{mean}\NormalTok{(time))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+# A tibble: 3 x 2
+  AOI        mean_time
+  <fct>          <dbl>
+1 target         0.201
+2 distractor     0.237
+3 outcomes       0.365
+\end{verbatim}
+
 The \texttt{AOI\_time\_binned()} function can assess total duration of
 time on AOIs, divided into sequential time bins. Since fixations will
 naturally overlap these segments in many circumstances, this functions
@@ -874,10 +920,26 @@ for periods of 1000 ms, limiting analysis to the first 8000 ms.
   \FunctionTok{AOI\_time\_binned}\NormalTok{(data, }
                   \AttributeTok{AOIs =}\NormalTok{ HCL\_AOIs,}
                   \AttributeTok{AOI\_names =} \FunctionTok{c}\NormalTok{(}\StringTok{"predictive"}\NormalTok{, }\StringTok{"non{-}predictive"}\NormalTok{, }\StringTok{"target"}\NormalTok{),}
-                  \AttributeTok{bin\_length =} \DecValTok{1000}\NormalTok{,}
-                  \AttributeTok{max\_time =} \DecValTok{8000}\NormalTok{) }\CommentTok{\#in milliseconds}
+                  \AttributeTok{bin\_length =} \DecValTok{1000}\NormalTok{, }\CommentTok{\# in milliseconds}
+                  \AttributeTok{max\_time =} \DecValTok{8000}\NormalTok{) }\CommentTok{\# in milliseconds}
+
+\FunctionTok{head}\NormalTok{(data\_AOI\_time\_binned, }\DecValTok{10}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
+
+\begin{verbatim}
+   pID trial bin_n predictive non-predictive target
+1  118     1     1          0            217    337
+2  118     1     2          0            187    757
+3  118     1     3        460              0    430
+4  118     1     4        270              0    680
+5  118     1     5        220              0    593
+6  118     1     6          0            630    337
+7  118     1     7          0            797      0
+8  118     1     8          0            370      0
+9  118     2     1        617              0      0
+10 118     2     2        167              0    800
+\end{verbatim}
 
 It is also possible to determine the sequence of entries into AOIs using
 the \texttt{AOI\_seq()} function. This function currently works only
@@ -898,6 +960,19 @@ provides start and end times and duration of each entry.
 \FunctionTok{head}\NormalTok{(data\_AOI\_entry, }\DecValTok{9}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
+
+\begin{verbatim}
+  pID trial        AOI start  end duration entry_n
+1 118     1   outcomes   400  653      253       1
+2 118     1 distractor   803 1083      280       2
+3 118     1   outcomes  1233 2120      887       3
+4 118     1     target  2260 2666      406       4
+5 118     1   outcomes  2760 3646      886       5
+6 118     1     target  3753 4116      363       6
+7 118     1   outcomes  4286 5323     1037       7
+8 118     1 distractor  5403 6772     1369       8
+9 118     1 distractor  7652 9272     1620       9
+\end{verbatim}
 
 \subsection{Visualisations}\label{visualisations}
 
@@ -928,7 +1003,7 @@ fixations arose.
 \end{Highlighting}
 \end{Shaded}
 
-\pandocbounded{\includegraphics[keepaspectratio]{BRM_ms_files/figure-pdf/unnamed-chunk-13-1.pdf}}
+\pandocbounded{\includegraphics[keepaspectratio]{BRM_ms_files/figure-pdf/unnamed-chunk-14-1.pdf}}
 
 In addition to eye data, an image can be added to the plot, which is
 useful for inspecting data over a representation of the experimental
@@ -945,18 +1020,18 @@ demonstrate the plotting of the saccades, AOIs, and a background image:
 \end{Highlighting}
 \end{Shaded}
 
-\pandocbounded{\includegraphics[keepaspectratio]{BRM_ms_files/figure-pdf/unnamed-chunk-14-1.pdf}}
+\pandocbounded{\includegraphics[keepaspectratio]{BRM_ms_files/figure-pdf/unnamed-chunk-15-1.pdf}}
 
-The function \texttt{plot\_seq()} is useful for visualising example data
-as a series of plots, mapping out eye movements over the course of a
-single trial. By default this function will plot a randomly selected
-trial from the raw data that is passed to the function. Otherwise,
-specific trials and participant values can be specified. The function
-requires a ``bin\_time'' parameter, that specifies the length of each
-time-period within the trial. An optional parameter of ``bin\_range''
-can be specified to restrict the range of these periods that are
-presented. For example here we plot data in periods of 1000 ms across
-the first four of these periods.
+The function \texttt{plot\_seq()} is useful for visualising data as a
+series of plots, mapping out eye movements over the course of a single
+trial. By default this function will plot a randomly selected trial from
+the raw data that is passed to the function. Otherwise, specific trials
+and participant values can be specified. The function requires a
+``bin\_time'' parameter, that specifies the length of each time-period
+within the trial. An optional parameter of ``bin\_range'' can be
+specified to restrict the range of these periods that are presented. For
+example here we plot data in periods of 1000 ms across the first four of
+these periods.
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -969,6 +1044,8 @@ the first four of these periods.
          \AttributeTok{bg\_image =} \StringTok{"images/HCL\_sample\_image.png"}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
+
+\pandocbounded{\includegraphics[keepaspectratio]{BRM_ms_files/figure-pdf/unnamed-chunk-16-1.pdf}}
 
 The \texttt{plot\_AOI\_growth()} function offers the representation of
 how an individual (on a single trial) spends their time looking at the
@@ -997,6 +1074,30 @@ or as a proportion of the time spent in the trial.
 \caption{\label{fig-growth}Examples of the absolute and proportional
 time plots from \texttt{plot\_AOI\_growth()}}
 
+\begin{minipage}{0.50\linewidth}
+
+\subcaption{\label{fig-abs}}
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{BRM_ms_files/figure-pdf/fig-abs-1.pdf}}
+
+}
+
+\end{minipage}%
+%
+\begin{minipage}{0.50\linewidth}
+
+\subcaption{\label{fig-prop}}
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{BRM_ms_files/figure-pdf/fig-prop-1.pdf}}
+
+}
+
+\end{minipage}%
+
 \end{figure}%
 
 A heatmap of eye gaze positions can be generated using
@@ -1006,7 +1107,7 @@ differentiate between trials or participants and plots any coordinate
 data it is given. This behaviour is allowed as the heatmap offers an
 excellent and fast ``sanity check'' that participants were, on the
 whole, looking at the expected areas of the experiment screen during the
-trials. As can be seen in Figure \textbf{?@fig-heatmap}, we can be
+trials. As can be seen in Figure Figure~\ref{fig-heatmap}, we can be
 reassured that participants do indeed spend most of their time looking
 at the stimuli on screen rather than in the empty space.
 \texttt{plot\_heatmap()} also allows for the modification of the amount
@@ -1022,31 +1123,34 @@ stimuli and saccades between these areas.
 \end{Highlighting}
 \end{Shaded}
 
-\subsection{eyetool assumptions {[}I DON'T KNOW WHERE THIS SHOULD GO
-JUST
-YET{]}}\label{eyetool-assumptions-i-dont-know-where-this-should-go-just-yet}
+\begin{figure}[H]
 
-As with any data processing or analysis, there are certain assumptions
-made when developing the eyetools package. Some of these are built into
-the package directly, either as errors or warnings, such as the
-assumption that data is ordered by participant ID (if present) and
-trial, and some are not built in because they would limit the
-flexibility of the package functionality. One built-in assumption is the
-handling of missing data. eyetools expects track loss to be represented
-as NA within the data, and so any system that provides a different
-convention for recording track loss needs to be changed prior to using
-eyetools functions.
+\caption{\label{fig-heatmap}A heatmap overlaid upon a sample stimuli
+image demonstrating where the participants looked most over all trials}
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{BRM_ms_files/figure-pdf/fig-heatmap-1.pdf}}
+
+}
+
+\end{figure}%
+
+\subsection{Testing and development}\label{testing-and-development}
+
+Eyetools is open source software that is therefore free to use and open
+to further development. We have created this package for use in analyses
+in our own laboratory, as well as applying it to other other
+experimental data. However, our testing of the functions is not
+extensive, given the unfunded nature of the project. Below we list the
 
 During development, eyetools was tested using data collected from a
 Tobii Pro Spectrum eye tracker recording at 300Hz. Screen resolutions
-were constant at 1080x1920 pixels, and the timestamps were recorded in
-milliseconds. Whilst most of the functions were designed to work with
-any hardware provided the data is formatted to eyetools expectations
-(with the exception of \texttt{hdf5\_to\_df()} and
-\texttt{hdf5\_get\_event()} as these convert Tobii data), as well as not
-relying on specific frequencies or resolutions (either through the
-function behaviour, or by supplying parameters for specificity),
-eyetools has not been tested on a diverse set of datasets.
+were constant at 1080x1920 pixels, and the timestamps were converted to
+millisecond resolution. The functions are designed to be robust enough
+to work with data from any hardware provided the data is formatted to
+eyetools expectations. However, eyetools has not been tested on a
+diverse range of datasets at this stage.
 
 Some default behaviours are in-built, but are easily overrided such as
 parameters for resolution in the plotting functions. Similarly
@@ -1058,10 +1162,6 @@ that is not recorded at 300Hz. To circumvent the potential issue of
 sample rates being an issue, by default functions that require a sample
 rate will deduce the frequency from the data rather than needing it to
 be specified.
-
-\section{Analysing eye data}\label{analysing-eye-data}
-
-@tom
 
 \section{Discussion}\label{discussion}
 
@@ -1133,9 +1233,26 @@ tracking as a tool for examining cognitive processes} (G. Foster, Ed.;
 pp. 1--30). Academic Press.
 \url{https://doi.org/10.1016/B978-0-12-813092-6.00002-2}
 
+\bibitem[\citeproctext]{ref-vanduren1995}
+Duren, L. L. van, \& Sanders, A. F. (1995). Signal processing during and
+across saccades. \emph{Acta Psychologica}, \emph{89}(2), 121--147.
+\url{https://doi.org/10.1016/0001-6918(94)00029-G}
+
+\bibitem[\citeproctext]{ref-irwin1995}
+Irwin, D. E., Carlson-Radvansky, L. A., \& Andrews, R. V. (1995).
+Information processing during saccadic eye movements. \emph{Acta
+Psychologica}, \emph{90}(1), 261--273.
+\url{https://doi.org/10.1016/0001-6918(95)00024-O}
+
 \bibitem[\citeproctext]{ref-salvucci2000}
 Salvucci, D. D., \& Goldberg, J. H. (2000). \emph{the symposium}.
 71--78. \url{https://doi.org/10.1145/355017.355028}
+
+\bibitem[\citeproctext]{ref-sanders1985}
+Sanders, A. F., \& Houtmans, M. J. M. (1985). There is no central
+stimulus encoding during saccadic eye shifts: A case against general
+parallel processing notions. \emph{Acta Psychologica}, \emph{60}(2),
+323--338. \url{https://doi.org/10.1016/0001-6918(85)90060-5}
 
 \end{CSLReferences}
 
