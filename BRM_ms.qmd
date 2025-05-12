@@ -280,7 +280,7 @@ data_AOI_entry <-
 head(data_AOI_entry, 9)
 ```
 
-Knowing the order in which the eyes visit particular regions of space is essential for many steps in eye data analysis. For example, each trial might start with a fixation point in the centre of the screen. Below we show how the `AOI_seq` function can be used in combination with other basic R commands to efficiently detect the first AOI entry on each trial. We can see that in all but 1 of the 12 example trials, participants process the central fixation point first.
+Knowing the order in which the eyes visit particular regions of space is essential for many steps in eye data analysis. For example, each trial might start with a fixation point in the centre of the screen. Below we show how the `AOI_seq` function can be used in combination with other basic R commands to efficiently detect the first AOI entry on each trial. We can see that in all but one of the 12 example trials, participants process the central fixation point first.
 
 ```{r}
 #| output: true
@@ -317,7 +317,7 @@ plot_spatial(raw_data = data,
              trial_values = 6)
 ```
 
-In addition to eye data, an image can be added to the plot, which is useful for inspecting data over a representation of the experimental task. If AOIs have been defined, these can be plotted as well. Here we demonstrate the plotting of the saccades, AOIs, and a background image:
+In addition to eye data, a background image can be added to the plot, which is useful for inspecting data over a representation of the experimental task. If AOIs have been defined, these can be plotted as well. Here we demonstrate the plotting of the saccades, AOIs, and a background image:
 
 ```{r}
 #| output: true
@@ -347,7 +347,7 @@ plot_seq(data = data,
 
 ```
 
-The `plot_AOI_growth()` function offers the representation of how an individual (on a single trial) spends their time looking at the different AOIs. This can be useful to see how AOIs are interacted with over time, and this can be presented as either a cumulative over time, or as a proportion of the time spent in the trial.
+The `plot_AOI_growth()` function offers a visualisation of how an individual (on a single trial) spends their time looking at the different AOIs. This can be useful to see how AOIs are interacted with over time, and this can be presented as either a plot of the cumulative time, or as a proportion of the time spent in the trial.
 
 ::: {#fig-growth layout-ncol="2"}
 ```{r}
@@ -376,14 +376,18 @@ plot_AOI_growth(data = data,
 Examples of the absolute and proportional time plots from `plot_AOI_growth()`
 :::
 
-A heatmap of eye gaze positions can be generated using `plot_heatmap()` which takes raw data as an input. As a function, and unlike many of the processing steps, it does not differentiate between trials or participants and plots any coordinate data it is given. This behaviour is allowed as the heatmap offers an excellent and fast "sanity check" that participants were, on the whole, looking at the expected areas of the experiment screen during the trials. As can be seen in Figure @fig-heatmap, we can be reassured that participants do indeed spend most of their time looking at the stimuli on screen rather than in the empty space. `plot_heatmap()` also allows for the modification of the amount of data displayed, using the `alpha_control` parameter. By decreasing `alpha_control` in Figure @fig-heatmap-alpha-update, we gain more visualised information and we can still see that the majority of the data is kept within the stimuli and saccades between these areas.
+A heatmap of eye gaze positions can be generated using `plot_heatmap()` which takes raw data as an input. Like `plot_spatial()`, it is possible to select certain pID and trial_values, therefore offering a complementary visualisation of raw data. As can be seen in Figure @fig-heatmap, we can be reassured that participants do indeed spend most of their time looking at the stimuli on screen rather than in the empty space. `plot_heatmap()` also allows for the modification of the amount of data displayed, using the `alpha_range` parameter, which requires a pair of values to specify a range between 0 and 1. By restricting the range of values displayed
 
 ```{r}
 #| fig-cap: A heatmap overlaid upon a sample stimuli image demonstrating where the participants looked most over all trials
 #| label: fig-heatmap
 #| output: true
 
-plot_heatmap(data, bg_image = "images/HCL_sample_image.png")
+plot_heatmap(data, 
+             pID_values = 118,
+             trial_values = c(1,3),
+             alpha_range = c(0.1,1),
+             bg_image = "images/HCL_sample_image.png")
 ```
 
 ## Testing and development
