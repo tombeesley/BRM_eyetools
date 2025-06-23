@@ -52,6 +52,22 @@ end_time <- start_time + 10000
 sel_tobii <- filter(tobii_fix, start >= start_time & end <= end_time)
 sel_eyetools <- filter(eyetools_fix, start >= start_time & end <= end_time)
 
+# compute distance between a and b
+
+c_t <- sel_tobii[,c("x", "y")]
+c_e <- sel_eyetools[,c("x", "y")]
+
+min_dist <- NULL
+
+for (i in 1:nrow(c_t)) {
+  dist_vals <-  as.matrix(dist(rbind(c_t[i,], c_e)))
+  min_dist[i] <- min(dist_vals[2:nrow(dist_vals),1])
+}
+
+mean(min_dist)
+
+# plot a and b
+
 a <- 
   plot_spatial(fix_data = sel_tobii) +
   ggtitle("Tobii extracted fixations")
@@ -61,3 +77,8 @@ b <- plot_spatial(fix_data = sel_eyetools) +
   ggtitle("eyetools extracted fixations")
 
 a+b
+
+
+
+
+
