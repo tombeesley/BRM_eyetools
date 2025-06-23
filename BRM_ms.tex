@@ -377,11 +377,11 @@ sciences in mind, though there is no reason why the package would not be
 effective more generally. The functions within the package reflect steps
 in a comprehensive analysis workflow, taking the user from initial
 handling of raw eye data, to summarising data for each period of a
-procedure, to the visualisation of the data in plots. We hope that the
-functions are simple enough to mean that the package is easy to use for
-researchers who are unfamiliar with eye data analysis. It should also
-appeal to researchers accustomed to working with eye data in other
-environments who wish to transfer to working in R.
+procedure, to the visualisation of the data in plots. Importantly, the
+functions are simple to use, ensuring that the package will be
+beneficial for researchers who are unfamiliar with eye data analysis. It
+should also appeal to researchers accustomed to working with eye data in
+other environments who wish to transfer to working in R.
 
 \emph{eyetools} is, of course, not the only package in R that allows
 users to work with eye data. A recent survey of CRAN (The Comprehensive
@@ -793,11 +793,11 @@ that are returned.
 Between periods of fixation, the velocity of the eye increases rapidly
 as it makes a saccade towards the next point of fixation. The
 \texttt{saccade\_VTI()} function will extract saccades using the
-velocity threshold algorithm described above. Details of each saccade
-are given, such as the timing of the saccade onset, duration, and the
-origin and terminal coordinates. As with the fixation algorithms,
-default parameters have been chosen, but can be adapted to fit the
-requirements of the user.
+velocity threshold algorithm described above. The resulting output
+provides details of each saccade, such as the timing of the saccade
+onset, duration, and the origin and terminus coordinates. As with the
+fixation algorithms, default parameters have been chosen, but can be
+adapted to fit the requirements of the user.
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -830,11 +830,11 @@ time spent in regions of space. \emph{eyetools} has a number of
 functions for assessing the time spent in Areas of Interest (AOIs), as
 well as the sequence in which the eye enters and exits these areas. AOIs
 will typically reflect regions of space in which critical stimuli
-appear. AOIs are defined in eyetools using a dataframe object, which
-codes the centrepoint of the AOI in x, y coordinates along with the
-width and height (if the AOIs are rectangular) or just the radius (if
-circular). This object can be created using the function
-\texttt{create\_AOI\_df()}:
+appear. AOIs are defined in eyetools using a dataframe object, where
+each row reflects a unique AOI, where values code for the centrepoint of
+the AOI in x/y coordinates along with the width and height (if the AOIs
+are rectangular) or just the radius (if circular). This object can be
+created using the function \texttt{create\_AOI\_df()}:
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -885,8 +885,8 @@ the form of absolute time, or, by passing a vector of times to the
 We can see from the resulting data that the function provides time on
 each AOI for each trial. Used in combination with the
 \texttt{conditional\_transform()} function, \texttt{AOI\_time()}
-provides a very efficient way to quickly assess time on critical regions
-of space. Since the data is in long format, it can be easily processed
+provides a very efficient way to assess time on critical regions of
+space. Since the data is in long format, it can be easily processed
 further with common techniques in R:
 
 \begin{Shaded}
@@ -908,18 +908,19 @@ further with common techniques in R:
 3 outcomes       0.365
 \end{verbatim}
 
-The \texttt{AOI\_time\_binned()} function can assess total duration of
-time on AOIs, divided into sequential time bins. Since fixations will
-naturally overlap these segments in many circumstances, this functions
-works only with raw data. Here we are assessing time in the three AOIs
-for periods of 1000 ms, limiting analysis to the first 8000 ms.
+The \texttt{AOI\_time\_binned()} function can assess the duration of
+time spent in AOIs, divided into sequential time bins. Since fixations
+will naturally overlap these segments in many circumstances, this
+functions operates only on raw data. Here we are assessing time in the
+three AOIs for periods of 1000 ms in length, and limiting this analysis
+to the first 8000 ms.
 
 \begin{Shaded}
 \begin{Highlighting}[]
 \NormalTok{data\_AOI\_time\_binned }\OtherTok{\textless{}{-}} 
   \FunctionTok{AOI\_time\_binned}\NormalTok{(data, }
                   \AttributeTok{AOIs =}\NormalTok{ HCL\_AOIs,}
-                  \AttributeTok{AOI\_names =} \FunctionTok{c}\NormalTok{(}\StringTok{"predictive"}\NormalTok{, }\StringTok{"non{-}predictive"}\NormalTok{, }\StringTok{"target"}\NormalTok{),}
+                  \AttributeTok{AOI\_names =} \FunctionTok{c}\NormalTok{(}\StringTok{"target"}\NormalTok{, }\StringTok{"distractor"}\NormalTok{, }\StringTok{"outcomes"}\NormalTok{),}
                   \AttributeTok{bin\_length =} \DecValTok{1000}\NormalTok{, }\CommentTok{\# in milliseconds}
                   \AttributeTok{max\_time =} \DecValTok{8000}\NormalTok{) }\CommentTok{\# in milliseconds}
 
@@ -928,17 +929,17 @@ for periods of 1000 ms, limiting analysis to the first 8000 ms.
 \end{Shaded}
 
 \begin{verbatim}
-   pID trial bin_n predictive non-predictive target
-1  118     1     1          0            217    337
-2  118     1     2          0            187    757
-3  118     1     3        460              0    430
-4  118     1     4        270              0    680
-5  118     1     5        220              0    593
-6  118     1     6          0            630    337
-7  118     1     7          0            797      0
-8  118     1     8          0            370      0
-9  118     2     1        617              0      0
-10 118     2     2        167              0    800
+   pID trial bin_n target distractor outcomes
+1  118     1     1      0        217      337
+2  118     1     2      0        187      757
+3  118     1     3    460          0      430
+4  118     1     4    270          0      680
+5  118     1     5    220          0      593
+6  118     1     6      0        630      337
+7  118     1     7      0        797        0
+8  118     1     8      0        370        0
+9  118     2     1    617          0        0
+10 118     2     2    167          0      800
 \end{verbatim}
 
 It is also possible to determine the sequence of entries into AOIs using
@@ -974,6 +975,51 @@ provides start and end times and duration of each entry.
 9 118     1 distractor  7652 9272     1620       9
 \end{verbatim}
 
+Knowing the order in which the eyes visit particular regions of space is
+essential for many steps in eye data analysis. For example, each trial
+might start with a fixation point in the centre of the screen. Below we
+show how the \texttt{AOI\_seq} function can be used in combination with
+other basic R commands to efficiently detect the first AOI entry on each
+trial. We can see that in all but one of the 12 example trials,
+participants process the central fixation point first.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(dplyr)}
+
+\CommentTok{\# add a central fixation AOI region}
+\NormalTok{HCL\_AOIs[}\DecValTok{4}\NormalTok{,] }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\DecValTok{960}\NormalTok{, }\DecValTok{810}\NormalTok{, }\DecValTok{200}\NormalTok{, }\DecValTok{200}\NormalTok{)}
+
+\NormalTok{data\_AOI\_entry }\OtherTok{\textless{}{-}} 
+  \FunctionTok{AOI\_seq}\NormalTok{(fixations, }
+          \AttributeTok{AOIs =}\NormalTok{ HCL\_AOIs,}
+          \AttributeTok{AOI\_names =} \FunctionTok{c}\NormalTok{(}\StringTok{"target"}\NormalTok{, }\StringTok{"distractor"}\NormalTok{, }\StringTok{"outcomes"}\NormalTok{, }\StringTok{"fixation"}\NormalTok{))}
+
+\NormalTok{data\_AOI\_entry }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{group\_by}\NormalTok{(pID, trial) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{slice}\NormalTok{(}\DecValTok{1}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+# A tibble: 12 x 7
+# Groups:   pID, trial [12]
+   pID   trial AOI      start   end duration entry_n
+   <chr> <dbl> <chr>    <dbl> <dbl>    <dbl>   <dbl>
+ 1 118       1 fixation     0   173      173       1
+ 2 118       2 fixation     0   186      186       1
+ 3 118       3 outcomes   393   906      513       1
+ 4 118       4 fixation     0   153      153       1
+ 5 118       5 fixation    10   163      153       1
+ 6 118       6 fixation     0   177      177       1
+ 7 119       1 fixation     0   246      246       1
+ 8 119       2 fixation     0   160      160       1
+ 9 119       3 fixation     0   180      180       1
+10 119       4 fixation     0   227      227       1
+11 119       5 fixation     0   197      197       1
+12 119       6 fixation     0   260      260       1
+\end{verbatim}
+
 \subsection{Visualisations}\label{visualisations}
 
 The eyetools package has a number of built in visualisations that allow
@@ -1003,12 +1049,13 @@ fixations arose.
 \end{Highlighting}
 \end{Shaded}
 
-\pandocbounded{\includegraphics[keepaspectratio]{BRM_ms_files/figure-pdf/unnamed-chunk-14-1.pdf}}
+\pandocbounded{\includegraphics[keepaspectratio]{BRM_ms_files/figure-pdf/unnamed-chunk-15-1.pdf}}
 
-In addition to eye data, an image can be added to the plot, which is
-useful for inspecting data over a representation of the experimental
-task. If AOIs have been defined, these can be plotted as well. Here we
-demonstrate the plotting of the saccades, AOIs, and a background image:
+In addition to eye data, a background image can be added to the plot,
+which is useful for inspecting data over a representation of the
+experimental task. If AOIs have been defined, these can be plotted as
+well. Here we demonstrate the plotting of the saccades, AOIs, and a
+background image:
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -1020,7 +1067,7 @@ demonstrate the plotting of the saccades, AOIs, and a background image:
 \end{Highlighting}
 \end{Shaded}
 
-\pandocbounded{\includegraphics[keepaspectratio]{BRM_ms_files/figure-pdf/unnamed-chunk-15-1.pdf}}
+\pandocbounded{\includegraphics[keepaspectratio]{BRM_ms_files/figure-pdf/unnamed-chunk-16-1.pdf}}
 
 The function \texttt{plot\_seq()} is useful for visualising data as a
 series of plots, mapping out eye movements over the course of a single
@@ -1045,13 +1092,13 @@ these periods.
 \end{Highlighting}
 \end{Shaded}
 
-\pandocbounded{\includegraphics[keepaspectratio]{BRM_ms_files/figure-pdf/unnamed-chunk-16-1.pdf}}
+\pandocbounded{\includegraphics[keepaspectratio]{BRM_ms_files/figure-pdf/unnamed-chunk-17-1.pdf}}
 
-The \texttt{plot\_AOI\_growth()} function offers the representation of
-how an individual (on a single trial) spends their time looking at the
+The \texttt{plot\_AOI\_growth()} function offers a visualisation of how
+an individual (on a single trial) spends their time looking at the
 different AOIs. This can be useful to see how AOIs are interacted with
-over time, and this can be presented as either a cumulative over time,
-or as a proportion of the time spent in the trial.
+over time, and this can be presented as either a plot of the cumulative
+time, or as a proportion of the time spent in the trial.
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -1101,25 +1148,24 @@ time plots from \texttt{plot\_AOI\_growth()}}
 \end{figure}%
 
 A heatmap of eye gaze positions can be generated using
-\texttt{plot\_heatmap()} which takes raw data as an input. As a
-function, and unlike many of the processing steps, it does not
-differentiate between trials or participants and plots any coordinate
-data it is given. This behaviour is allowed as the heatmap offers an
-excellent and fast ``sanity check'' that participants were, on the
-whole, looking at the expected areas of the experiment screen during the
-trials. As can be seen in Figure Figure~\ref{fig-heatmap}, we can be
+\texttt{plot\_heatmap()} which takes raw data as an input. Like
+\texttt{plot\_spatial()}, it is possible to select certain pID and
+trial\_values, therefore offering a complementary visualisation of raw
+data. As can be seen in Figure Figure~\ref{fig-heatmap}, we can be
 reassured that participants do indeed spend most of their time looking
 at the stimuli on screen rather than in the empty space.
 \texttt{plot\_heatmap()} also allows for the modification of the amount
-of data displayed, using the \texttt{alpha\_control} parameter. By
-decreasing \texttt{alpha\_control} in Figure
-\textbf{?@fig-heatmap-alpha-update}, we gain more visualised information
-and we can still see that the majority of the data is kept within the
-stimuli and saccades between these areas.
+of data displayed, using the \texttt{alpha\_range} parameter, which
+requires a pair of values to specify a range between 0 and 1. By
+restricting the range of values displayed
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\FunctionTok{plot\_heatmap}\NormalTok{(data, }\AttributeTok{bg\_image =} \StringTok{"images/HCL\_sample\_image.png"}\NormalTok{)}
+\FunctionTok{plot\_heatmap}\NormalTok{(data, }
+             \AttributeTok{pID\_values =} \DecValTok{118}\NormalTok{,}
+             \AttributeTok{trial\_values =} \FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{3}\NormalTok{),}
+             \AttributeTok{alpha\_range =} \FunctionTok{c}\NormalTok{(}\FloatTok{0.1}\NormalTok{,}\DecValTok{1}\NormalTok{),}
+             \AttributeTok{bg\_image =} \StringTok{"images/HCL\_sample\_image.png"}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
