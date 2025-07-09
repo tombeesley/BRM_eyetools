@@ -392,7 +392,7 @@ plot_heatmap(data,
 
 ## Testing and development
 
-Eyetools is open source software that is therefore free to use and open to further development. We have created this package for use in analyses in our own laboratory, as well as applying it to other other experimental data. However, our testing of the functions is not extensive, given the unfunded nature of the project. Below we list the
+Eyetools is open source software that is therefore free to use and open to further development. We have created this package for use in analyses in our own laboratory, as well as applying it to other other experimental data.
 
 During development, eyetools was tested using data collected from a Tobii Pro Spectrum eye tracker recording at 300Hz. Screen resolutions were constant at 1080x1920 pixels, and the timestamps were converted to millisecond resolution. The functions are designed to be robust enough to work with data from any hardware provided the data is formatted to eyetools expectations. However, eyetools has not been tested on a diverse range of datasets at this stage.
 

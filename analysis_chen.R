@@ -45,12 +45,34 @@ eyetools_raw <-
 eyetools_raw <- interpolate(eyetools_raw)
 eyetools_fix <- fixation_dispersion(eyetools_raw)
 
+
 # specify time period
+sel_tobii <- list()
+sel_eyetools <- list()
+
+for (p in 1:3) {
+
 start_time <- sample(max(eyetools_fix$end),1)
 end_time <- start_time + 10000
 
-sel_tobii <- filter(tobii_fix, start >= start_time & end <= end_time)
-sel_eyetools <- filter(eyetools_fix, start >= start_time & end <= end_time)
+sel_tobii[[p]] <- filter(tobii_fix, start >= start_time & end <= end_time)
+sel_eyetools[[p]] <- filter(eyetools_fix, start >= start_time & end <= end_time)
+
+}
+
+# create all the plots and piece together 
+
+t_1 <- plot_spatial(fix_data = sel_tobii[[1]]) + ggtitle("Tobii extracted fixations - period 1")
+e_1 <- plot_spatial(fix_data = sel_eyetools[[1]]) + ggtitle("eyetools extracted fixations - period 1")
+t_2 <- plot_spatial(fix_data = sel_tobii[[2]]) + ggtitle("Tobii extracted fixations - period 2")
+e_2 <- plot_spatial(fix_data = sel_eyetools[[2]]) + ggtitle("eyetools extracted fixations - period 2")
+t_3 <- plot_spatial(fix_data = sel_tobii[[3]]) + ggtitle("Tobii extracted fixations - period 3")
+e_3 <- plot_spatial(fix_data = sel_eyetools[[3]]) + ggtitle("eyetools extracted fixations - period 3")
+
+(t_1/t_2/t_3)+(e_1/e_2/e_3)
+
+(t_1+e_1)/(t_2+e_2)/(t_3+e_3)
+
 
 # compute distance between a and b
 
@@ -65,20 +87,4 @@ for (i in 1:nrow(c_t)) {
 }
 
 mean(min_dist)
-
-# plot a and b
-
-a <- 
-  plot_spatial(fix_data = sel_tobii) +
-  ggtitle("Tobii extracted fixations")
-  
-
-b <- plot_spatial(fix_data = sel_eyetools) +
-  ggtitle("eyetools extracted fixations")
-
-a+b
-
-
-
-
 
