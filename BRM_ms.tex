@@ -345,26 +345,30 @@ attention, memory, and decision making, with high temporal precision
 (\citeproc{ref-beesley2019}{Beesley et al., 2019}).
 
 While there are abundant uses and benefits of collecting eye-movement
-data in psychology experiments, the continual stream of recording can
-lead to an overwhelming amount of raw data: modern eye-trackers can
-record data at 1000 Hz and above, which results in 3.6 million rows of
-data per hour. The provision of suitable computational software for data
-reduction and processing is an important part of eye-tracking research.
-The companies behind eye-tracking devices offer licensed software that
-will perform many of the necessary steps for eye-data analysis. However,
-there are several disadvantages to using such proprietary software in a
-research context. Firstly, the software will typically have an ongoing
-license cost for continual use. Secondly, the algorithms driving the
-operations within such software are not readily available for
-inspection. Both of these important constraints mean that the use of
-proprietary analysis software will lead to a failure to meet the basic
-open-science principle of analysis reproduction, for example as set out
-by the UK Reproducibility Network: ``We expect researchers to\ldots{}
-make their research methods, software, outputs and data open, and
-available at the earliest possible point\ldots The reproducibility of
-both research methods and research results \ldots is critical to
-research in certain contexts, particularly in the experimental sciences
-with a quantitative focus\ldots{}''
+data in psychology experiments, the collection of such data has many
+implications for the eventual analysis work that is undertaken by the
+researcher. The continual stream of recording can lead to an
+overwhelming amount of raw data: modern eye-trackers can record data at
+1000 Hz and above, which results in 3.6 million rows of data per hour.
+The continual nature of the data also leads to a wealth of choice in the
+manner in which it is analysed. As such, the provision of suitable
+computational software for data reduction and processing is an important
+part of eye-tracking research. The companies behind eye-tracking devices
+offer licensed software that will perform many of the common steps for
+eye-data analysis. However, there are several disadvantages to using
+such proprietary software in a research context. Firstly, the software
+will typically have an ongoing license cost for continual use. Secondly,
+the algorithms driving the operations within such software are not
+readily available for inspection or adaptation for new purposes. These
+significant constraints mean that the use of proprietary analysis
+software will lead to a failure to meet the basic open-science principle
+of analysis reproduction, for example as set out by the UK
+Reproducibility Network: ``We expect researchers to\ldots{} make their
+research methods, software, outputs and data open, and available at the
+earliest possible point\ldots The reproducibility of both research
+methods and research results \ldots is critical to research in certain
+contexts, particularly in the experimental sciences with a quantitative
+focus\ldots{}''.
 
 In the current article we introduce a new toolkit for eye-data
 processing and analysis called ``\emph{eyetools}'', which takes the form
@@ -375,13 +379,16 @@ efficient and effective means to conduct basic eye-data analysis.
 \emph{eyetools} is built with academic researchers in the psychological
 sciences in mind, though there is no reason why the package would not be
 effective more generally. The functions within the package reflect steps
-in a comprehensive analysis workflow, taking the user from initial
+in a comprehensive analysis pipeline, taking the user from initial
 handling of raw eye data, to summarising data for each period of a
-procedure, to the visualisation of the data in plots. Importantly, the
-functions are simple to use, ensuring that the package will be
-beneficial for researchers who are unfamiliar with eye data analysis. It
-should also appeal to researchers accustomed to working with eye data in
-other environments who wish to transfer to working in R.
+procedure, to the visualisation of the data in plots. Since the pipeline
+is contained within the one package, it does not rely on external
+software, which ensures easy reproducibility of any analyses.
+Importantly, the functions are simple to use, ensuring that the package
+will be beneficial for researchers who are unfamiliar with eye data
+analysis. It should also appeal to researchers accustomed to working
+with eye data in other environments who wish to transfer to working in
+R.
 
 \emph{eyetools} is, of course, not the only package in R that allows
 users to work with eye data. A recent survey of CRAN (The Comprehensive
@@ -590,8 +597,8 @@ further analysis, the \texttt{interpolate()} function can estimate the
 missing gaze data, based upon the eye coordinates before and after the
 missing data, and perform a repair. The default method of linear
 interpolation (``approx'') replaces missing values with a line of
-constant slope and evenly spaced coordinates reaching the existing data
-(alternatively a cubic ``spline'' method can be applied).
+constant slope and evenly spaced coordinates that bridge between the
+existing data (alternatively a cubic ``spline'' method can be applied).
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -651,11 +658,13 @@ this experiment is largely unimportant for the current purposes, but for
 clarity, the data were collected from the decision period of the
 procedure, where two rectangular cue stimuli were presented in the top
 half of the screen, one on the left side and one on the right side. Two
-smaller response options were presented in the lower half of the screen,
-one above the other. Participants simply had to look at the cues and
-choose a response. These raw data can be accessed by calling
-\texttt{HCL} and the associated ``areas of interest'' (described later)
-can be called with \texttt{HCL\_AOIs}.
+smaller response options were presented centrally in the lower half of
+the screen, one above the other. Participants simply had to look at the
+cues and choose a response. The raw eye data can be accessed by calling
+\texttt{HCL}, the ``behavioural data'' (trial events, reaction times,
+responses, etc) by calling \texttt{HCL\_behavioural}, and the associated
+``areas of interest'' (described later) can be called with
+\texttt{HCL\_AOIs}.
 
 \subsubsection{Counterbalanced designs}\label{counterbalanced-designs}
 
@@ -674,7 +683,7 @@ distractor).
 \emph{eyetools} has a built in function,
 \texttt{conditional\_transform()}, which allows us to \emph{transform}
 the x and/or y values of the stimuli so as to take into account a
-counterbalancing variable. This function currently allows for a
+counterbalancing variable. This function currently performs a
 single-dimensional transformation, across either the horizontal or
 vertical midline. It can be used on raw data or fixation data; we simply
 need to append a column to the data to reflect the counterbalancing
@@ -711,16 +720,15 @@ the left side of the screen.
 \subsection{Fixations}\label{fixations}
 
 Once the data has been repaired and smoothed, a core step in eye data
-analysis is to identify fixations (\citeproc{ref-salvucci2000}{Salvucci
-\& Goldberg, 2000}). Broadly, a fixation is defined as a period in which
-the eye stops moving and is held in a specific location for a
-significant period of time (typically longer than 100 ms, Salvucci and
-Goldberg (\citeproc{ref-salvucci2000}{2000})). The period in which the
-eyes are moving between fixations reflects a ``saccade''. While the eyes
-move during these brief (typically less than 50 ms) periods of movement,
-significant perceptual suppression occurs and there is minimal
-information processing (\citeproc{ref-vanduren1995}{Duren \& Sanders,
-1995}; \citeproc{ref-irwin1995}{Irwin et al., 1995};
+analysis is to identify fixations. Broadly, a fixation is defined as a
+period in which the eye stops moving and is held in a specific location
+for a significant period of time {[}typically longer than 100 ms;
+Salvucci and Goldberg (\citeproc{ref-salvucci2000}{2000}){]}. The period
+in which the eyes are moving between fixations reflects a ``saccade''.
+While the eyes move during these brief (typically less than 50 ms)
+periods of movement, significant perceptual suppression occurs and there
+is minimal information processing (\citeproc{ref-vanduren1995}{Duren \&
+Sanders, 1995}; \citeproc{ref-irwin1995}{Irwin et al., 1995};
 \citeproc{ref-sanders1985}{Sanders \& Houtmans, 1985}). Therefore for
 many cognitive psychologists, the periods of fixation are particularly
 important and reflect the most relevant periods of information
@@ -738,8 +746,8 @@ also means the data are now in a far more practical format for storage
 in online data repositories.
 
 There are two fixation algorithms offered in the \emph{eyetools}
-package, both based on methods presented by
-(\citeproc{ref-salvucci2000}{Salvucci \& Goldberg, 2000}). The first,
+package, both based on methods presented by Salvucci and Goldberg
+(\citeproc{ref-salvucci2000}{2000}). The first,
 \texttt{fixation\_dispersion()} seeks periods of low variability in the
 spatial component of the data; the algorithm looks for sufficient
 periods of time in which the gaze position remains within a tolerated
@@ -751,16 +759,16 @@ in the returned object.
 
 The second algorithm, \texttt{fixation\_VTI()} , employs a
 velocity-threshold approach to identifying fixations, based on the
-algorithm described in (\citeproc{ref-salvucci2000}{Salvucci \&
-Goldberg, 2000}). Since points of fixation occur when the eye is not in
-consistent motion, the algorithm computes the euclidean distance between
-points and then determines the velocity of the eye. Periods in which
-this velocity is consistently below the velocity threshold (for which
-the default is 100 degrees of visual angle per second) are identified as
-a potential period of fixation. The algorithm then applies a dispersion
-check to ensure that the eye maintains a relatively stable position
-across this period. Fixations must be of a minimum length for
-classification (by default 150 ms).
+algorithm described in Salvucci and Goldberg
+(\citeproc{ref-salvucci2000}{2000}). Since points of fixation occur when
+the eye is not in consistent motion, the algorithm computes the
+euclidean distance between points and then determines the velocity of
+the eye. Periods in which this velocity is consistently below the
+velocity threshold (for which the default is 100 degrees of visual angle
+per second) are identified as a potential period of fixation. The
+algorithm then applies a dispersion check to ensure that the eye
+maintains a relatively stable position across this period. Fixations
+must be of a minimum length for classification (by default 150 ms).
 
 Here we can see the example data passed to the
 \texttt{fixation\_dispersion()} algorithm and the resulting fixations
@@ -911,7 +919,7 @@ further with common techniques in R:
 The \texttt{AOI\_time\_binned()} function can assess the duration of
 time spent in AOIs, divided into sequential time bins. Since fixations
 will naturally overlap these segments in many circumstances, this
-functions operates only on raw data. Here we are assessing time in the
+function operates only on raw data. Here we are assessing time in the
 three AOIs for periods of 1000 ms in length, and limiting this analysis
 to the first 8000 ms.
 
@@ -1040,8 +1048,6 @@ fixations arose.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\CommentTok{\# will tidy this up once eyetools functions can filter to individual participants}
-
 \FunctionTok{plot\_spatial}\NormalTok{(}\AttributeTok{raw\_data =}\NormalTok{ data,}
              \AttributeTok{fix\_data =}\NormalTok{ fixations,}
              \AttributeTok{pID\_values =} \DecValTok{118}\NormalTok{,}
@@ -1049,7 +1055,16 @@ fixations arose.
 \end{Highlighting}
 \end{Shaded}
 
-\pandocbounded{\includegraphics[keepaspectratio]{BRM_ms_files/figure-pdf/unnamed-chunk-15-1.pdf}}
+\begin{figure}[H]
+
+\caption{Raw data (grey points) and fixations (coloured circles) for a
+single trial}
+
+{\centering \pandocbounded{\includegraphics[keepaspectratio]{BRM_ms_files/figure-pdf/unnamed-chunk-15-1.pdf}}
+
+}
+
+\end{figure}%
 
 In addition to eye data, a background image can be added to the plot,
 which is useful for inspecting data over a representation of the
@@ -1067,7 +1082,16 @@ background image:
 \end{Highlighting}
 \end{Shaded}
 
-\pandocbounded{\includegraphics[keepaspectratio]{BRM_ms_files/figure-pdf/unnamed-chunk-16-1.pdf}}
+\begin{figure}[H]
+
+\caption{Saccades (blue arrows) and Area-Of-Interest regions (pink
+shapes) for a single trial, against a background image.}
+
+{\centering \pandocbounded{\includegraphics[keepaspectratio]{BRM_ms_files/figure-pdf/unnamed-chunk-16-1.pdf}}
+
+}
+
+\end{figure}%
 
 The function \texttt{plot\_seq()} is useful for visualising data as a
 series of plots, mapping out eye movements over the course of a single
@@ -1092,13 +1116,22 @@ these periods.
 \end{Highlighting}
 \end{Shaded}
 
-\pandocbounded{\includegraphics[keepaspectratio]{BRM_ms_files/figure-pdf/unnamed-chunk-17-1.pdf}}
+\begin{figure}[H]
 
-The \texttt{plot\_AOI\_growth()} function offers a visualisation of how
-an individual (on a single trial) spends their time looking at the
-different AOIs. This can be useful to see how AOIs are interacted with
-over time, and this can be presented as either a plot of the cumulative
-time, or as a proportion of the time spent in the trial.
+\caption{The data from the same example trial, plotted across 4
+consecutive bins of 1000 milliseconds}
+
+{\centering \pandocbounded{\includegraphics[keepaspectratio]{BRM_ms_files/figure-pdf/unnamed-chunk-17-1.pdf}}
+
+}
+
+\end{figure}%
+
+The \texttt{plot\_AOI\_growth()} function offers a visualisation of the
+progression of time spent on AOIs across a single trial. This can be
+useful to see how participants interact with AOIs over time, and this
+can be presented as either a plot of the cumulative time, or as a
+proportion of the time spent in the trial.
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -1148,7 +1181,7 @@ time plots from \texttt{plot\_AOI\_growth()}}
 \end{figure}%
 
 A heatmap of eye gaze positions can be generated using
-\texttt{plot\_heatmap()} which takes raw data as an input. Like
+\texttt{plot\_heatmap()} which takes raw data as input. Like
 \texttt{plot\_spatial()}, it is possible to select certain pID and
 trial\_values, therefore offering a complementary visualisation of raw
 data. As can be seen in Figure Figure~\ref{fig-heatmap}, we can be
@@ -1182,87 +1215,90 @@ image demonstrating where the participants looked most over all trials}
 
 \end{figure}%
 
-\subsection{Testing and development}\label{testing-and-development}
+\subsection{Validation of fixation
+metrics}\label{validation-of-fixation-metrics}
 
-Eyetools is open source software that is therefore free to use and open
-to further development. We have created this package for use in analyses
-in our own laboratory, as well as applying it to other other
-experimental data. However, our testing of the functions is not
-extensive, given the unfunded nature of the project. Below we list the
+Eyetools uses implementations of common methods for extracting fixations
+from raw data (\citeproc{ref-salvucci2000}{Salvucci \& Goldberg, 2000}).
+As a means to provide a simple validation of our primary fixation
+algorithm, we took raw data collected independently from a researcher
+outside of our lab on an unknown task. The researcher provided the raw
+data and extracted fixations for a 6 minute period of data collection,
+from Tobii Pro Lab software. From the raw data we could use the eyetools
+\texttt{fixation\_dispersion()} algorithm to compute fixations from
+several randomly drawn 10 second periods. Figure
+\textbf{?@fig-tobii\_comp} shows side-by-side comparisons of Tobii and
+eyetools extracted fixations from 3 such periods (the raw data and
+analysis script for this comparison is available in the manuscript
+repository for full exploration of other periods). Somewhat
+unsurprisingly, the algorithms show a very similar spread of fixations
+for these periods. Notably the number of overall fixations differs
+across many samples, which is a consequence of the particular parameters
+used to define fixations, such as the dispersion tolerance and the
+minimum duration.
 
-During development, eyetools was tested using data collected from a
-Tobii Pro Spectrum eye tracker recording at 300Hz. Screen resolutions
-were constant at 1080x1920 pixels, and the timestamps were converted to
-millisecond resolution. The functions are designed to be robust enough
-to work with data from any hardware provided the data is formatted to
-eyetools expectations. However, eyetools has not been tested on a
-diverse range of datasets at this stage.
+\begin{figure}[H]
 
-Some default behaviours are in-built, but are easily overrided such as
-parameters for resolution in the plotting functions. Similarly
-\texttt{saccade\_VTI()} and \texttt{fixation\_VTI()} were tested with
-300Hz data. For these functions, as the frequency increases, the
-relative saccadic velocities will be lower meaning that the thresholds
-need to be reduced. This is important to note when working with data
-that is not recorded at 300Hz. To circumvent the potential issue of
-sample rates being an issue, by default functions that require a sample
-rate will deduce the frequency from the data rather than needing it to
-be specified.
+\caption{Comparison of Tobii (left) and eyetools (right) extracted
+fixations}
 
-\section{Discussion}\label{discussion}
+{\centering \pandocbounded{\includegraphics[keepaspectratio]{tobii_eyetools_fix_comparison.png}}
 
-In the present tutorial, we began by identifying the current gap in
-available tools for working with eye data in open-science pipelines. We
-then provided an overview of the general data collection process
-required for eye tracking research, before detailing the conversion of
-raw eye data into a useable \emph{eyetools} format. We then covered the
-entire processing pipeline using functions available in the
-\emph{eyetools} package that included the repairing and normalising the
-data, and the detection of events such as fixations, saccades, and AOI
-entries. @SOMETHING\_ON\_THE\_ANALYSIS\_GOES\_HERE.
+}
 
-From a practical perspective, this tutorial offers a step-by-step
-walkthrough for handling eye data using R for open-science, reproducible
-purposes. It provides a pipeline that can be relied upon by novices
-looking to work with eye data, as well as offering new functions and
-tools for experienced researchers. By enabling the processing and
-analysis of data in a single R environment it also helps to speed up
-data analysis.
+\end{figure}%
 
-\subsection{Advantages of Open-Source
-Tools}\label{advantages-of-open-source-tools}
+\subsection{Summary and future
+directions}\label{summary-and-future-directions}
+
+This paper has given an introduction and basic tutorial on working with
+an open source R package for an analysis pipeline for eye data. We began
+by identifying the current gap in available tools for working with eye
+data in open-science pipelines. We then provided an overview of the
+initial steps in working with raw eye data and the conversion of raw eye
+data into a usable format for working with the functions in
+\emph{eyetools}. We then covered many useful steps in the analysis
+pipeline using functions available in the \emph{eyetools} package that
+included the repairing and normalising the data, and the detection of
+events such as fixations, saccades, and the trial level analysis of data
+patterns, such as time on areas of interest, and the sequencing of
+entries to areas of interest.
+
+This tutorial offers a step-by-step walk-through for handling eye data
+using R, and will provide a set of tools that will lead to reproducible
+analysis steps for many experimental psychologists. It is hopefully
+clear that the functions in eyetools are flexible and powerful, yet
+ultimately simple to implement. While these functions represent some
+initial steps in eye data analysis, since the objects that result from
+these functions are standard formats in R (i.e., dataframes and plots),
+they will provide the user a means to enable more complex or nuanced
+analyses.
 
 eyetools offers an open-source toolset that holds no hidden nor
 proprietary functionality. The major benefits of open-source tools are
-extensive, but the main ones include the ability to explore and engage
-with the underlying functions to ensure that
+extensive: not only do they allow for full inspection and
+reproducibility of analyses, but they also support and enable the
+development and sharing of new analysis functions. This is our hope for
+eyetools, that future versions will benefit from user engagement and an
+expansion of the toolset to enable an ever more powerful set of
+features.
 
-A collaborative community - with open source tools, if an unmet need is
-identified, then the community can work to provide a solution.
+\subsection{Data and code
+availability}\label{data-and-code-availability}
 
-\subsection{Good Science Practices with
-eyetools}\label{good-science-practices-with-eyetools}
-
-Creating savepoints (like having processed raw data, and then
-post-fixation calculation). Reduces the need to completely rework
-workflows if an issue is detected as savepoints can be used to ensure
-that computationally-intense or time-heavy processes are conducted as
-infrequently as possible.
-
-\section{Data Availability}\label{data-availability}
-
-The data required for reproducing this tutorial is available at: @URL. A
-condensed version of the dataset (starting with the
-\texttt{combine\_eyes()} function) is a dataset in the \emph{eyetools}
-package called HCL.
-
-\section{Code Availability}\label{code-availability}
+This manuscript was written in Quarto and can be reproduced from the
+manuscript source files which are available at
+\url{https://github.com/tombeesley/BRM_eyetools} . The manuscript
+details functions from the latest CRAN version of eyetools which is
+0.9.2. We welcome contributions to the development of eyetools by
+posting bug reports and suggested improvements at
+\url{https://github.com/tombeesley/eyetools/issues} .
 
 The code used in this tutorial is available in the reproducible
 manuscript file available at:(IF STORING IN GITHUB, THEN WE NEED TO
 CREATE A ZENODO SNAPSHOT FOR A DOI RATHER THAN JUST A GITHUB LINK)
 
-\section{References}\label{references}
+\subsection{References}\label{references}
 
 \phantomsection\label{refs}
 \begin{CSLReferences}{1}{0}

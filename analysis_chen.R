@@ -43,35 +43,83 @@ eyetools_raw <-
   select(pID, time, x, y) %>% 
   mutate(trial = 1)
 eyetools_raw <- interpolate(eyetools_raw)
+#eyetools_raw <- smoother(eyetools_raw)
 eyetools_fix <- fixation_dispersion(eyetools_raw)
 
+# extract tobii saccades
+tobii_sac <- 
+  d %>%
+  filter(eye_movement_type == "Saccade") %>% 
+  group_by(eye_movement_type_index) %>% 
+  slice(c(1,n())) %>%
+  mutate(saccade_event = c("origin", "terminal"),
+         time = time[1],
+         trial = 1) %>% 
+  pivot_wider(values_from = c(x,y), 
+              names_from = saccade_event, 
+              names_glue = "{saccade_event}_{.value}") %>% 
+  mutate(end = time + duration, mean_velocity = NA, peak_velocity = NA) %>% 
+  select(pID, trial, sac_n = eye_movement_type_index, 
+         start = time, end, duration,
+         origin_x:terminal_y, mean_velocity, peak_velocity)
+  
+  
+eyetools_sac <- saccade_VTI(eyetools_raw, threshold = 20)
 
+# Sample periods from fixations
 # specify time period
-sel_tobii <- list()
-sel_eyetools <- list()
+sel_tobii_fix <- list()
+sel_eyetools_fix <- list()
 
 for (p in 1:3) {
 
 start_time <- sample(max(eyetools_fix$end),1)
 end_time <- start_time + 10000
 
-sel_tobii[[p]] <- filter(tobii_fix, start >= start_time & end <= end_time)
-sel_eyetools[[p]] <- filter(eyetools_fix, start >= start_time & end <= end_time)
+sel_tobii_fix[[p]] <- filter(tobii_fix, start >= start_time & end <= end_time)
+sel_eyetools_fix[[p]] <- filter(eyetools_fix, start >= start_time & end <= end_time)
 
 }
 
 # create all the plots and piece together 
 
-t_1 <- plot_spatial(fix_data = sel_tobii[[1]]) + ggtitle("Tobii extracted fixations - period 1")
-e_1 <- plot_spatial(fix_data = sel_eyetools[[1]]) + ggtitle("eyetools extracted fixations - period 1")
-t_2 <- plot_spatial(fix_data = sel_tobii[[2]]) + ggtitle("Tobii extracted fixations - period 2")
-e_2 <- plot_spatial(fix_data = sel_eyetools[[2]]) + ggtitle("eyetools extracted fixations - period 2")
-t_3 <- plot_spatial(fix_data = sel_tobii[[3]]) + ggtitle("Tobii extracted fixations - period 3")
-e_3 <- plot_spatial(fix_data = sel_eyetools[[3]]) + ggtitle("eyetools extracted fixations - period 3")
-
-(t_1/t_2/t_3)+(e_1/e_2/e_3)
+t_1 <- plot_spatial(fix_data = sel_tobii_fix[[1]]) + ggtitle("Tobii extracted fixations - period 1")
+e_1 <- plot_spatial(fix_data = sel_eyetools_fix[[1]]) + ggtitle("eyetools extracted fixations - period 1")
+t_2 <- plot_spatial(fix_data = sel_tobii_fix[[2]]) + ggtitle("Tobii extracted fixations - period 2")
+e_2 <- plot_spatial(fix_data = sel_eyetools_fix[[2]]) + ggtitle("eyetools extracted fixations - period 2")
+t_3 <- plot_spatial(fix_data = sel_tobii_fix[[3]]) + ggtitle("Tobii extracted fixations - period 3")
+e_3 <- plot_spatial(fix_data = sel_eyetools_fix[[3]]) + ggtitle("eyetools extracted fixations - period 3")
 
 (t_1+e_1)/(t_2+e_2)/(t_3+e_3)
+
+
+# Sample periods from saccades
+# specify time period
+sel_tobii_sac <- list()
+sel_eyetools_sac <- list()
+
+for (p in 1:3) {
+  
+  start_time <- sample(max(eyetools_sac$end),1)
+  end_time <- start_time + 10000
+  
+  sel_tobii_sac[[p]] <- filter(tobii_sac, start >= start_time & end <= end_time)
+  sel_eyetools_sac[[p]] <- filter(eyetools_sac, start >= start_time & end <= end_time)
+  
+}
+
+# create all the plots and piece together 
+
+t_1 <- plot_spatial(sac_data = sel_tobii_sac[[1]]) + ggtitle("Tobii extracted saccades - period 1")
+e_1 <- plot_spatial(sac_data = sel_eyetools_sac[[1]]) + ggtitle("eyetools extracted saccades - period 1")
+t_2 <- plot_spatial(sac_data = sel_tobii_sac[[2]]) + ggtitle("Tobii extracted saccades - period 2")
+e_2 <- plot_spatial(sac_data = sel_eyetools_sac[[2]]) + ggtitle("eyetools extracted saccades - period 2")
+t_3 <- plot_spatial(sac_data = sel_tobii_sac[[3]]) + ggtitle("Tobii extracted saccades - period 3")
+e_3 <- plot_spatial(sac_data = sel_eyetools_sac[[3]]) + ggtitle("eyetools extracted saccades - period 3")
+
+(t_1+e_1)/(t_2+e_2)/(t_3+e_3)
+
+
 
 
 # compute distance between a and b
