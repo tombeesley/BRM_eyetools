@@ -1,4 +1,5 @@
 # process Chen tobii data
+#install_github('tombeesley/eyetools@0.9.3')
 
 library(tidyverse)
 library(eyetools)
@@ -37,7 +38,7 @@ tobii_fix <-
   ungroup() %>% 
   select(pID, trial, fix_n, start, end, duration, x, y, prop_NA, min_dur, disp_tol)
 
-# prepare eyetools fixations
+# prepare eyetools fixations_disp
 eyetools_raw <- 
   d %>% 
   select(pID, time, x, y) %>% 
@@ -45,6 +46,11 @@ eyetools_raw <-
 eyetools_raw <- interpolate(eyetools_raw)
 #eyetools_raw <- smoother(eyetools_raw)
 eyetools_fix <- fixation_dispersion(eyetools_raw)
+
+# prepare eyetools fixations_vti
+
+#eyetools_raw <- smoother(eyetools_raw)
+eyetools_fix_vti <- fixation_VTI(eyetools_raw)
 
 # extract tobii saccades
 tobii_sac <- 
@@ -70,6 +76,7 @@ eyetools_sac <- saccade_VTI(eyetools_raw, threshold = 20)
 # specify time period
 sel_tobii_fix <- list()
 sel_eyetools_fix <- list()
+sel_eyetools_fix_vti <- list()
 
 for (p in 1:3) {
 
@@ -78,20 +85,23 @@ end_time <- start_time + 10000
 
 sel_tobii_fix[[p]] <- filter(tobii_fix, start >= start_time & end <= end_time)
 sel_eyetools_fix[[p]] <- filter(eyetools_fix, start >= start_time & end <= end_time)
+sel_eyetools_fix_vti[[p]] <- filter(eyetools_fix_vti, start >= start_time & end <= end_time)
 
 }
 
 # create all the plots and piece together 
 
 t_1 <- plot_spatial(fix_data = sel_tobii_fix[[1]]) + ggtitle("Tobii extracted fixations - period 1")
-e_1 <- plot_spatial(fix_data = sel_eyetools_fix[[1]]) + ggtitle("eyetools extracted fixations - period 1")
+e_1 <- plot_spatial(fix_data = sel_eyetools_fix[[1]]) + ggtitle("eyetools extracted fixations (dispersion method) - period 1")
+v_1 <- plot_spatial(fix_data = sel_eyetools_fix_vti[[1]]) + ggtitle("eyetools extracted fixations (VTI method) - period 1")
 t_2 <- plot_spatial(fix_data = sel_tobii_fix[[2]]) + ggtitle("Tobii extracted fixations - period 2")
-e_2 <- plot_spatial(fix_data = sel_eyetools_fix[[2]]) + ggtitle("eyetools extracted fixations - period 2")
+e_2 <- plot_spatial(fix_data = sel_eyetools_fix[[2]]) + ggtitle("eyetools extracted fixations (dispersion method) - period 2")
+v_2 <- plot_spatial(fix_data = sel_eyetools_fix_vti[[2]]) + ggtitle("eyetools extracted fixations (VTI method) - period 2")
 t_3 <- plot_spatial(fix_data = sel_tobii_fix[[3]]) + ggtitle("Tobii extracted fixations - period 3")
-e_3 <- plot_spatial(fix_data = sel_eyetools_fix[[3]]) + ggtitle("eyetools extracted fixations - period 3")
+e_3 <- plot_spatial(fix_data = sel_eyetools_fix[[3]]) + ggtitle("eyetools extracted fixations (dispersion method) - period 3")
+v_3 <- plot_spatial(fix_data = sel_eyetools_fix_vti[[3]]) + ggtitle("eyetools extracted fixations (VTI method) - period 3")
 
-(t_1+e_1)/(t_2+e_2)/(t_3+e_3)
-
+(t_1+e_1+v_1)/(t_2+e_2+v_2)/(t_3+e_3+v_3)
 
 # Sample periods from saccades
 # specify time period
