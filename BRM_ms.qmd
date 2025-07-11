@@ -393,11 +393,11 @@ plot_heatmap(data,
 
 ## Validation of fixation metrics
 
-Eyetools uses implementations of common methods for extracting fixations from raw data [@salvucci2000]. As a means to provide a simple validation of our primary fixation algorithm, we took raw data collected independently from a researcher outside of our lab on an unknown task. The researcher provided the raw data and extracted fixations for a 6 minute period of data collection, from Tobii Pro Lab software. From the raw data we could use the eyetools `fixation_dispersion()` algorithm to compute fixations from several randomly drawn 10 second periods. Figure @fig-tobii_comp shows side-by-side comparisons of Tobii and eyetools extracted fixations from 3 such periods (the raw data and analysis script for this comparison is available in the manuscript repository for full exploration of other periods). Somewhat unsurprisingly, the algorithms show a very similar spread of fixations for these periods. Notably the number of overall fixations differs across many samples, which is a consequence of the particular parameters used to define fixations, such as the dispersion tolerance and the minimum duration.
+Eyetools uses implementations of common methods for extracting fixations from raw data [@salvucci2000]. As a means to provide a simple validation of our primary fixation algorithm, we took raw data collected independently from a researcher outside of our lab on an unknown task. The researcher provided the raw data and extracted fixations for a 6 minute period of data collection, from Tobii Pro Lab software. From the raw data we could use the eyetools `fixation_dispersion()` algorithm to compute fixations from several randomly drawn 10 second periods. Figure @fig-tobii-comp shows side-by-side comparisons of Tobii and eyetools extracted fixations from 3 such periods (the raw data and analysis script for this comparison is available in the manuscript repository for full exploration of other periods). Somewhat unsurprisingly, the algorithms show a very similar spread of fixations for these periods. Notably the number of overall fixations differs across many samples, which is a consequence of the particular parameters used to define fixations, such as the dispersion tolerance and the minimum duration.
 
 ```{r}
 #| fig-cap: Comparison of Tobii Pro Lab extracted fixations with those from eyetools::fixation_dispersion()
-#| label: fig-tobii_comp
+#| label: fig-tobii-comp
 #| output: true
 
 
