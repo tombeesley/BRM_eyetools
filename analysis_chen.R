@@ -111,8 +111,10 @@ col_label_1 <- wrap_elements(panel = grid::textGrob('Tobii extracted fixations')
 col_label_2 <- wrap_elements(panel = grid::textGrob('eyetools::fixation_dispersion()'))
 col_label_3 <- wrap_elements(panel = grid::textGrob('eyetools::fixation_VTI()'))
 
+#png('tobii_eyetools_fix_comparison_3.png', width = 999, height = 1057)
 (col_label_0|col_label_1|col_label_2|col_label_3)/(row_label_1|t_1|e_1|v_1)/(row_label_2|t_2|e_2|v_2)/(row_label_3|t_3|e_3|v_3) +
-  plot_layout(widths = c(.1,1,1,1))  # adjust width
+  plot_layout(widths = c(.01,1,1,1), heights = c(.1,1,1,1))  # adjust width
+#dev.off()
 
 # Sample periods from saccades
 # specify time period
