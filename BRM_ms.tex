@@ -216,7 +216,15 @@
 
 
 
-\abstract{Abstract goes here}
+\abstract{Eye data analysis has become an integral part of data analysis
+in the psychological sciences. Here we introduce eyetools, an R package
+that provides an open source means of conducting eye data analysis.
+eyetools is designed primarily for use by experimental psychologists and
+is aimed at researchers who may be initially reticent about programming
+their own eye data analysis routines. It handles basic data processing,
+extraction of fixations and saccades, a variety of analysis steps, and
+data visualisation. In this paper we introduce the critical features of
+the package.}
 
 \keywords{eye-tracking; fixations; saccades; areas-of-interest}
 
@@ -338,8 +346,8 @@ By recording the movement of an individual's gaze during research
 studies, researchers can quantify where and how long individual's look
 at particular regions of space (usually with a focus on stimuli
 presented on a 2D screen, but also within 3D space). Eye-tracking
-provides a rich stream of continuous data and therefore can offer
-powerful insights into real-time cognitive processing. Such data allow
+provides a rich stream of continuous data which can offer powerful
+insights into real-time cognitive processing. Such data allow
 researchers to inspect the interplay of cognitive processes such as
 attention, memory, and decision making, with high temporal precision
 (\citeproc{ref-beesley2019}{Beesley et al., 2019}).
@@ -373,7 +381,7 @@ focus\ldots{}''.
 In the current article we introduce a new toolkit for eye-data
 processing and analysis called ``\emph{eyetools}'', which takes the form
 of an R package. R packages (like R itself) are free to use without
-licence and are therefore available for any user across the world. The
+licence and are therefore available for users across the world. The
 package provides a (growing) number of functions that provide an
 efficient and effective means to conduct basic eye-data analysis.
 \emph{eyetools} is built with academic researchers in the psychological
@@ -382,8 +390,8 @@ effective more generally. The functions within the package reflect steps
 in a comprehensive analysis pipeline, taking the user from initial
 handling of raw eye data, to summarising data for each period of a
 procedure, to the visualisation of the data in plots. Since the pipeline
-is contained within the one package, it does not rely on external
-software, which ensures easy reproducibility of any analyses.
+is contained within the one package, it is not reliant on external
+software, which enables easy reproducibility of any analyses.
 Importantly, the functions are simple to use, ensuring that the package
 will be beneficial for researchers who are unfamiliar with eye data
 analysis. It should also appeal to researchers accustomed to working
@@ -393,25 +401,29 @@ R.
 \emph{eyetools} is, of course, not the only package in R that allows
 users to work with eye data. A recent survey of CRAN (The Comprehensive
 R Archive Network) identified six other packages that offer relevant
-functions for the analysis of eye data. \textbf{eyeTrackr},
-\textbf{eyelinker}, and \textbf{eyelinkReader}, all offer functionality
-for data only from experiments that have used `EyeLink' trackers (S-R
-Research). In contrast, eyetools provides functions that are
-hardware-agnostic, relying on a format of data that can be achieved from
-any source. The \textbf{eyeRead} package is designed for the analysis of
-eye data from reading exercises. The \textbf{emov} package offers a
-limited set of functions and is primarily designed for fixation
-detection, using the same dispersion method employed in eyetools.
-Finally, \textbf{eyetrackingR} is perhaps the most comprehensive
-alternative package available on CRAN. eyetrackingR offers a large suite
-of functionality and, like eyetools, can be applied across the entire
-pipeline. It has functions for cleaning data and various plotting
-functions, including analysis over time. It does not feature algorithms
-regarding the detection of events such as saccades or fixations. This
-limits the ability to conduct more bespoke analysis steps and it means
-that analysis needs to be conducted on raw data. This is disadvantageous
-both in terms of computing time and in the open sharing of data (event
-data are an order of magnitude smaller in size than raw data).
+functions for the analysis of eye data. \textbf{\emph{eyeTrackr}},
+\textbf{\emph{eyelinker}}, and \textbf{\emph{eyelinkReader}}, all offer
+functionality for data only from experiments that have used `EyeLink'
+trackers (S-R Research). In contrast, \emph{eyetools} provides functions
+that are hardware-agnostic, relying on a format of data that can be
+achieved from any source. The \textbf{\emph{eyeRead}} package is
+designed for the specific analysis of eye data from reading exercises.
+The \textbf{\emph{emov}} package offers a limited set of functions and
+is primarily designed for fixation detection, using the same dispersion
+method employed in \emph{eyetools}. \textbf{\emph{eyetrackingR}} is
+perhaps the most comprehensive alternative package available on CRAN.
+\emph{eyetrackingR} offers a large suite of functionality and, like
+\emph{eyetools}, can be applied across the entire pipeline. It has
+functions for cleaning data and various plotting functions, including
+analysis over time. It does not feature algorithms regarding the
+detection of events such as saccades or fixations. This limits the
+ability to conduct bespoke analysis steps and it means that analysis
+needs to be conducted on raw data. This is disadvantageous both in terms
+of computing time and in the open sharing of data (event data are an
+order of magnitude smaller in size than raw data). Finally, saccadr is a
+package that can be used to extract saccades from raw data, and has
+functionality to convert binocluar data into monocular data (in a
+similar manner to that used in \emph{eyetools}).
 
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1429}}
@@ -451,6 +463,7 @@ eyeRead & \faIcon{check} & & \faIcon{check} & \faIcon{check}** & & \\
 emov & \faIcon{check} & & \faIcon{check} & \faIcon{check} & & \\
 eyetrackingR & \faIcon{check} & & \faIcon{check} & & \faIcon{check} &
 \faIcon{check} \\
+saccadr & \faIcon{check} & & & \faIcon{check} & & \\
 \end{longtable}
 
 * for Tobii data only, ** for text reading experiments only
@@ -458,23 +471,18 @@ eyetrackingR & \faIcon{check} & & \faIcon{check} & & \faIcon{check} &
 In this tutorial we demonstrate the pipeline of analysis functions
 within \emph{eyetools}. The package has been designed to be simple to
 use by someone with basic knowledge of data handling and analysis in R.
-This tutorial is separated into X distinct sections. {[}this next will
-need to be updated once the ms is complete{]} In the first section, we
-briefly describe the basic methodology of collecting eye data in
-general, and in regard to the specific dataset we use to illustrate all
-the functionality of the \emph{eyetools} package. The second section
-covers the process for getting data from an eye tracker into an
-\emph{eyetools}-friendly format. The third section introduces the
-foundational functions of the \emph{eyetools} package, from repairing
-and smoothing eye data, to calculating fixations and saccades, and
-detecting time spent in Areas of Interest (AOIs). The fourth section
-takes the processed data, and applies basic analysis techniques
-commonplace in eye data research. In the fifth and final section, we
-reflect on the benefits of the \emph{eyetools} package, including
-contributions to open science practices, reproducibility, and providing
-clarity to eye data analysis.
+Our hope is that the package will enable researchers who haven't
+previusly engaged with eye-tracking to do so in an open-source and
+reproducible manner. We first describe the basic installation process
+and then the preparation of data into an \emph{eyetools}-friendly
+format. We then describe the algorithms that can be used to extract the
+key characteristics of fixations and saccades. We then show the
+algorithms that can extract critical trial level patterns in behaviour,
+such as time on areas of interest and sequences of eye movements, as
+well as means to visualise the data.
 
-\subsection{Installing eyetools}\label{installing-eyetools}
+\subsection{\texorpdfstring{Installing
+\emph{eyetools}}{Installing eyetools}}\label{installing-eyetools}
 
 \emph{eyetools} is available on CRAN and can be installed with the
 command \texttt{install.packages("eyetools")}. Instructions for
@@ -483,16 +491,16 @@ installing development versions can be found at the package repository:
 package can be loaded into R with the command
 \texttt{library(eyetools)}.
 
-\subsection{Preparing data for
-eyetools}\label{preparing-data-for-eyetools}
+\subsection{\texorpdfstring{Preparing data for
+\emph{eyetools}}{Preparing data for eyetools}}\label{preparing-data-for-eyetools}
 
 Since there is a wide range of eye tracking hardware available for
 researchers to use, \emph{eyetools} currently offers only a limited
 number of functions for converting raw data from specific hardware. The
 \texttt{hdf5\_to\_dataframe()} function is designed to work with output
-from PsychoPy experiments connected to modern Tobii hardware, and will
-take this default format of raw data and convert it into the simplified
-raw data format required for \emph{eyetools}.
+from PsychoPy experiments connected to modern Tobii hardware. This
+function takes the default raw data format and converts it into a
+simplified raw data format suitable for \emph{eyetools}.
 
 The \emph{eyetools} package has been developed primarily with the
 analysis of experimental psychology data in mind. To this end, many of
@@ -520,8 +528,9 @@ recordings will be 1 millisecond of time apart; at 300Hz, the recordings
 are 3.33 milliseconds apart. The only requirement for the time column is
 that the values reflect a consistent and increasing set of values. There
 is no need to specify the sampling rate, since \emph{eyetools} functions
-will calculate this automatically. \emph{eyetools} expects raw data to
-have the following columns:
+will calculate this automatically. For the majority of functions that
+process raw data, \emph{eyetools} expects raw data to have the following
+columns:
 
 \begin{itemize}
 \item
@@ -541,17 +550,18 @@ be numeric, character, or factor. The order of the columns is not
 important. Missing values in the x and y columns of the raw data must be
 expressed as ``NA''.
 
-For many methods of eye-tracking, binocular data will be produced. In
-such cases, since the primary aim of our analyses is the estimation of
-the spatial coordinates of gaze, the function \texttt{combine\_eyes()}
-should be used to combine the data to form a set of monocular data. This
-function takes raw data with coordinates for each eye (i.e., left\_x,
-right\_x, left\_y, right\_y), and converts the data into single x and y
-coordinates. By default, the function does this by taking an average of
-the coordinates from the two eyes of each timestamp, but it is also
-possible to select data from the eye with the lowest proportion of
-missing samples. This returns a flattened list of participant data that
-has x and y variables in place of the left\_* and right\_* variables.
+While \emph{eyetools} works on monocular data in the main, many
+eyetrackers will output binocular data. In such cases, since the primary
+aim of our analyses is the estimation of the spatial coordinates of
+gaze, the function \texttt{combine\_eyes()} should be used to combine
+the data to form a set of monocular data. This function takes raw data
+with coordinates for each eye (i.e., left\_x, right\_x, left\_y,
+right\_y), and converts the data into single x and y coordinates. By
+default, the function does this by taking an average of the coordinates
+from the two eyes of each timestamp, but it is also possible to select
+data from the eye with the lowest proportion of missing samples. This
+function returns data that has x and y variables in place of the left\_*
+and right\_* variables.
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -598,7 +608,8 @@ missing gaze data, based upon the eye coordinates before and after the
 missing data, and perform a repair. The default method of linear
 interpolation (``approx'') replaces missing values with a line of
 constant slope and evenly spaced coordinates that bridge between the
-existing data (alternatively a cubic ``spline'' method can be applied).
+existing data (alternatively a cubic ``spline'' method can be used to
+apply a curved path between the existing datapoints).
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -610,7 +621,7 @@ existing data (alternatively a cubic ``spline'' method can be applied).
 When using \texttt{interpolate()}, a report can be requested on the
 proportion of missing data that has been replaced. This parameter
 changes the output format of the function, and returns a list of both
-the data and the report. The report alone can be easily accessed in the
+the data and the report. The report alone can be accessed in the
 following way:
 
 \begin{Shaded}
@@ -646,25 +657,26 @@ observe how well the smoothed data fits the raw data.
 \end{Highlighting}
 \end{Shaded}
 
-\subsection{Working with eyetools}\label{working-with-eyetools}
+\subsection{\texorpdfstring{Working with
+\emph{eyetools}}{Working with eyetools}}\label{working-with-eyetools}
 
 Having explained these rudimentary steps of getting the data ready for
 the main analysis, we will now describe the core functions available in
-the latest version of eyetools. For illustration, eyetools has a built
-in data set that meets the required format. The data set consists of
-data from two participants from a few trials of a human causal learning
-study (\citeproc{ref-beesley2015}{Beesley et al., 2015}). The nature of
-this experiment is largely unimportant for the current purposes, but for
-clarity, the data were collected from the decision period of the
-procedure, where two rectangular cue stimuli were presented in the top
-half of the screen, one on the left side and one on the right side. Two
-smaller response options were presented centrally in the lower half of
-the screen, one above the other. Participants simply had to look at the
-cues and choose a response. The raw eye data can be accessed by calling
-\texttt{HCL}, the ``behavioural data'' (trial events, reaction times,
-responses, etc) by calling \texttt{HCL\_behavioural}, and the associated
-``areas of interest'' (described later) can be called with
-\texttt{HCL\_AOIs}.
+the latest version of \emph{eyetools}. For illustration, \emph{eyetools}
+has a built in data set that meets the required format. The data set
+consists of data from two participants from a few trials of a human
+causal learning study (\citeproc{ref-beesley2015}{Beesley et al.,
+2015}). The nature of this experiment is largely unimportant for the
+current purposes, but for clarity, the data were collected from the
+decision period of the procedure, where two rectangular cue stimuli were
+presented in the top half of the screen, one on the left side and one on
+the right side. Two smaller response options were presented centrally in
+the lower half of the screen, one above the other. Participants simply
+had to look at the cues and choose a response. The raw eye data can be
+accessed by calling \texttt{HCL}, the ``behavioural data'' (trial
+events, reaction times, responses, etc) by calling
+\texttt{HCL\_behavioural}, and the associated ``areas of interest''
+(described later) can be called with \texttt{HCL\_AOIs}.
 
 \subsubsection{Counterbalanced designs}\label{counterbalanced-designs}
 
@@ -686,7 +698,7 @@ the x and/or y values of the stimuli so as to take into account a
 counterbalancing variable. This function currently performs a
 single-dimensional transformation, across either the horizontal or
 vertical midline. It can be used on raw data or fixation data; we simply
-need to append a column to the data to reflect the counterbalancing
+need to add a column to the data to reflect the counterbalancing
 variable. The result of the function is a set of data in which the x
 (and/or y) position is consistent across counterbalanced conditions
 (e.g., in our example, we can transform the data so that the target cue
@@ -699,9 +711,9 @@ apply \texttt{conditional\_transform()} and specify the relevant column
 (cue\_order) that controls the counterbalancing, and the relevant value
 that signals a switch of position (here the value ``2''). By default the
 function expects a resultion of 1920x1080, but custom resolutions can be
-specified. The resulting transformation of the data will mean that the
-data is normalised such that the target stimulus is always positioned on
-the left side of the screen.
+specified. The resulting transformation means that the data is
+normalised such that the target stimulus is always positioned on the
+left side of the screen.
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -738,12 +750,12 @@ The raw data can be transformed into these meaningful eye data
 characteristics. Beyond their importance for understanding psychological
 processes, transforming the data into fixations and saccades leads to
 greater computational efficiency. For example, the built in HCL data in
-eyetools is 479 kb, which contains 31,041 rows of data (from just 12
-trials of data). After processing the data for fixations, the resulting
-data is 269 rows and can be saved as 3.8 kb, less than 1\% the size of
-the raw data. Not only is this more computationally efficient, but it
-also means the data are now in a far more practical format for storage
-in online data repositories.
+\emph{eyetools} is 479 kb, which contains 31,041 rows of data (from just
+12 trials of data). After processing the data for fixations, the
+resulting data is 269 rows and can be saved as 3.8 kb, less than 1\% the
+size of the raw data. Not only is this more computationally efficient,
+but it also means the data are now in a far more practical format for
+storage in online data repositories.
 
 There are two fixation algorithms offered in the \emph{eyetools}
 package, both based on methods presented by Salvucci and Goldberg
@@ -762,7 +774,7 @@ velocity-threshold approach to identifying fixations, based on the
 algorithm described in Salvucci and Goldberg
 (\citeproc{ref-salvucci2000}{2000}). Since points of fixation occur when
 the eye is not in consistent motion, the algorithm computes the
-euclidean distance between points and then determines the velocity of
+Euclidean distance between points and then determines the velocity of
 the eye. Periods in which this velocity is consistently below the
 velocity threshold (for which the default is 100 degrees of visual angle
 per second) are identified as a potential period of fixation. The
@@ -804,8 +816,8 @@ as it makes a saccade towards the next point of fixation. The
 velocity threshold algorithm described above. The resulting output
 provides details of each saccade, such as the timing of the saccade
 onset, duration, and the origin and terminus coordinates. As with the
-fixation algorithms, default parameters have been chosen, but can be
-adapted to fit the requirements of the user.
+fixation algorithms, default parameters have been chosen, but they can
+be adapted to fit the requirements of the researcher.
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -838,11 +850,12 @@ time spent in regions of space. \emph{eyetools} has a number of
 functions for assessing the time spent in Areas of Interest (AOIs), as
 well as the sequence in which the eye enters and exits these areas. AOIs
 will typically reflect regions of space in which critical stimuli
-appear. AOIs are defined in eyetools using a dataframe object, where
-each row reflects a unique AOI, where values code for the centrepoint of
-the AOI in x/y coordinates along with the width and height (if the AOIs
-are rectangular) or just the radius (if circular). This object can be
-created using the function \texttt{create\_AOI\_df()}:
+appear. AOIs are defined in \emph{eyetools} using a dataframe object,
+where each row reflects a unique AOI, where values code for the
+centrepoint of the AOI in x/y coordinates along with the width and
+height (if the AOIs are rectangular) or just the radius (if circular).
+This object can be created using the function
+\texttt{create\_AOI\_df()}:
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -1030,10 +1043,10 @@ participants process the central fixation point first.
 
 \subsection{Visualisations}\label{visualisations}
 
-The eyetools package has a number of built in visualisations that allow
-for functional plots of the data, with minimal effort. All plots use the
-dominant graphical R package \texttt{ggplot}, which means that the
-resulting plots from these functions are ggplot objects and can
+The \emph{eyetools} package has a number of built in visualisations that
+allow for functional plots of the data, with minimal effort. All plots
+use the dominant graphical R package \texttt{ggplot}, which means that
+the resulting plots from these functions are ggplot objects and can
 therefore be customised using the full suite of options for ggplot and
 its extensions.
 
@@ -1218,31 +1231,34 @@ image demonstrating where the participants looked most over all trials}
 \subsection{Validation of fixation
 metrics}\label{validation-of-fixation-metrics}
 
-Eyetools uses implementations of common methods for extracting fixations
-from raw data (\citeproc{ref-salvucci2000}{Salvucci \& Goldberg, 2000}).
-As a means to provide a simple validation of our primary fixation
+\emph{eyetools} uses implementations of common methods for extracting
+fixations from raw data (\citeproc{ref-salvucci2000}{Salvucci \&
+Goldberg, 2000}). To provide a simple validation of our primary fixation
 algorithm, we took raw data collected independently from a researcher
 outside of our lab on an unknown task. The researcher provided the raw
 data and extracted fixations for a 6 minute period of data collection,
-from Tobii Pro Lab software. From the raw data we could use the eyetools
-\texttt{fixation\_dispersion()} algorithm to compute fixations from
-several randomly drawn 10 second periods. Figure
-\textbf{?@fig-tobii\_comp} shows side-by-side comparisons of Tobii and
-eyetools extracted fixations from 3 such periods (the raw data and
-analysis script for this comparison is available in the manuscript
-repository for full exploration of other periods). Somewhat
-unsurprisingly, the algorithms show a very similar spread of fixations
-for these periods. Notably the number of overall fixations differs
-across many samples, which is a consequence of the particular parameters
-used to define fixations, such as the dispersion tolerance and the
-minimum duration.
+from Tobii Pro Lab software. From the raw data we used the
+\emph{eyetools} \texttt{fixation\_dispersion()} and
+\texttt{fixation\_VTI()} algorithms to compute fixations from randomly
+drawn periods of 10 seconds. Figure Figure~\ref{fig-tobii-comp} shows
+side-by-side comparisons of Tobii and \emph{eyetools} extracted
+fixations from 3 such periods (the raw data and analysis script for this
+comparison is available in the manuscript repository for full
+exploration of other periods). Somewhat unsurprisingly, the algorithms
+show a very similar spread of fixations for these periods. Notably the
+number of overall fixations differs across the samples, which is a
+consequence of the particular parameters used to define fixations, such
+as the dispersion tolerance and the minimum duration.
 
 \begin{figure}[H]
 
-\caption{Comparison of Tobii (left) and eyetools (right) extracted
-fixations}
+\caption{\label{fig-tobii-comp}A comparison of extracted fixations from
+Tobii Pro Lab (A:left), eyetools::fixation\_dispersion() (B:centre) and
+eyetools::fixation\_VTI() (C:right), across 3 samples.}
 
-{\centering \pandocbounded{\includegraphics[keepaspectratio]{tobii_eyetools_fix_comparison.png}}
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{fixation_comparison.png}}
 
 }
 
@@ -1254,33 +1270,33 @@ directions}\label{summary-and-future-directions}
 This paper has given an introduction and basic tutorial on working with
 an open source R package for an analysis pipeline for eye data. We began
 by identifying the current gap in available tools for working with eye
-data in open-science pipelines. We then provided an overview of the
+data in reproducible pipelines. We then provided an overview of the
 initial steps in working with raw eye data and the conversion of raw eye
 data into a usable format for working with the functions in
 \emph{eyetools}. We then covered many useful steps in the analysis
 pipeline using functions available in the \emph{eyetools} package that
-included the repairing and normalising the data, and the detection of
-events such as fixations, saccades, and the trial level analysis of data
-patterns, such as time on areas of interest, and the sequencing of
+included the repairing and normalising of the data, the detection of
+events such as fixations and saccades, and the trial level analysis of
+data patterns, such as time on areas of interest, and the sequencing of
 entries to areas of interest.
 
 This tutorial offers a step-by-step walk-through for handling eye data
-using R, and will provide a set of tools that will lead to reproducible
-analysis steps for many experimental psychologists. It is hopefully
-clear that the functions in eyetools are flexible and powerful, yet
-ultimately simple to implement. While these functions represent some
-initial steps in eye data analysis, since the objects that result from
-these functions are standard formats in R (i.e., dataframes and plots),
-they will provide the user a means to enable more complex or nuanced
-analyses.
+using R, demonstrating that the \emph{eyetools} package provides a set
+of tools that will lead to reproducible analysis steps for many
+experimental psychologists. It is hopefully clear that the functions in
+\emph{eyetools} are flexible and powerful, yet ultimately simple to
+implement. While these functions represent some initial steps in eye
+data analysis, since the objects that result from these functions are
+standard formats in R (i.e., dataframes and plots), they will provide
+the user a means to enable more complex or nuanced analyses.
 
-eyetools offers an open-source toolset that holds no hidden nor
+\emph{eyetools} offers an open-source toolset that holds no hidden nor
 proprietary functionality. The major benefits of open-source tools are
 extensive: not only do they allow for full inspection and
 reproducibility of analyses, but they also support and enable the
 development and sharing of new analysis functions. This is our hope for
-eyetools, that future versions will benefit from user engagement and an
-expansion of the toolset to enable an ever more powerful set of
+\emph{eyetools}, that future versions will benefit from user engagement
+and an expansion of the toolset to enable an ever more powerful set of
 features.
 
 \subsection{Data and code
@@ -1289,14 +1305,10 @@ availability}\label{data-and-code-availability}
 This manuscript was written in Quarto and can be reproduced from the
 manuscript source files which are available at
 \url{https://github.com/tombeesley/BRM_eyetools} . The manuscript
-details functions from the latest CRAN version of eyetools which is
-0.9.2. We welcome contributions to the development of eyetools by
-posting bug reports and suggested improvements at
+details functions from the latest CRAN version of \emph{eyetools} which
+is 0.9.3. We welcome contributions to the development of \emph{eyetools}
+by posting bug reports and suggested improvements at
 \url{https://github.com/tombeesley/eyetools/issues} .
-
-The code used in this tutorial is available in the reproducible
-manuscript file available at:(IF STORING IN GITHUB, THEN WE NEED TO
-CREATE A ZENODO SNAPSHOT FOR A DOI RATHER THAN JUST A GITHUB LINK)
 
 \subsection{References}\label{references}
 

@@ -91,30 +91,28 @@ sel_eyetools_fix_vti[[p]] <- filter(eyetools_fix_vti, start >= start_time & end 
 
 # create all the plots and piece together 
 
-t_1 <- plot_spatial(fix_data = sel_tobii_fix[[1]]) #+ ggtitle("Tobii extracted fixations")
-e_1 <- plot_spatial(fix_data = sel_eyetools_fix[[1]]) #+ ggtitle("eyetools extracted fixations (dispersion method)")
-v_1 <- plot_spatial(fix_data = sel_eyetools_fix_vti[[1]]) #+ ggtitle("eyetools extracted fixations (VTI method)")
-t_2 <- plot_spatial(fix_data = sel_tobii_fix[[2]]) #+ ggtitle("Tobii extracted fixations")
-e_2 <- plot_spatial(fix_data = sel_eyetools_fix[[2]]) #+ ggtitle("eyetools extracted fixations (dispersion method)")
-v_2 <- plot_spatial(fix_data = sel_eyetools_fix_vti[[2]]) #+ ggtitle("eyetools extracted fixations (VTI method)")
-t_3 <- plot_spatial(fix_data = sel_tobii_fix[[3]]) #+ ggtitle("Tobii extracted fixations")
-e_3 <- plot_spatial(fix_data = sel_eyetools_fix[[3]]) #+ ggtitle("eyetools extracted fixations (dispersion method)")
-v_3 <- plot_spatial(fix_data = sel_eyetools_fix_vti[[3]]) #+ ggtitle("eyetools extracted fixations (VTI method)")
+t_1 <- plot_spatial(fix_data = sel_tobii_fix[[1]]) + guides(fill = "none") + ggtitle("Tobii extracted fixations")
+e_1 <- plot_spatial(fix_data = sel_eyetools_fix[[1]]) + guides(fill = "none") + ggtitle("eyetools::fixation_dispersion()")
+v_1 <- plot_spatial(fix_data = sel_eyetools_fix_vti[[1]]) + guides(fill = "none") + ggtitle("eyetools::fixation_VTI()")
+t_2 <- plot_spatial(fix_data = sel_tobii_fix[[2]]) + guides(fill = "none") + ggtitle("eyetools::fixation_VTI()")
+e_2 <- plot_spatial(fix_data = sel_eyetools_fix[[2]]) + guides(fill = "none") + ggtitle("eyetools::fixation_dispersion()")
+v_2 <- plot_spatial(fix_data = sel_eyetools_fix_vti[[2]]) + guides(fill = "none") + ggtitle("eyetools::fixation_VTI()")
+t_3 <- plot_spatial(fix_data = sel_tobii_fix[[3]]) + guides(fill = "none") + ggtitle("Tobii extracted fixations")
+e_3 <- plot_spatial(fix_data = sel_eyetools_fix[[3]]) + guides(fill = "none") + ggtitle("eyetools::fixation_dispersion()")
+v_3 <- plot_spatial(fix_data = sel_eyetools_fix_vti[[3]]) + guides(fill = "none") + ggtitle("eyetools::fixation_VTI()")
 
-row_label_0 <- wrap_elements(panel = grid::textGrob(''))
-row_label_1 <- wrap_elements(panel = grid::textGrob('1'))
-row_label_2 <- wrap_elements(panel = grid::textGrob('2'))
-row_label_3 <- wrap_elements(panel = grid::textGrob('3'))
+sample1 <- wrap_plots(t_1,e_1,v_1)
+sample2 <- wrap_plots(t_2,e_2,v_2)
+sample3 <- wrap_plots(t_3,e_3,v_3)
 
-col_label_0 <- wrap_elements(panel = grid::textGrob(''))
-col_label_1 <- wrap_elements(panel = grid::textGrob('Tobii extracted fixations'))
-col_label_2 <- wrap_elements(panel = grid::textGrob('eyetools::fixation_dispersion()'))
-col_label_3 <- wrap_elements(panel = grid::textGrob('eyetools::fixation_VTI()'))
+myplot <- sample1/sample2/sample3
 
-#png('tobii_eyetools_fix_comparison_3.png', width = 999, height = 1057)
-(col_label_0|col_label_1|col_label_2|col_label_3)/(row_label_1|t_1|e_1|v_1)/(row_label_2|t_2|e_2|v_2)/(row_label_3|t_3|e_3|v_3) +
-  plot_layout(widths = c(.01,1,1,1), heights = c(.1,1,1,1))  # adjust width
-#dev.off()
+myplot[[1]] <- myplot[[1]] + plot_layout(tag_level = 'new')
+myplot[[2]] <- myplot[[2]] + plot_layout(tag_level = 'new')
+myplot[[3]] <- myplot[[3]] + plot_layout(tag_level = 'new')
+myplot + plot_annotation(tag_levels = c('1', 'A'), tag_prefix = "Sample ", tag_sep = "-")
+
+ggsave(filename = "my_plot.png", width = 3000, height = 3000, units = "px")
 
 # Sample periods from saccades
 # specify time period
