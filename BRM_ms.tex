@@ -219,12 +219,16 @@
 \abstract{Eye data analysis has become an integral part of data analysis
 in the psychological sciences. Here we introduce eyetools, an R package
 that provides an open source means of conducting eye data analysis.
-eyetools is designed primarily for use by experimental psychologists and
-is aimed at researchers who may be initially reticent about programming
-their own eye data analysis routines. It handles basic data processing,
-extraction of fixations and saccades, a variety of analysis steps, and
-data visualisation. In this paper we introduce the critical features of
-the package.}
+eyetools is aimed at researchers who may not have experience programming
+their own eye data analysis routines. The package provides a number of
+functions that facilitate key steps in the pipeline of eye data
+analysis, from basic data processing, extraction of fixations and
+saccades, to trial level statistics, and data visualisation. In this
+article we introduce these critical features of the package and provide
+a step-by-step guide which will enable researchers to find open source
+solutions to their eye data analysis. We discuss the ways in which we
+believe eyetools might be expanded in the future and how it may provide
+a platform for collaborative work on eye data analysis.}
 
 \keywords{eye-tracking; fixations; saccades; areas-of-interest}
 
@@ -334,49 +338,52 @@ University, UK, LA1 4YD, UK, Email: t.beesley@lancaster.ac.uk}
 
 \resetlinenumber[1]
 
-Eye tracking is now an established and widely used technique in the
-behavioural sciences. Psychology is perhaps the scientific discipline
-which has seen the most sustantial adoption of eye-data research, where
-eye-tracking systems are now commonplace in centres of academic
-research. Beyond academic institutions, eye-tracking continues to be a
-useful tool in understanding consumer behaviour, user-interface design,
-and in various forms of entertainment.
+Eye-tracking is now an established and widely used tool that provides
+powerful measurements of human behaviour. across a number of
+applications. Its application across academic research is far-reaching,
+with major importance to the fields of computer science and AI,
+economics, psychology, and even having influence on art and design.
+Beyond purely academic application, eye-tracking is widely used in
+commercial fields where it can provide insights into consumer behaviour,
+helping to shape product design and marketing.
 
 By recording the movement of an individual's gaze during research
-studies, researchers can quantify where and how long individual's look
-at particular regions of space (usually with a focus on stimuli
-presented on a 2D screen, but also within 3D space). Eye-tracking
-provides a rich stream of continuous data which can offer powerful
-insights into real-time cognitive processing. Such data allow
-researchers to inspect the interplay of cognitive processes such as
-attention, memory, and decision making, with high temporal precision
-(\citeproc{ref-beesley2019}{Beesley et al., 2019}).
+studies, users can quantify where and how long individual's look at
+particular regions of space (usually with a focus on stimuli presented
+on a 2D screen, but also within 3D space). Eye-tracking provides a rich
+stream of continuous data which can offer powerful insights into
+real-time cognitive processing. Undoubtedly, Psychology is perhaps the
+scientific discipline which has seen the most substantial adoption of
+eye-data research, where eye-tracking systems are now commonplace in
+centres of academic research. Such data allow researchers to inspect the
+interplay of cognitive processes such as attention, memory, and decision
+making, with high temporal precision (\citeproc{ref-beesley2019}{Beesley
+et al., 2019}).
 
 While there are abundant uses and benefits of collecting eye-movement
-data in psychology experiments, the collection of such data has many
-implications for the eventual analysis work that is undertaken by the
-researcher. The continual stream of recording can lead to an
-overwhelming amount of raw data: modern eye-trackers can record data at
-1000 Hz and above, which results in 3.6 million rows of data per hour.
-The continual nature of the data also leads to a wealth of choice in the
-manner in which it is analysed. As such, the provision of suitable
-computational software for data reduction and processing is an important
-part of eye-tracking research. The companies behind eye-tracking devices
-offer licensed software that will perform many of the common steps for
-eye-data analysis. However, there are several disadvantages to using
-such proprietary software in a research context. Firstly, the software
-will typically have an ongoing license cost for continual use. Secondly,
-the algorithms driving the operations within such software are not
-readily available for inspection or adaptation for new purposes. These
-significant constraints mean that the use of proprietary analysis
-software will lead to a failure to meet the basic open-science principle
-of analysis reproduction, for example as set out by the UK
-Reproducibility Network: ``We expect researchers to\ldots{} make their
-research methods, software, outputs and data open, and available at the
-earliest possible point\ldots The reproducibility of both research
-methods and research results \ldots is critical to research in certain
-contexts, particularly in the experimental sciences with a quantitative
-focus\ldots{}''.
+data, the collection of such data has many implications for the eventual
+analysis work that is undertaken by the researcher. The continual stream
+of recording can lead to an overwhelming amount of raw data: modern
+eye-trackers can record data at 1000 Hz and above, which results in 3.6
+million rows of data per hour. The continual nature of the data also
+leads to a wealth of choice in the manner in which it is analysed. As
+such, the provision of suitable computational software for data
+reduction and processing is an important part of eye-tracking research.
+The companies behind eye-tracking devices offer licensed software that
+will perform many of the common steps for eye-data analysis. However,
+there are several disadvantages to using such proprietary software in a
+research context. Firstly, the software will typically have an ongoing
+license cost for continual use. Secondly, the algorithms driving the
+operations within such software are not readily available for inspection
+or adaptation for new purposes. These significant constraints mean that
+the use of proprietary analysis software will lead to a failure to meet
+the basic open-science principle of analysis reproduction, for example
+as set out by the UK Reproducibility Network: ``We expect researchers
+to\ldots{} make their research methods, software, outputs and data open,
+and available at the earliest possible point\ldots The reproducibility
+of both research methods and research results \ldots is critical to
+research in certain contexts, particularly in the experimental sciences
+with a quantitative focus\ldots{}''.
 
 In the current article we introduce a new toolkit for eye-data
 processing and analysis called ``\emph{eyetools}'', which takes the form
@@ -420,10 +427,10 @@ detection of events such as saccades or fixations. This limits the
 ability to conduct bespoke analysis steps and it means that analysis
 needs to be conducted on raw data. This is disadvantageous both in terms
 of computing time and in the open sharing of data (event data are an
-order of magnitude smaller in size than raw data). Finally, saccadr is a
-package that can be used to extract saccades from raw data, and has
-functionality to convert binocluar data into monocular data (in a
-similar manner to that used in \emph{eyetools}).
+order of magnitude smaller in size than raw data). Finally,
+\emph{saccadr} is a package that can be used to extract saccades from
+raw data, and has functionality to convert binocular data into monocular
+data (in a similar manner to that used in \emph{eyetools}).
 
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1429}}
@@ -472,7 +479,7 @@ In this tutorial we demonstrate the pipeline of analysis functions
 within \emph{eyetools}. The package has been designed to be simple to
 use by someone with basic knowledge of data handling and analysis in R.
 Our hope is that the package will enable researchers who haven't
-previusly engaged with eye-tracking to do so in an open-source and
+previously engaged with eye-tracking to do so in an open-source and
 reproducible manner. We first describe the basic installation process
 and then the preparation of data into an \emph{eyetools}-friendly
 format. We then describe the algorithms that can be used to extract the
@@ -1269,7 +1276,7 @@ directions}\label{summary-and-future-directions}
 
 This paper has given an introduction and basic tutorial on working with
 an open source R package for an analysis pipeline for eye data. We began
-by identifying the current gap in available tools for working with eye
+by identifying the current gaps in available tools for working with eye
 data in reproducible pipelines. We then provided an overview of the
 initial steps in working with raw eye data and the conversion of raw eye
 data into a usable format for working with the functions in
@@ -1294,10 +1301,22 @@ the user a means to enable more complex or nuanced analyses.
 proprietary functionality. The major benefits of open-source tools are
 extensive: not only do they allow for full inspection and
 reproducibility of analyses, but they also support and enable the
-development and sharing of new analysis functions. This is our hope for
-\emph{eyetools}, that future versions will benefit from user engagement
-and an expansion of the toolset to enable an ever more powerful set of
-features.
+development and sharing of new analysis functions. There are a number of
+obvious features that would be hugely beneficial in future versions of
+\emph{eyetools}. For example, while the package provides means to
+determine the order of eye-movements (\texttt{AOI\_seq()}) there is no
+means to compare these patterns across different trials or periods. Such
+``scan-path analyses'' have been used effectively in cognitive studies
+and so algorithms to conduct these analyses would be an obvious next
+step. There are also no functions within the package to handle
+pupilometry data, despite the obvious benefits of analysing these data.
+From a development perspective, while these features would be hugely
+beneficial to the package, they will only be implemented as and when
+there is a need in our research. Thus our hope for \emph{eyetools} is
+that future versions will benefit from user engagement and an expansion
+of the toolset to enable an ever more powerful set of features. We
+believe eyetools provides a solid foundation for this collaborative
+venture.
 
 \subsection{Data and code
 availability}\label{data-and-code-availability}
@@ -1306,7 +1325,7 @@ This manuscript was written in Quarto and can be reproduced from the
 manuscript source files which are available at
 \url{https://github.com/tombeesley/BRM_eyetools} . The manuscript
 details functions from the latest CRAN version of \emph{eyetools} which
-is 0.9.3. We welcome contributions to the development of \emph{eyetools}
+is 0.9.2. We welcome contributions to the development of \emph{eyetools}
 by posting bug reports and suggested improvements at
 \url{https://github.com/tombeesley/eyetools/issues} .
 
