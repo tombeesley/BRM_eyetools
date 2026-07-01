@@ -44,7 +44,6 @@ floatsintext: true
 
 ```{r, include=FALSE, message=FALSE}
 
-#install_github("tombeesley/eyetools@0.9.1")
 library(eyetools)
 
 ```
@@ -82,7 +81,7 @@ In this tutorial we demonstrate the pipeline of analysis functions within *eyeto
 
 ## Installing *eyetools*
 
-*eyetools* is available on CRAN and can be installed with the command `install.packages("eyetools")`. Instructions for installing development versions can be found at the package repository: <https://github.com/tombeesley/eyetools/>. Once installed, the package can be loaded into R with the command `library(eyetools)`.
+*eyetools* is available on CRAN and can be installed with the command `install.packages("eyetools")`. Instructions for installing development versions can be found at the package repository: <https://github.com/tombeesley/eyetools/>. Once installed, the package can be loaded into R with the command `library(eyetools)`. This manuscript is generated from a computationally reproducible quarto file using eyetools version `r packageVersion("eyetools")`.
 
 ## Preparing data for *eyetools*
 
@@ -233,7 +232,7 @@ head(saccades, 4)
 
 ## Choosing suitable parameters for fixation and saccade detection
 
-The default parameters for the three alogirthms just described (`fixation_dispersion()`, `fixation_VTI()` `saccade_VTI()`)
+The default parameters for the three algorithms just described (`fixation_dispersion()`, `fixation_VTI()` `saccade_VTI()`)...
 
 ## Area of interest (AOI) analysis
 
