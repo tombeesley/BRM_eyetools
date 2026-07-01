@@ -1,0 +1,486 @@
+\documentclass[
+  man,
+  floatsintext,
+  longtable,
+  nolmodern,
+  notxfonts,
+  notimes,
+  colorlinks=true,linkcolor=blue,citecolor=blue,urlcolor=blue]{apa7}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+
+
+
+\RequirePackage{longtable}
+\RequirePackage{threeparttablex}
+
+\makeatletter
+\renewcommand{\paragraph}{\@startsection{paragraph}{4}{\parindent}%
+	{0\baselineskip \@plus 0.2ex \@minus 0.2ex}%
+	{-.5em}%
+	{\normalfont\normalsize\bfseries\typesectitle}}
+
+\renewcommand{\subparagraph}[1]{\@startsection{subparagraph}{5}{0.5em}%
+	{0\baselineskip \@plus 0.2ex \@minus 0.2ex}%
+	{-\z@\relax}%
+	{\normalfont\normalsize\bfseries\itshape\hspace{\parindent}{#1}\textit{\addperi}}{\relax}}
+\makeatother
+
+
+
+
+\usepackage{longtable, booktabs, multirow, multicol, colortbl, hhline, caption, array, float, xpatch}
+\setcounter{topnumber}{2}
+\setcounter{bottomnumber}{2}
+\setcounter{totalnumber}{4}
+\renewcommand{\topfraction}{0.85}
+\renewcommand{\bottomfraction}{0.85}
+\renewcommand{\textfraction}{0.15}
+\renewcommand{\floatpagefraction}{0.7}
+
+\usepackage{tcolorbox}
+\tcbuselibrary{listings,theorems, breakable, skins}
+\usepackage{fontawesome5}
+
+\definecolor{quarto-callout-color}{HTML}{909090}
+\definecolor{quarto-callout-note-color}{HTML}{0758E5}
+\definecolor{quarto-callout-important-color}{HTML}{CC1914}
+\definecolor{quarto-callout-warning-color}{HTML}{EB9113}
+\definecolor{quarto-callout-tip-color}{HTML}{00A047}
+\definecolor{quarto-callout-caution-color}{HTML}{FC5300}
+\definecolor{quarto-callout-color-frame}{HTML}{ACACAC}
+\definecolor{quarto-callout-note-color-frame}{HTML}{4582EC}
+\definecolor{quarto-callout-important-color-frame}{HTML}{D9534F}
+\definecolor{quarto-callout-warning-color-frame}{HTML}{F0AD4E}
+\definecolor{quarto-callout-tip-color-frame}{HTML}{02B875}
+\definecolor{quarto-callout-caution-color-frame}{HTML}{FD7E14}
+
+%\newlength\Oldarrayrulewidth
+%\newlength\Oldtabcolsep
+
+
+\usepackage{hyperref}
+
+
+
+
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\usepackage{longtable,booktabs,array}
+\newcounter{none} % for unnumbered tables
+\usepackage{calc} % for calculating minipage widths
+% Correct order of tables after \paragraph or \subparagraph
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+% Allow footnotes in longtable head/foot
+\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
+\makesavenoteenv{longtable}
+
+\usepackage{graphicx}
+\makeatletter
+\newsavebox\pandoc@box
+\newcommand*\pandocbounded[1]{% scales image to fit in text height/width
+  \sbox\pandoc@box{#1}%
+  \Gscale@div\@tempa{\textheight}{\dimexpr\ht\pandoc@box+\dp\pandoc@box\relax}%
+  \Gscale@div\@tempb{\linewidth}{\wd\pandoc@box}%
+  \ifdim\@tempb\p@<\@tempa\p@\let\@tempa\@tempb\fi% select the smaller of both
+  \ifdim\@tempa\p@<\p@\scalebox{\@tempa}{\usebox\pandoc@box}%
+  \else\usebox{\pandoc@box}%
+  \fi%
+}
+% Set default figure placement to htbp
+\def\fps@figure{htbp}
+\makeatother
+
+
+% definitions for citeproc citations
+\NewDocumentCommand\citeproctext{}{}
+\NewDocumentCommand\citeproc{mm}{%
+  \begingroup\def\citeproctext{#2}\cite{#1}\endgroup}
+\makeatletter
+ % allow citations to break across lines
+ \let\@cite@ofmt\@firstofone
+ % avoid brackets around text for \cite:
+ \def\@biblabel#1{}
+ \def\@cite#1#2{{#1\if@tempswa , #2\fi}}
+\makeatother
+\newlength{\cslhangindent}
+\setlength{\cslhangindent}{1.5em}
+\newlength{\csllabelwidth}
+\setlength{\csllabelwidth}{3em}
+\newenvironment{CSLReferences}[2] % #1 hanging-indent, #2 entry-spacing
+ {\begin{list}{}{%
+  \setlength{\itemindent}{0pt}
+  \setlength{\leftmargin}{0pt}
+  \setlength{\parsep}{0pt}
+  % turn on hanging indent if param 1 is 1
+  \ifodd #1
+   \setlength{\leftmargin}{\cslhangindent}
+   \setlength{\itemindent}{-1\cslhangindent}
+  \fi
+  % set entry spacing
+  \setlength{\itemsep}{#2\baselineskip}}}
+ {\end{list}}
+\usepackage{calc}
+\newcommand{\CSLBlock}[1]{\hfill\break\parbox[t]{\linewidth}{\strut\ignorespaces#1\strut}}
+\newcommand{\CSLLeftMargin}[1]{\parbox[t]{\csllabelwidth}{\strut#1\strut}}
+\newcommand{\CSLRightInline}[1]{\parbox[t]{\linewidth - \csllabelwidth}{\strut#1\strut}}
+\newcommand{\CSLIndent}[1]{\hspace{\cslhangindent}#1}
+
+
+\usepackage[nolongtablepatch]{lineno}
+\linenumbers
+
+
+
+\usepackage{newtx}
+
+\defaultfontfeatures{Scale=MatchLowercase}
+\defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+
+
+
+
+
+\title{eyetools: an R package for open-source analysis of eye data}
+
+
+\shorttitle{eyetools: eye data analysis}
+
+
+\usepackage{etoolbox}
+
+
+
+
+
+
+
+
+\authorsnames{Tom Beesley,Matthew Ivory}
+
+
+
+
+
+\affiliation{
+{Lancaster University}}
+
+
+
+
+\leftheader{Beesley and Ivory}
+
+
+
+\abstract{Eye data analysis has become an integral part of research in
+both academic and commercial settings. In the behavioural sciences there
+is an ever increasing desire and need to shift analysis from proprietary
+software to open source alternatives. Here we introduce eyetools, an R
+package that provides an open source means of conducting eye data
+analysis. eyetools is aimed at researchers who may not have experience
+programming their own eye data analysis routines. The package provides a
+number of functions that facilitate key steps in the pipeline of eye
+data analysis, from basic data manipulation, extraction of fixations and
+saccades, to trial level summaries and visualisations. In this article
+we introduce these core features of the package and provide a
+step-by-step guide which will enable researchers to find open source
+solutions to their eye data analysis. We discuss the ways in which we
+believe eyetools might be expanded in the future and how it may provide
+a platform for collaborative work on eye data analysis.}
+
+\keywords{software; R; eye-tracking; fixations; saccades;
+areas-of-interest}
+
+\authornote{\par{\addORCIDlink{Tom Beesley}{0000-0003-2836-2743}} 
+
+\par{       }
+\par{Correspondence concerning this article should be addressed to Tom
+Beesley, Lancaster University, Department of Psychology, Lancaster
+University, UK, LA1 4YD, UK, Email: t.beesley@lancaster.ac.uk}
+}
+
+\makeatletter
+\let\endoldlt\endlongtable
+\def\endlongtable{
+\hline
+\endoldlt
+}
+\makeatother
+
+\urlstyle{same}
+
+
+
+\makeatletter
+\@ifpackageloaded{caption}{}{\usepackage{caption}}
+\AtBeginDocument{%
+\ifdefined\contentsname
+  \renewcommand*\contentsname{Table of contents}
+\else
+  \newcommand\contentsname{Table of contents}
+\fi
+\ifdefined\listfigurename
+  \renewcommand*\listfigurename{List of Figures}
+\else
+  \newcommand\listfigurename{List of Figures}
+\fi
+\ifdefined\listtablename
+  \renewcommand*\listtablename{List of Tables}
+\else
+  \newcommand\listtablename{List of Tables}
+\fi
+\ifdefined\figurename
+  \renewcommand*\figurename{Figure}
+\else
+  \newcommand\figurename{Figure}
+\fi
+\ifdefined\tablename
+  \renewcommand*\tablename{Table}
+\else
+  \newcommand\tablename{Table}
+\fi
+}
+\@ifpackageloaded{float}{}{\usepackage{float}}
+\floatstyle{ruled}
+\@ifundefined{c@chapter}{\newfloat{codelisting}{h}{lop}}{\newfloat{codelisting}{h}{lop}[chapter]}
+\floatname{codelisting}{Listing}
+\newcommand*\listoflistings{\listof{codelisting}{List of Listings}}
+\makeatother
+\makeatletter
+\makeatother
+\makeatletter
+\@ifpackageloaded{caption}{}{\usepackage{caption}}
+\@ifpackageloaded{subcaption}{}{\usepackage{subcaption}}
+\makeatother
+\makeatletter
+\@ifpackageloaded{fontawesome5}{}{\usepackage{fontawesome5}}
+\makeatother
+
+% From https://tex.stackexchange.com/a/645996/211326
+%%% apa7 doesn't want to add appendix section titles in the toc
+%%% let's make it do it
+\makeatletter
+\xpatchcmd{\appendix}
+  {\par}
+  {\addcontentsline{toc}{section}{\@currentlabelname}\par}
+  {}{}
+\makeatother
+
+%% Disable longtable counter
+%% https://tex.stackexchange.com/a/248395/211326
+
+\usepackage{etoolbox}
+
+\makeatletter
+\patchcmd{\LT@caption}
+  {\bgroup}
+  {\bgroup\global\LTpatch@captiontrue}
+  {}{}
+\patchcmd{\longtable}
+  {\par}
+  {\par\global\LTpatch@captionfalse}
+  {}{}
+\apptocmd{\endlongtable}
+  {\ifLTpatch@caption\else\addtocounter{table}{-1}\fi}
+  {}{}
+\newif\ifLTpatch@caption
+\makeatother
+
+\begin{document}
+
+\maketitle
+
+
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+
+\setlength\LTleft{0pt}
+
+\resetlinenumber[1]
+
+Eye-tracking is now an established and widely used tool that provides
+powerful measurements of human behaviour. Its application across
+academic research is far-reaching, with major importance to the fields
+of computer science and AI, economics, psychology, and even having
+influence on art and design. Beyond purely academic application,
+eye-tracking is widely used in commercial fields where it can provide
+insights into consumer behaviour, helping to shape product design and
+marketing.
+
+By recording the movement of an individual's gaze during research
+studies, users can quantify where and how long individual's look at
+particular regions of space (usually with a focus on stimuli presented
+on a 2D screen, but also within 3D space). Eye-tracking provides a rich
+stream of continuous data which can offer powerful insights into
+real-time cognitive processing. Undoubtedly, Psychology (and related
+broad areas of research such as vision science, linguistics, etc) is
+perhaps the scientific discipline which has seen the most substantial
+adoption of eye-data research, where eye-tracking systems are now
+commonplace in centres of academic research. Such data allow researchers
+to inspect the interplay of cognitive processes such as attention,
+memory, decision making, and reading, with high temporal precision
+(\citeproc{ref-beesley2019}{Beesley et al., 2019}).
+
+While there are abundant uses and benefits of collecting eye-movement
+data, the collection of such data has many implications for the eventual
+analysis work that is undertaken by the researcher. The continual stream
+of recording can lead to an overwhelming amount of raw data: modern
+eye-trackers can record data at 1000 Hz and above, which results in 3.6
+million samples taken per hour. The continual nature of the data also
+leads to a wealth of choice in the manner in which it is analysed. As
+such, the provision of suitable computational software for data
+reduction and processing is an important part of eye-tracking research.
+The companies behind eye-tracking devices offer licensed software that
+will perform many of the common steps for eye-data analysis. However,
+there are several disadvantages to using such proprietary software in a
+research context. Firstly, the software will typically have an ongoing
+license cost for continual use. Secondly, the algorithms driving the
+operations within such software are not readily available for inspection
+or adaptation for new purposes. These significant constraints mean that
+the use of proprietary analysis software will lead to a failure to meet
+the basic open-science principle of analysis reproduction, for example
+as set out by the UK Reproducibility Network: ``We expect researchers
+to\ldots{} make their research methods, software, outputs and data open,
+and available at the earliest possible point\ldots The reproducibility
+of both research methods and research results \ldots is critical to
+research in certain contexts, particularly in the experimental sciences
+with a quantitative focus\ldots{}''.
+
+In the current article we introduce a new toolkit for eye-data
+processing and analysis called ``\emph{eyetools}'', which takes the form
+of an R package. R packages (like R itself) are free to use and are
+therefore available for users across the world. The package provides a
+(growing) number of functions that provide an efficient and effective
+means to conduct basic eye-data analysis. \emph{eyetools} is built with
+academic researchers in the psychological sciences in mind, though there
+is no reason why the package would not be effective more generally. The
+functions within the package reflect steps in a comprehensive analysis
+pipeline, taking the user from initial handling of raw eye data, to
+summarising data for each period of a procedure, to the visualisation of
+the data in plots. Since the pipeline is contained within the one
+package, it is not reliant on external software, which enables easy
+reproducibility of any analyses. Importantly, the functions are simple
+to use, ensuring that the package will be beneficial for researchers who
+are unfamiliar with eye data analysis. It should also appeal to
+researchers accustomed to working with eye data in other environments
+who wish to transfer to working in R.
+
+\emph{eyetools} is, of course, not the only package in R that allows
+users to work with eye data. We conducted a survey of the available
+packages on CRAN (The Comprehensive R Archive Network), by searching the
+list of available packages
+(\url{https://cran.r-project.org/web/packages/available_packages_by_name.html})
+for the terms ``eye'' (which covers terms ``eye-tracking'' and
+``eyetracking''), ``gaze'', ``saccades'' and ``fixation''. We considered
+packages that were designed for work within the psychological
+sciences\footnote{We did not present or summarise here packages that
+  were designed for work in opthalmology research.}, which identified 12
+packages that offer relevant functions for the analysis of eye data,
+shown in Table 1. \textbf{\emph{eyeTrackr}}, \textbf{\emph{eyelinker}},
+and \textbf{\emph{eyelinkReader}}, all offer functionality for data only
+from experiments that have used `EyeLink' trackers (S-R Research). In
+contrast, \textbf{\emph{eyetools}} provides functions that are
+hardware-agnostic, relying on a format of data that can be achieved from
+any source. The \textbf{\emph{emov}} package offers a limited set of
+functions and is primarily designed for fixation detection, using the
+same dispersion method employed in \textbf{\emph{eyetools}}.
+\textbf{\emph{eyetrackingR}} and \textbf{\emph{kollaR}} are perhaps the
+most comprehensive alternative packages and having some similarity to
+eyetools in their broad use-case. \textbf{\emph{eyetrackingR}} offers a
+large suite of functionality and, like \textbf{\emph{eyetools}}, can be
+applied across the entire pipeline. It has functions for cleaning data
+and various plotting functions, including analysis over time. It does
+not feature algorithms regarding the detection of events such as
+saccades or fixations. This limits the ability to conduct bespoke
+analysis steps and it means that analysis needs to be conducted on raw
+data. This is disadvantageous both in terms of computing time and in the
+open sharing of data (event data are an order of magnitude smaller in
+size than raw data). kollaR is hardware-agnostic and offers functions
+for data processing, fixation detection and some plotting features.
+Several packages offer specific use-cases: \textbf{\emph{saccadr}} is a
+package that can be used to extract saccades from raw data, and has
+functionality to convert binocular data into monocular data;
+\textbf{\emph{fpa}} offers a particular spatio-temporal analysis and
+associated plots; \textbf{\emph{gazepath}} offers detection of fixations
+and saccades, in addition to an optional GUI. The packages
+\textbf{\emph{eyeris}} and \textbf{\emph{Pupillometry}} are focussed on
+the analysis of pupillometry data, which is not a focus of the eyetools
+package (at present).
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 16\tabcolsep) * \real{0.1111}}
+  >{\centering\arraybackslash}p{(\linewidth - 16\tabcolsep) * \real{0.1111}}
+  >{\centering\arraybackslash}p{(\linewidth - 16\tabcolsep) * \real{0.1111}}
+  >{\centering\arraybackslash}p{(\linewidth - 16\tabcolsep) * \real{0.1111}}
+  >{\centering\arraybackslash}p{(\linewidth - 16\tabcolsep) * \real{0.1111}}
+  >{\centering\arraybackslash}p{(\linewidth - 16\tabcolsep) * \real{0.1111}}
+  >{\centering\arraybackslash}p{(\linewidth - 16\tabcolsep) * \real{0.1111}}
+  >{\centering\arraybackslash}p{(\linewidth - 16\tabcolsep) * \real{0.1111}}
+  >{\centering\arraybackslash}p{(\linewidth - 16\tabcolsep) * \real{0.1111}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Package
+\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+Hardware-agnostic
+\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+Data Import
+\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+Data processing
+\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+Fixation detection
+\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+Saccade detection
+\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+Pupillometry
+\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+Plotting
+\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+Inferential Analysis
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+emov & \faIcon{check} & & \faIcon{check} & \faIcon{check} &
+\faIcon{check} & & & \\
+eyelinker & & Eyelink & & & & & & \\
+eyelinkReader & & EyeLink & & \faIcon{check} & \faIcon{check} & &
+\faIcon{check} & \\
+eyeris & \faIcon{check} & EyeLink & \faIcon{check} & & & \faIcon{check}
+& \faIcon{check} & \\
+eyetools & \faIcon{check} & Tobii & \faIcon{check} & \faIcon{check} &
+\faIcon{check} & & \faIcon{check} & \\
+eyetrackingR & \faIcon{check} & & \faIcon{check} & & & & \faIcon{check}
+& \faIcon{check} \\
+eyeTrackR & & EyeLink & \faIcon{check} & & & & & \\
+fpa & \faIcon{check} & & \faIcon{check} & & & & \faIcon{check} & \\
+gazepath & \faIcon{check} & & & \faIcon{check} & & & & \\
+kollaR & \faIcon{check} & & \faIcon{check} & \faIcon{check} & & &
+\faIcon{check} & \\
+PuppilometryR & & & \faIcon{check} & & & \faIcon{check} & \faIcon{check}
+& \\
+saccadr & \faIcon{check} & & & \faIcon{check} & & & & \\
+\end{longtable}
+}
+
+\protect\phantomsection\label{refs}
+\begin{CSLReferences}{1}{0}
+\bibitem[\citeproctext]{ref-beesley2019}
+Beesley, T., Pearson, D., \& Le Pelley, M. (2019). \emph{Chapter 1 - eye
+tracking as a tool for examining cognitive processes} (G. Foster, Ed.;
+pp. 1--30). Academic Press.
+\url{https://doi.org/10.1016/B978-0-12-813092-6.00002-2}
+
+\end{CSLReferences}
+
+
+
+
+
+
+\end{document}

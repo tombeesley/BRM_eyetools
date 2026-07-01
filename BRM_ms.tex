@@ -109,6 +109,7 @@
 \providecommand{\tightlist}{%
   \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
 \usepackage{longtable,booktabs,array}
+\newcounter{none} % for unnumbered tables
 \usepackage{calc} % for calculating minipage widths
 % Correct order of tables after \paragraph or \subparagraph
 \usepackage{etoolbox}
@@ -394,55 +395,81 @@ processing and analysis called ``\emph{eyetools}'', which takes the form
 of an R package. R packages (like R itself) are free to use and are
 therefore available for users across the world. The package provides a
 (growing) number of functions that provide an efficient and effective
-means to conduct basic eye-data analysis. \emph{eyetools} is built with
-academic researchers in the psychological sciences in mind, though there
-is no reason why the package would not be effective more generally. The
-functions within the package reflect steps in a comprehensive analysis
-pipeline, taking the user from initial handling of raw eye data, to
-summarising data for each period of a procedure, to the visualisation of
-the data in plots. Since the pipeline is contained within the one
-package, it is not reliant on external software, which enables easy
-reproducibility of any analyses. Importantly, the functions are simple
-to use, ensuring that the package will be beneficial for researchers who
-are unfamiliar with eye data analysis. It should also appeal to
-researchers accustomed to working with eye data in other environments
-who wish to transfer to working in R.
+means to conduct eye-data analysis on data from typical laboratory 2D
+eye-tracking systems (i.e., Tobii Spectrum and similar; EyeLink 1000
+Plus and similar), for tasks that employ static 2D displays of stimuli
+(there are no functions for smooth pursuit analysis). \emph{eyetools} is
+built with academic researchers in the psychological sciences in mind,
+though there is no reason why the package would not be effective more
+generally. The functions within the package reflect steps in a
+comprehensive analysis pipeline, taking the user from initial handling
+of raw eye data, to summarising data for each period of a procedure, to
+the visualisation of the data in plots. Since the pipeline is contained
+within the one package, it is not reliant on external software, which
+enables easy reproducibility of any analyses. Importantly, the functions
+are simple to use, ensuring that the package will be beneficial for
+researchers who are unfamiliar with eye data analysis. It should also
+appeal to researchers accustomed to working with eye data in other
+environments who wish to transfer to working in R.
 
 \emph{eyetools} is, of course, not the only package in R that allows
-users to work with eye data. A recent survey of CRAN (The Comprehensive
-R Archive Network) identified seven other packages that offer relevant
-functions for the analysis of eye data. \textbf{\emph{eyeTrackr}},
-\textbf{\emph{eyelinker}}, and \textbf{\emph{eyelinkReader}}, all offer
-functionality for data only from experiments that have used `EyeLink'
-trackers (S-R Research). In contrast, \emph{eyetools} provides functions
-that are hardware-agnostic, relying on a format of data that can be
-achieved from any source. The \textbf{\emph{eyeRead}} package is
-designed for the specific analysis of eye data from reading exercises.
-The \textbf{\emph{emov}} package offers a limited set of functions and
-is primarily designed for fixation detection, using the same dispersion
-method employed in \emph{eyetools}. \textbf{\emph{eyetrackingR}} is
-perhaps the most comprehensive alternative package available on CRAN.
-\emph{eyetrackingR} offers a large suite of functionality and, like
-\emph{eyetools}, can be applied across the entire pipeline. It has
-functions for cleaning data and various plotting functions, including
-analysis over time. It does not feature algorithms regarding the
-detection of events such as saccades or fixations. This limits the
-ability to conduct bespoke analysis steps and it means that analysis
-needs to be conducted on raw data. This is disadvantageous both in terms
-of computing time and in the open sharing of data (event data are an
-order of magnitude smaller in size than raw data). Finally,
-\textbf{saccadr} is a package that can be used to extract saccades from
-raw data, and has functionality to convert binocular data into monocular
-data (in a similar manner to that used in \emph{eyetools}).
+users to work with eye data. We conducted a survey of the available
+packages on CRAN (The Comprehensive R Archive Network), by searching the
+list of available packages
+(\url{https://cran.r-project.org/web/packages/available_packages_by_name.html})
+for the terms ``eye'' (which covers terms ``eye-tracking'' and
+``eyetracking''), ``gaze'', ``saccades'' and ``fixation''. We considered
+packages that were designed for work within the psychological
+sciences\footnote{We did not present or summarise here packages that
+  were designed for work in opthalmology research. There are also
+  several packages that are not listed on CRAN but can be installed
+  using alternative methods. Of note is the package
+  \textbf{\emph{gazeR}} which, like \textbf{\emph{eyetools}} and
+  \textbf{\emph{kollaR}}, features a comprehensive array of functions
+  for work with eye data.}, which identified 12 packages that offer
+relevant functions for the analysis of eye data, shown in Table 1.
+\textbf{\emph{eyeTrackr}}, \textbf{\emph{eyelinker}}, and
+\textbf{\emph{eyelinkReader}}, all offer functionality for data
+collected specifically from `EyeLink' trackers (SR Research). The
+\textbf{\emph{emov}} package offers a limited set of functions and is
+primarily designed for fixation detection, using the same dispersion
+method employed in \textbf{\emph{eyetools}}.
+\textbf{\emph{eyetrackingR}} and \textbf{\emph{kollaR}} are perhaps the
+most comprehensive alternative packages and having some similarity to
+eyetools in their broad use-case. \textbf{\emph{eyetrackingR}} offers a
+large suite of functionality and, like \textbf{\emph{eyetools}}, can be
+applied across the entire pipeline. It has functions for assessing
+missing data, analysing data over time and visualising data with various
+plotting functions. It does not feature algorithms for the detection of
+events such as saccades or fixations. \textbf{\emph{kollaR}} is
+hardware-agnostic and offers functions for data processing, fixation
+detection and some plotting features. Several packages offer specific
+use-cases: \textbf{\emph{saccadr}} is a package that can be used to
+extract saccades from raw data, and has functionality to convert
+binocular data into monocular data; \textbf{\emph{fpa}} offers a
+particular spatio-temporal analysis and associated plots;
+\textbf{\emph{gazepath}} offers detection of fixations and saccades, in
+addition to an optional GUI. The packages \textbf{\emph{eyeris}} and
+\textbf{\emph{Pupillometry}} are focussed on the analysis of
+pupillometry data, which is not a focus of the eyetools package (at
+present).
 
+\begin{table}
+
+{\caption{{Properties of CRAN packages designed to work with eye-data
+for the psychological sciences}{\label{tbl-table1}}}
+\vspace{-20pt}}
+
+{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1429}}
-  >{\centering\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1429}}
-  >{\centering\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1429}}
-  >{\centering\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1429}}
-  >{\centering\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1429}}
-  >{\centering\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1429}}
-  >{\centering\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1429}}@{}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 14\tabcolsep) * \real{0.1250}}
+  >{\centering\arraybackslash}p{(\linewidth - 14\tabcolsep) * \real{0.1250}}
+  >{\centering\arraybackslash}p{(\linewidth - 14\tabcolsep) * \real{0.1250}}
+  >{\centering\arraybackslash}p{(\linewidth - 14\tabcolsep) * \real{0.1250}}
+  >{\centering\arraybackslash}p{(\linewidth - 14\tabcolsep) * \real{0.1250}}
+  >{\centering\arraybackslash}p{(\linewidth - 14\tabcolsep) * \real{0.1250}}
+  >{\centering\arraybackslash}p{(\linewidth - 14\tabcolsep) * \real{0.1250}}
+  >{\centering\arraybackslash}p{(\linewidth - 14\tabcolsep) * \real{0.1250}}@{}}
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 Package
@@ -453,44 +480,60 @@ Data Import
 \end{minipage} & \begin{minipage}[b]{\linewidth}\centering
 Data processing
 \end{minipage} & \begin{minipage}[b]{\linewidth}\centering
-Identifies events
+Fixation detection
+\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+Saccade detection
+\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+Pupillometry
 \end{minipage} & \begin{minipage}[b]{\linewidth}\centering
 Plotting
-\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
-Inferential Analysis
 \end{minipage} \\
 \midrule\noalign{}
 \endhead
 \bottomrule\noalign{}
 \endlastfoot
-emov & \faIcon{check} & & \faIcon{check} & \faIcon{check} & & \\
-ETRAN & & & & & & \\
-eyelinker & & \faIcon{check} & & & & \\
-eyelinkReader & & \faIcon{check} & & \faIcon{check} & \faIcon{check}
-& \\
-eyeRead & \faIcon{check} & & \faIcon{check} & \faIcon{check}** & & \\
-eyetrackingR & \faIcon{check} & & \faIcon{check} & & \faIcon{check} &
+emov & \faIcon{check} & & \faIcon{check} & \faIcon{check} &
+\faIcon{check} & & \\
+eyelinker & & Eyelink & & & & & \\
+eyelinkReader & & EyeLink & & \faIcon{check} & \faIcon{check} & &
 \faIcon{check} \\
-eyeTrackr & & \faIcon{check} & \faIcon{check} & \faIcon{check} & & \\
-eyetools & \faIcon{check} & \faIcon{check}* & \faIcon{check} &
-\faIcon{check} & \faIcon{check} & \\
-saccadr & \faIcon{check} & & & \faIcon{check} & & \\
+eyeris & \faIcon{check} & EyeLink & \faIcon{check} & & & \faIcon{check}
+& \faIcon{check} \\
+eyetools & \faIcon{check} & Tobii & \faIcon{check} & \faIcon{check} &
+\faIcon{check} & & \faIcon{check} \\
+eyetrackingR & \faIcon{check} & & \faIcon{check} & & & &
+\faIcon{check} \\
+eyeTrackR & & EyeLink & \faIcon{check} & & & & \\
+fpa & \faIcon{check} & & \faIcon{check} & & & & \faIcon{check} \\
+gazepath & \faIcon{check} & & & \faIcon{check} & & & \\
+kollaR & \faIcon{check} & & \faIcon{check} & \faIcon{check} & & &
+\faIcon{check} \\
+PuppilometryR & & & \faIcon{check} & & & \faIcon{check} &
+\faIcon{check} \\
+saccadr & \faIcon{check} & & & \faIcon{check} & & & \\
 \end{longtable}
+}
 
-* for Tobii data only, ** for text reading experiments only
+{\vspace{-20pt}
+\noindent \emph{Note.} Hardware-agnostic: whether designed for use only with a proprietary data format; Data Import: has functions for direct import of data from eye-tracking hardware; Data processing: basic processing functions, e.g.~interpolation, smoothing. Fixation/Saccade detection: functions for identifying events from raw data; Pupillometry: functions for puppilometry data; Plotting: functions to plot raw or processed data}
+
+\end{table}
 
 In this tutorial we demonstrate the pipeline of analysis functions
 within \emph{eyetools}. The package has been designed to be simple to
 use by someone with basic knowledge of data handling and analysis in R.
-Our hope is that the package will enable researchers who haven't
-previously engaged with eye-tracking to do so in an open-source and
-reproducible manner. We first describe the basic installation process
-and then the preparation of data into an \emph{eyetools}-friendly
-format. We then describe the algorithms that can be used to extract the
-key characteristics of fixations and saccades. We then show the
-algorithms that can extract critical trial level patterns in behaviour,
-such as time on areas of interest and sequences of eye movements, as
-well as methods to visualise the data.
+We envisage that this package can be used by (for example) first-year
+PhD students or early career researchers with minimal experience working
+in R. Users will need to understand basic R functionality like how to
+perform simple operations on data objects. Our hope is that the package
+will enable researchers who haven't previously engaged with eye-tracking
+to do so in an open-source and reproducible manner. We first describe
+the basic installation process and then the preparation of data into an
+\emph{eyetools}-friendly format. We then describe the algorithms that
+can be used to extract the key characteristics of fixations and
+saccades. We then show the algorithms that can extract critical trial
+level patterns in behaviour, such as time on areas of interest and
+sequences of eye movements, as well as methods to visualise the data.
 
 \subsection{\texorpdfstring{Installing
 \emph{eyetools}}{Installing eyetools}}\label{installing-eyetools}
@@ -514,8 +557,14 @@ function takes the default raw data format and converts it into a
 simplified raw data format suitable for \emph{eyetools}.
 
 The \emph{eyetools} package has been developed primarily with the
-analysis of experimental psychology data in mind. To this end, many of
-the functions expect a ``trial'' variable in the data, such that the
+analysis of experimental psychology data in mind. It is designed for,
+and tested with, data that has been collected from standard static 2D
+displays.
+
+In the prototypical experimental psychology task, static displays of
+stimuli will be presented for a period of time before the presentation
+terminates and an inter-trial-interval occurs. As such, many of the
+functions expect a ``trial'' variable in the data, such that the
 algorithms will operate over multiple trials and produce output that
 retains this trial information. Similarly, data in psychology
 experiments tends to come from multiple participants, and to facilitate
@@ -523,25 +572,26 @@ analysis, a ``pID'' column is required (even if data from only a single
 participant is used). This means that the user can avoid having to
 generate additional programming steps to analyse and combine the data
 from multiple participants. It is quite typical in psychology
-experiments for there to be multiple periods within a trial, e.g.,
-fixation; stimulus presentation; response feedback;
-inter-trial-interval. \emph{eyetools} does not interpret these changes
-automatically, and so it is necessary to first select the data for the
-period or periods that are of interest for analysis. Analysis on each
-period would be conducted separately using the functions in
-\emph{eyetools}.
+experiments for there to be multiple defined periods within a trial,
+such as fixation, different periods of stimulus presentation, feedback
+presentation, inter-trial-interval, etc. Since each experimental
+paradigm will have a particular arrangement of such periods,
+\emph{eyetools} does not interpret these changes automatically, and so
+it is necessary to first select the data for the period or periods that
+are of interest for analysis. Analysis on each period would be conducted
+separately using the functions in \emph{eyetools}.
 
 The starting point for the analysis pipeline is the preparation of the
 raw eye data, which will consist of recorded samples from the
 eye-tracker, with each row in the data reflecting a single time-stamped
 recording. If the eye-tracker is set at 1000Hz, then consecutive
 recordings will be 1 millisecond of time apart; at 300Hz, the recordings
-are 3.33 milliseconds apart. The only requirement for the time column is
-that the values reflect a consistent and increasing set of values. There
-is no need to specify the sampling rate, since \emph{eyetools} functions
-will calculate this automatically. For the majority of functions that
-process raw data, \emph{eyetools} expects raw data to have the following
-columns:
+are \(3.\overline{3}\) milliseconds apart. The only requirement for the
+time column is that the values reflect a consistent and increasing set
+of values. There is no need to specify the sampling rate, since
+\emph{eyetools} functions will calculate this automatically. For the
+majority of functions that process raw data, \emph{eyetools} expects raw
+data to have the following columns:
 
 \begin{itemize}
 \item
@@ -561,18 +611,20 @@ be numeric, character, or factor. The order of the columns is not
 important. Missing values in the x and y columns of the raw data must be
 expressed as ``NA''.
 
-While \emph{eyetools} works on monocular data in the main, many
-eyetrackers will output binocular data. In such cases, since the primary
-aim of our analyses is the estimation of the spatial coordinates of
-gaze, the function \texttt{combine\_eyes()} should be used to combine
-the data to form a set of monocular data. This function takes raw data
-with coordinates for each eye (i.e., left\_x, right\_x, left\_y,
-right\_y), and converts the data into single x and y coordinates. By
-default, the function does this by taking an average of the coordinates
-from the two eyes of each timestamp, but it is also possible to select
-data from the eye with the lowest proportion of missing samples. This
-function returns data that has x and y variables in place of the left\_*
-and right\_* variables.
+While \emph{eyetools} works on monocular data (data from a single eye,
+i.e., a series of X and Y coordinates) in the main, many eyetrackers
+will output binocular data (data from two eyes, i.e., an X and Y
+coordinate for each eye). In such cases, since the primary aim of our
+analyses is the estimation of the spatial coordinates of gaze, the
+function \texttt{combine\_eyes()} should be used to combine the data to
+form a set of monocular data. This function takes raw data with
+coordinates for each eye (i.e., left\_x, right\_x, left\_y, right\_y),
+and converts the data into single x and y coordinates. By default, the
+function does this by taking an average of the coordinates from the two
+eyes of each timestamp, but it is also possible to select data from the
+eye with the lowest proportion of missing samples. This function returns
+data that has x and y variables in place of the left\_* and right\_*
+variables.
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -1178,7 +1230,7 @@ proportion of the time spent in the trial.
 \caption{\label{fig-growth}Examples of the absolute and proportional
 time plots from \texttt{plot\_AOI\_growth()}}
 
-\begin{minipage}{0.50\linewidth}
+\begin{minipage}[t]{0.50\linewidth}
 
 \subcaption{\label{fig-abs}}
 
@@ -1190,7 +1242,7 @@ time plots from \texttt{plot\_AOI\_growth()}}
 
 \end{minipage}%
 %
-\begin{minipage}{0.50\linewidth}
+\begin{minipage}[t]{0.50\linewidth}
 
 \subcaption{\label{fig-prop}}
 
@@ -1379,7 +1431,7 @@ manuscript
 
 \subsection{References}\label{references}
 
-\phantomsection\label{refs}
+\protect\phantomsection\label{refs}
 \begin{CSLReferences}{1}{0}
 \bibitem[\citeproctext]{ref-beesley2015}
 Beesley, T., Nguyen, K. P., Pearson, D., \& Le Pelley, M. E. (2015).
@@ -1406,7 +1458,7 @@ Psychologica}, \emph{90}(1), 261--273.
 \url{https://doi.org/10.1016/0001-6918(95)00024-O}
 
 \bibitem[\citeproctext]{ref-salvucci2000}
-Salvucci, D. D., \& Goldberg, J. H. (2000). \emph{the symposium}.
+Salvucci, D. D., \& Goldberg, J. H. (2000). \emph{The symposium}.
 71--78. \url{https://doi.org/10.1145/355017.355028}
 
 \bibitem[\citeproctext]{ref-sanders1985}

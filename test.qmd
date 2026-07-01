@@ -1,0 +1,77 @@
+---
+title: "eyetools: an R package for open-source analysis of eye data"
+shorttitle: "eyetools: eye data analysis"
+author:
+  - name: Tom Beesley
+    corresponding: true
+    orcid: 0000-0003-2836-2743
+    email: t.beesley@lancaster.ac.uk
+    affiliation: 
+      - ref: LU
+  - name: Matthew Ivory 
+    affiliation: 
+      - ref: LU
+affiliations:
+  - id: LU
+    name: Lancaster University
+    country: UK
+    address: Department of Psychology, Lancaster University, UK, LA1 4YD
+abstract: |
+  | Eye data analysis has become an integral part of research in both academic and commercial settings. In the behavioural sciences there is an ever increasing desire and need to shift analysis from proprietary software to open source alternatives. Here we introduce eyetools, an R package that provides an open source means of conducting eye data analysis. eyetools is aimed at researchers who may not have experience programming their own eye data analysis routines. The package provides a number of functions that facilitate key steps in the pipeline of eye data analysis, from basic data manipulation, extraction of fixations and saccades, to trial level summaries and visualisations. In this article we introduce these core features of the package and provide a step-by-step guide which will enable researchers to find open source solutions to their eye data analysis. We discuss the ways in which we believe eyetools might be expanded in the future and how it may provide a platform for collaborative work on eye data analysis.  
+keywords: [software; R; eye-tracking; fixations; saccades; areas-of-interest]
+bibliography: bibliography.bib
+format:
+  apaquarto-pdf:
+    link-citations: true
+    numbered-lines: true
+    fig-pos: 'H'
+    documentmode: man
+    keep-tex: true
+    citeproc: false
+    filters: 
+      - at: pre-render
+        path: "wordcount.lua"
+execute:
+  echo: true
+  eval: true
+  output: false
+  warning: false
+  cache: true
+editor_options: 
+  chunk_output_type: console
+floatsintext: true
+---
+
+```{r, include=FALSE, message=FALSE}
+
+#install_github("tombeesley/eyetools@0.9.1")
+library(eyetools)
+
+```
+
+Eye-tracking is now an established and widely used tool that provides powerful measurements of human behaviour. Its application across academic research is far-reaching, with major importance to the fields of computer science and AI, economics, psychology, and even having influence on art and design. Beyond purely academic application, eye-tracking is widely used in commercial fields where it can provide insights into consumer behaviour, helping to shape product design and marketing. 
+
+By recording the movement of an individual's gaze during research studies, users can quantify where and how long individual's look at particular regions of space (usually with a focus on stimuli presented on a 2D screen, but also within 3D space). Eye-tracking provides a rich stream of continuous data which can offer powerful insights into real-time cognitive processing. Undoubtedly, Psychology (and related broad areas of research such as vision science, linguistics, etc) is perhaps the scientific discipline which has seen the most substantial adoption of eye-data research, where eye-tracking systems are now commonplace in centres of academic research. Such data allow researchers to inspect the interplay of cognitive processes such as attention, memory, decision making, and reading, with high temporal precision [@beesley2019].
+
+While there are abundant uses and benefits of collecting eye-movement data, the collection of such data has many implications for the eventual analysis work that is undertaken by the researcher. The continual stream of recording can lead to an overwhelming amount of raw data: modern eye-trackers can record data at 1000 Hz and above, which results in 3.6 million samples taken per hour. The continual nature of the data also leads to a wealth of choice in the manner in which it is analysed. As such, the provision of suitable computational software for data reduction and processing is an important part of eye-tracking research. The companies behind eye-tracking devices offer licensed software that will perform many of the common steps for eye-data analysis. However, there are several disadvantages to using such proprietary software in a research context. Firstly, the software will typically have an ongoing license cost for continual use. Secondly, the algorithms driving the operations within such software are not readily available for inspection or adaptation for new purposes. These significant constraints mean that the use of proprietary analysis software will lead to a failure to meet the basic open-science principle of analysis reproduction, for example as set out by the UK Reproducibility Network: "We expect researchers to... make their research methods, software, outputs and data open, and available at the earliest possible point...The reproducibility of both research methods and research results ...is critical to research in certain contexts, particularly in the experimental sciences with a quantitative focus...".
+
+In the current article we introduce a new toolkit for eye-data processing and analysis called "*eyetools*", which takes the form of an R package. R packages (like R itself) are free to use and are therefore available for users across the world. The package provides a (growing) number of functions that provide an efficient and effective means to conduct basic eye-data analysis. *eyetools* is built with academic researchers in the psychological sciences in mind, though there is no reason why the package would not be effective more generally. The functions within the package reflect steps in a comprehensive analysis pipeline, taking the user from initial handling of raw eye data, to summarising data for each period of a procedure, to the visualisation of the data in plots. Since the pipeline is contained within the one package, it is not reliant on external software, which enables easy reproducibility of any analyses. Importantly, the functions are simple to use, ensuring that the package will be beneficial for researchers who are unfamiliar with eye data analysis. It should also appeal to researchers accustomed to working with eye data in other environments who wish to transfer to working in R.
+
+*eyetools* is, of course, not the only package in R that allows users to work with eye data. We conducted a survey of the available packages on CRAN (The Comprehensive R Archive Network), by searching the list of available packages (<https://cran.r-project.org/web/packages/available_packages_by_name.html>) for the terms “eye” (which covers terms “eye-tracking” and “eyetracking”), “gaze”, “saccades” and “fixation”. We considered packages that were designed for work within the psychological sciences[^1], which identified 12 packages that offer relevant functions for the analysis of eye data, shown in Table 1. ***eyeTrackr***, ***eyelinker***, and ***eyelinkReader***, all offer functionality for data only from experiments that have used 'EyeLink' trackers (S-R Research). In contrast, ***eyetools*** provides functions that are hardware-agnostic, relying on a format of data that can be achieved from any source. The ***emov*** package offers a limited set of functions and is primarily designed for fixation detection, using the same dispersion method employed in ***eyetools***. ***eyetrackingR*** and ***kollaR*** are perhaps the most comprehensive alternative packages and having some similarity to eyetools in their broad use-case. ***eyetrackingR*** offers a large suite of functionality and, like ***eyetools***, can be applied across the entire pipeline. It has functions for cleaning data and various plotting functions, including analysis over time. It does not feature algorithms regarding the detection of events such as saccades or fixations. This limits the ability to conduct bespoke analysis steps and it means that analysis needs to be conducted on raw data. This is disadvantageous both in terms of computing time and in the open sharing of data (event data are an order of magnitude smaller in size than raw data). kollaR is hardware-agnostic and offers functions for data processing, fixation detection and some plotting features. Several packages offer specific use-cases: ***saccadr*** is a package that can be used to extract saccades from raw data, and has functionality to convert binocular data into monocular data; ***fpa*** offers a particular spatio-temporal analysis and associated plots; ***gazepath*** offers detection of fixations and saccades, in addition to an optional GUI. The packages ***eyeris*** and ***Pupillometry*** are focussed on the analysis of pupillometry data, which is not a focus of the eyetools package (at present). 
+
+[^1]: We did not present or summarise here packages that were designed for work in opthalmology research. 
+
+| Package | Hardware-agnostic | Data Import | Data processing | Fixation detection | Saccade detection | Pupillometry | Plotting | Inferential Analysis |
+|-----------|:---------:|:---------:|:---------:|:---------:|:---------:|:---------:|:---------:|:---------:|
+| emov | {{< fa check >}} |  | {{< fa check >}} | {{< fa check >}} | {{< fa check >}} | | | |
+| eyelinker | | Eyelink | | | | | | |
+| eyelinkReader | | EyeLink | | {{< fa check >}} | {{< fa check >}} | | {{< fa check >}} | |
+| eyeris | {{< fa check >}} | EyeLink | {{< fa check >}} | | | {{< fa check >}} |{{< fa check >}} | |
+| eyetools | {{< fa check >}} | Tobii | {{< fa check >}} | {{< fa check >}} | {{< fa check >}} | | {{< fa check >}} | |
+| eyetrackingR | {{< fa check >}} |  | {{< fa check >}} | | | | {{< fa check >}} | {{< fa check >}} |
+| eyeTrackR |  | EyeLink | {{< fa check >}} | | | | | |
+| fpa | {{< fa check >}} | | {{< fa check >}} | | | | {{< fa check >}} | |
+| gazepath | {{< fa check >}} | | | {{< fa check >}} | | | | |
+| kollaR | {{< fa check >}} | | {{< fa check >}} | {{< fa check >}} | | | {{< fa check >}} | |
+| PuppilometryR |  | | {{< fa check >}} | | | {{< fa check >}} | {{< fa check >}} | |
+| saccadr | {{< fa check >}} |  |  | {{< fa check >}} | | | | |
