@@ -139,15 +139,31 @@ interpolate(data,
             report = TRUE)[[2]]
 ```
 
+```{r}
+#| echo: false
+data <- interpolate(data, 
+                    method = "approx")
+
+```
+
 As shown, not all missing data has been replaced, since there are certain periods in which the missing data span a period longer than the default setting of the "maxgap" parameter, which is 150 ms.
 
 Once interpolation has been performed, a common step is to smooth the eye data to minimise the effect of measurement error on the data. The function `smoother()` reduces the noise in the data by applying a moving average function. The degree of smoothing can be specified, and a plot can be generated (using data from a randomly selected trial) to observe how well the smoothed data fits the raw data.
 
-```{r, message=FALSE}
+
+
+```{r}
+#| fig-cap: Example x and y coordinates for participant 119's trials 3 and 4. Red line is the unsmoothed data, blue line is the smoothed data.
+#| output: true
+
+set.seed(260630) # for plotting the randomly selected trials
 data <- smoother(data,
                  span = .02,
                  plot = TRUE)
+
 ```
+
+
 
 ## Working with *eyetools*
 
