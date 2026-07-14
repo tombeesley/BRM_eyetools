@@ -129,13 +129,24 @@ data <- interpolate(data,
 
 ```
 
-When using `interpolate()`, a report can be requested on the proportion of missing data that has been replaced. This parameter changes the output format of the function, and returns a list of both the data and the report. The report alone can be accessed in the following way:
+When using `interpolate()`, a report can be requested on the proportion of missing data that has been replaced. This parameter changes the output format of the function, and returns a list containing both the data and the report. The elements of this list can be accessed in the following way:
 
 ```{r}
 #| output: true
-interpolate(data, 
-            method = "approx", 
-            report = TRUE)[[2]]
+
+interpolate_result <- 
+  interpolate(data, 
+              method = "approx", 
+              report = TRUE)
+
+
+# data
+interpolate_result[[1]]
+
+# report
+interpolate_result[[2]]
+
+
 ```
 
 ```{r}
@@ -215,6 +226,16 @@ fixations <-
 
 head(fixations, 4)
 ```
+
+It should be noted that the fixation and saccade algorithms return the data in a format that retains the `pID` and `trial` columns. It is likely that researchers will want to add in more details of their experimental procedure at this point from relevant data sources. For example, we can join the fixation data to our behavioural data to provide a more comprehensive representation of the data:
+
+```{r}
+#| output: true
+
+fixations_complete <- 
+  merge(fixations, HCL_behavioural, by = c("pID", "trial"))
+```
+
 
 ## Saccades
 
