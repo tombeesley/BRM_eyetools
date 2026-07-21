@@ -103,7 +103,7 @@ The starting point for the analysis pipeline is the preparation of the raw eye d
 
 -   pID = the unique identifier for the data from each participant
 
-The first four columns should be set as type numeric, while "pID" can be numeric, character, or factor. The order of the columns is not important. Missing values in the x and y columns of the raw data must be expressed as "NA".
+The first four columns should be set as type numeric, while "pID" can be numeric, character, or factor. The order of the columns is not important. Missing values in the x and y columns of the raw data must be expressed as "NA". The origin coordinate (0,0) in the eyetools visualisations is the bottom left corner; all spatial plots in eyetools have the option to flip the y_axis such that the origin is in the top right corner, and the `conditional_transform()` function can be used to convert data (see below).
 
 While *eyetools* works on monocular data (data from a single eye, i.e., a series of X and Y coordinates) in the main, many eyetrackers will output binocular data (data from two eyes, i.e., an X and Y coordinate for each eye). In such cases, since the primary aim of our analyses is the estimation of the spatial coordinates of gaze, the function `combine_eyes()` should be used to combine the data to form a set of monocular data. This function takes raw data with coordinates for each eye (i.e., left_x, right_x, left_y, right_y), and converts the data into single x and y coordinates. By default, the function does this by taking an average of the coordinates from the two eyes of each timestamp, but it is also possible to select data from the eye with the lowest proportion of missing samples. This function returns data that has x and y variables in place of the left\_\* and right\_\* variables.
 
@@ -239,7 +239,7 @@ fixations_complete <-
 
 ## Saccades
 
-Between periods of fixation, the velocity of the eye increases rapidly as it makes a saccade towards the next point of fixation. The `saccade_VTI()` function will extract saccades using the velocity threshold algorithm described above. The resulting output provides details of each saccade, such as the timing of the saccade onset, duration, and the origin and terminus coordinates. As with the fixation algorithms, default parameters have been chosen, but they can be adapted to fit the requirements of the researcher.
+Between periods of fixation, the velocity of the eye increases rapidly as it makes a saccade towards the next point of fixation. The `saccade_VTI()` function will extract saccades using the velocity threshold algorithm described above. The resulting output provides details of each saccade, such as the timing of the saccade onset, duration, direction, angle.
 
 ```{r}
 #| output: true
@@ -249,6 +249,37 @@ saccades <- saccade_VTI(data,
                         min_dur = 20)
 
 head(saccades, 4)
+```
+
+The algorithm will give precise details of the origin and terminus coordinates for the saccade. By passing a set of AOIs to the function, the origin and terminal points of the saccade will be evaluated against these, and matches will be reported in the output (with no match reported as NA):
+
+```{r}
+#| output: true
+
+saccades <- saccade_VTI(data,
+                        threshold = 150,
+                        min_dur = 20,
+                        AOIs = HCL_AOIs)
+
+head(saccades, 4)
+```
+
+This output can easily facilitate an analysis of saccade latencies towards relevant stimulus regions. For example, here we add an AOI for a central fixation region between the two cue stimuli. We can then identify valid saccades from the fixation to each of the left and right stimuli. The start time of the saccade provides the latency from stimulus onset (time = 0 in the trial data). Here we show that that the saccade output can be filtered to relevant saccades based on the origin AOI and saccade number (note that our example data come from a task in which saccade latency was not an expected measure):
+
+```{r}
+#| output: true
+
+HCL_AOIs[4,1] <- "fixation"
+HCL_AOIs[4,2:5] <- c(960, 840, 200, 200) 
+
+saccades <- saccade_VTI(data,
+                        threshold = 80,
+                        min_dur = 20,
+                        AOIs = HCL_AOIs)
+
+saccades |> 
+  dplyr::filter(trial == 4 & origin_AOI == "fixation" & sac_n == 1)
+
 ```
 
 ## Choosing suitable parameters for fixation and saccade detection
