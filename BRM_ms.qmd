@@ -52,7 +52,7 @@ Eye-tracking is now an established and widely used tool that provides powerful m
 
 By recording the movement of an individual's gaze during research studies, users can quantify where and how long individual's look at particular regions of space (usually with a focus on stimuli presented on a 2D screen, but also within 3D space). Eye-tracking provides a rich stream of continuous data which can offer powerful insights into real-time cognitive processing. Undoubtedly, Psychology (and related broad areas of research such as vision science, linguistics, etc) is perhaps the scientific discipline which has seen the most substantial adoption of eye-data research, where eye-tracking systems are now commonplace in centres of academic research. Such data allow researchers to inspect the interplay of cognitive processes such as attention, memory, decision making, and reading, with high temporal precision [@beesley2019].
 
-While there are abundant uses and benefits of collecting eye-movement data, the collection of such data has many implications for the eventual analysis work that is undertaken by the researcher. The continual stream of recording can lead to an overwhelming amount of raw data: modern eye-trackers can record data at 1000 Hz and above, which results in 3.6 million samples taken per hour. The continual nature of the data also leads to a wealth of choice in the manner in which it is analysed. As such, the provision of suitable computational software for data reduction and processing is an important part of eye-tracking research. The companies behind eye-tracking devices offer licensed software that will perform many of the common steps for eye-data analysis. However, there are several disadvantages to using such proprietary software in a research context. Firstly, the software will typically have a significant licence fee (for either perpetual or annual use). Secondly, the code behind the various operations within such software is not readily available for inspection. This means that, should anyone want to reproduce the analysis steps in full, they would have to pay for a licence.  These significant constraints mean that the use of proprietary analysis software will lead to a failure to meet the basic open-science principle of analysis reproduction, for example as set out by the UK Reproducibility Network: "We expect researchers to... make their research methods, software, outputs and data open, and available at the earliest possible point...The reproducibility of both research methods and research results ...is critical to research in certain contexts, particularly in the experimental sciences with a quantitative focus...".
+While there are abundant uses and benefits of collecting eye-movement data, the collection of such data has many implications for the eventual analysis work that is undertaken by the researcher. The continual stream of recording can lead to an overwhelming amount of raw data: modern eye-trackers can record data at 1000 Hz and above, which results in 3.6 million samples taken per hour. The continual nature of the data also leads to a wealth of choice in the manner in which it is analysed. As such, the provision of suitable computational software for data reduction and processing is an important part of eye-tracking research. The companies behind eye-tracking devices offer licensed software that will perform many of the common steps for eye-data analysis. However, there are several disadvantages to using such proprietary software in a research context. Firstly, the software will typically have a significant licence fee (for either perpetual or annual use). Secondly, the code behind the various operations within such software is not readily available for inspection. This means that, should anyone want to reproduce the analysis steps in full, they would have to pay for a licence.  These significant constraints mean that the use of proprietary analysis software will result in a failure to meet the basic open-science principle of analysis reproduction, for example as set out by the UK Reproducibility Network: "We expect researchers to... make their research methods, software, outputs and data open, and available at the earliest possible point...The reproducibility of both research methods and research results ...is critical to research in certain contexts, particularly in the experimental sciences with a quantitative focus..." [@UKRN].
 
 In the current article we introduce a new toolkit for eye-data processing and analysis called "*eyetools*", which takes the form of an R package. R packages (like R itself) are free to use and are therefore available for users across the world. The package provides a (growing) number of functions that provide an efficient and effective means to conduct eye-data analysis on data from typical laboratory 2D eye-tracking systems (i.e., Tobii Spectrum and similar; EyeLink 1000 Plus and similar), for tasks that employ static 2D displays of stimuli (there are no functions for smooth pursuit analysis). *eyetools* is built with academic researchers in the psychological sciences in mind, though there is no reason why the package would not be effective more generally. The functions within the package reflect steps in a comprehensive analysis pipeline, taking the user from initial handling of raw eye data, to summarising data for each period of a procedure, to the visualisation of the data in plots. Since the pipeline is contained within the one package, it is not reliant on external software, which enables easy reproducibility of any analyses. Importantly, the functions are simple to use, ensuring that the package will be beneficial for researchers who are unfamiliar with eye data analysis. It should also appeal to researchers accustomed to working with eye data in other environments who wish to transfer to working in R.
 
@@ -261,18 +261,22 @@ A critical component in many analyses of eye gaze is the assessment of time spen
 
 ```{r}
 
-# set areas of interest
-AOI_areas <- create_AOI_df(3)
-
-# populate this dataframe with AOI dimensions 
+# Set the dimensions of AOIs
 # (x, y, width/radius, height)
-AOI_areas[1,] <- c(460, 840, 400, 300) # Left rectangualar AOI
-AOI_areas[2,] <- c(1460, 840, 200, NA) # Right circular AOI
-AOI_areas[3,] <- c(960, 840, 200, 400) # Centre rectangular AOI
+aoi_1 <- c(460, 840, 400, 300) # Left rectangualar AOI
+aoi_2 <- c(1460, 840, 200, NA) # Right circular AOI
+aoi_3 <- c(960, 840, 200, 400) # Centre rectangular AOI
+
+# create a dataframe with the correct specification
+AOI_areas <- create_AOI_df(num_AOIs = 3,
+                           AOI_data = list(aoi_1, aoi_2, aoi_3),
+                           AOI_names = c("left", "right", "centre"))
 
 ```
 
-The function `AOI_time()` function calculates the time spent in each AOI per trial, using either the raw data or fixation data as input. The resulting output can be expressed in the form of absolute time, or, by passing a vector of times to the "trial_time" parameter, can be expressed as proportional time.
+The function `AOI_time()` function calculates the time spent in each AOI per trial, using either the raw data or fixation data as input[^2]. The resulting output can be expressed in the form of absolute time, or, by passing a vector of times to the "trial_time" parameter, can be expressed as proportional time.
+
+[^2]: Currently, the AOI functions in eyetools work with a static dataframe of AOI regions that are analysed on each trial. However, for some designs it might be necessary to analyse different AOIs across trials. This functionality may be particularly beneficial in tasks in which the configuration of stimuli changes from trial-to-trial, such as in many visual search procedures. To achieve such an analysis within the available functions (assuming non-overlapping AOIs), it would be best to add all possible AOIs across all trials, and have each assessed on each trial. As required, the output of this analysis could then be reduced by filtering the data to include relevant AOIs for each trial. Future versions of eyetools will look to support more directly this type of analysis.
 
 ```{r}
 #| output: true
@@ -280,8 +284,7 @@ The function `AOI_time()` function calculates the time spent in each AOI per tri
 data_AOI_time <- 
   AOI_time(data = fixations, 
            data_type = "fix", 
-           AOIs = HCL_AOIs, 
-           AOI_names = c("target", "distractor", "outcomes"),
+           AOIs = HCL_AOIs,
            as_prop = TRUE,
            trial_time = HCL_behavioural$RT) 
 
@@ -310,7 +313,6 @@ The `AOI_time_binned()` function can assess the duration of time spent in AOIs, 
 data_AOI_time_binned <- 
   AOI_time_binned(data, 
                   AOIs = HCL_AOIs,
-                  AOI_names = c("target", "distractor", "outcomes"),
                   bin_length = 1000, # in milliseconds
                   max_time = 8000) # in milliseconds
 
@@ -324,8 +326,7 @@ It is also possible to determine the sequence of entries into AOIs using the `AO
 
 data_AOI_entry <- 
   AOI_seq(fixations, 
-          AOIs = HCL_AOIs,
-          AOI_names = c("target", "distractor", "outcomes"))
+          AOIs = HCL_AOIs)
 
 head(data_AOI_entry, 9)
 ```
@@ -337,12 +338,12 @@ Knowing the order in which the eyes visit particular regions of space is essenti
 library(dplyr)
 
 # add a central fixation AOI region
-HCL_AOIs[4,] <- c(960, 810, 200, 200)
+HCL_AOIs[4,2:5] <- c(960, 810, 200, 200)
+HCL_AOIs[4,1] <- "fix"
 
 data_AOI_entry <- 
   AOI_seq(fixations, 
-          AOIs = HCL_AOIs,
-          AOI_names = c("target", "distractor", "outcomes", "fixation"))
+          AOIs = HCL_AOIs)
 
 data_AOI_entry %>% 
   dplyr::group_by(pID, trial) %>% 
