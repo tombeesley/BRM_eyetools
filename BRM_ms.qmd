@@ -203,9 +203,9 @@ Once the data has been repaired and smoothed, a core step in eye data analysis i
 
 The raw data can be transformed into these meaningful eye data characteristics. Beyond their importance for understanding psychological processes, transforming the data into fixations and saccades leads to greater computational efficiency. For example, the built in example data in *eyetools* is 479 kb, which contains 31,041 rows of data (constituting just 12 trials of data). After processing the data into fixations, the resulting data is 269 rows and can be saved as 3.8 kb, less than 1% the size of the raw data. Not only is this more computationally efficient, but it also means the data are now in a far more practical format for storage in online data repositories.
 
-There are two fixation algorithms offered in the *eyetools* package, both based on methods presented by @salvucci2000. The first, `fixation_dispersion()` seeks periods of low variability in the spatial component of the data; the algorithm looks for sufficient periods of time in which the gaze position remains within a tolerated maximum range of dispersion. Once this range is exceeded, this is deemed to be the end of a possible period of fixation. If the total time of this fixation period is longer than the minimum required (set by the `min_dur` parameter), then this fixation is stored as an entry in the returned object.
+There are two fixation algorithms offered in the *eyetools* package, both based on methods presented by @salvucci2000. The first, `fixation_dispersion()` seeks periods of low variability in the spatial component of the data; the algorithm looks for sufficient periods of time in which the gaze position remains within a tolerated maximum range of dispersion. By default the dispersion tolerance is set to 75 pixels, which equates to approximately 2 degrees of visual angle for modern monitors at a viewing distance of \~60cm [@blignaut2009]. Once this range is exceeded, this is deemed to be the end of a possible period of fixation. If the total time of this fixation period is longer than the minimum required (set by the `min_dur` parameter, with a default value of 100ms, [@manor2003]), then this fixation is stored as an entry in the returned object.
 
-The second algorithm, `fixation_VTI()` , employs a velocity-threshold approach to identifying fixations, based on the algorithm described in @salvucci2000. Since points of fixation occur when the eye is not in consistent motion, the algorithm computes the Euclidean distance between points and then determines the velocity of the eye. Periods in which this velocity is consistently below the velocity threshold (for which the default is 100 degrees of visual angle per second) are identified as a potential period of fixation. The algorithm then applies a dispersion check to ensure that the eye maintains a relatively stable position across this period. Fixations must be of a minimum length for classification (by default 150 ms). These principles of the VT-I algorithm (as set out by @salvucci2000) are used for the default fixation and saccade algorithms within EyeLink's DataViewer software and Tobii's Pro Lab software.
+The second algorithm, `fixation_VTI()` , employs a velocity-threshold approach to identifying fixations, based on the algorithm described in @salvucci2000. Since points of fixation occur when the eye is not in consistent motion, the algorithm computes the Euclidean distance between points and then determines the velocity of the eye. Periods in which this velocity is consistently below the velocity threshold (for which the default is 30 degrees of visual angle per second, [@andrews1999; @vanderlans2011]) are identified as a potential period of fixation. The algorithm then applies a dispersion check to ensure that the eye maintains a relatively stable position across this period. Fixations must be of a minimum length for classification (by default 100 ms, [@manor2003]). These principles of the VT-I algorithm (as set out by @salvucci2000) are used for the default fixation and saccade algorithms within EyeLink's DataViewer software and Tobii's Pro Lab software.
 
 Here we can see the example data passed to the `fixation_dispersion()` algorithm and the resulting fixations that are returned.
 
@@ -214,7 +214,7 @@ Here we can see the example data passed to the `fixation_dispersion()` algorithm
 
 fixations <- 
   fixation_dispersion(data,
-                      min_dur = 150, # Min duration in ms
+                      min_dur = 100, # Min duration in ms
                       disp_tol = 100, # Max dispersion tolerance in pixels
                       NA_tol = 0.25, # proportion of NAs tolerated 
                       progress = FALSE) # toggle progress bar
@@ -234,13 +234,14 @@ fixations_complete <-
 
 ## Saccades
 
-Between periods of fixation, the velocity of the eye increases rapidly as it makes a saccade towards the next point of fixation. The `saccade_VTI()` function will extract saccades using the velocity threshold algorithm described above. The resulting output provides details of each saccade, such as the timing of the saccade onset, duration, direction, angle.
+Between periods of fixation, the velocity of the eye increases rapidly as it makes a saccade towards the next point of fixation. The `saccade_VTI()` function will extract saccades using the velocity threshold algorithm described above. The resulting output provides details of each saccade, such as the timing of the saccade onset (from start of trial), duration, direction, amplitude, and velocity metrics.
 
 ```{r}
 #| output: true
 
 saccades <- saccade_VTI(data,
-                        threshold = 150,
+                        vel_threshold = 30,
+                        min_amplitude = .2,
                         min_dur = 20)
 
 head(saccades, 4)
@@ -252,14 +253,15 @@ The algorithm will give precise details of the origin and terminus coordinates f
 #| output: true
 
 saccades <- saccade_VTI(data,
-                        threshold = 150,
+                        vel_threshold = 30,
+                        min_amplitude = .2,
                         min_dur = 20,
                         AOIs = HCL_AOIs)
 
 head(saccades, 4)
 ```
 
-This output can easily facilitate an analysis of saccade latencies towards relevant stimulus regions. For example, here we add an AOI for a central fixation region between the two cue stimuli. We can then identify valid saccades from the fixation to each of the left and right stimuli. The start time of the saccade provides the latency from stimulus onset (time = 0 in the trial data). Here we show that that the saccade output can be filtered to relevant saccades based on the origin AOI and saccade number (note that our example data come from a task in which saccade latency was not an expected measure):
+This output can easily facilitate an analysis of saccade latencies towards relevant stimulus regions. For example, here we add an AOI for a central fixation region between the two cue stimuli. We can then identify valid saccades from the fixation to each of the left and right stimuli. The start time of the saccade provides the latency from stimulus onset (time = 0 in the trial data). Here we show that that the saccade output can be filtered to relevant saccades based on the origin AOI and saccade number (note that our example data come from a task which was not designed to utilise saccade latency as a primary measure):
 
 ```{r}
 #| output: true
@@ -268,7 +270,8 @@ HCL_AOIs[4,1] <- "fixation"
 HCL_AOIs[4,2:5] <- c(960, 840, 200, 200) 
 
 saccades <- saccade_VTI(data,
-                        threshold = 80,
+                        vel_threshold = 30,
+                        min_amplitude = .2,
                         min_dur = 20,
                         AOIs = HCL_AOIs)
 
@@ -279,7 +282,15 @@ saccades |>
 
 ## Choosing suitable parameters for fixation and saccade detection
 
-The default parameters for the three algorithms just described (`fixation_dispersion()`, `fixation_VTI()` `saccade_VTI()`)...
+For the three algorithms just described (`fixation_dispersion()`, `fixation_VTI()` `saccade_VTI()`), default parameters have been chosen that reflect common practices in eye-movement research. That said, given the broad range of experimental tasks in which eye data can and will be obtained, no "correct" default parameters exist. Rather, parameter choice is an active step in the eye data analysis process, and so parameters should be selected by the user that best reflect the types of stimuli and eye-movements that are likely to be obtained in the given procedure. Here we briefly comment on the key parameters of these functions and reference further literature which the user can use to make informed decisions.
+
+Fixation - dispersion tolerance (`disp_tol`):
+
+**Fixation - minimum duration (`min_dur`):** fixation length will be influenced by many factors, including task requirements, and stimulus content. Mean fixation length for visual search and reading is typically around 200ms, with tasks involving motor programming or more complex visual processing leading to longer mean fixation times (@andrews1999; @rayner). @salvucci2000 suggest a threshold between 100 and 200 ms, with a threshold at the lower end (100ms - our default value) commonly used in published workflows (e.g., @blignaut2009; @mould2012). Of note, @andrews1999 found considerable individual variation in the length of fixations, though for each participant, these idosyncracies were were remarkably consistent across task conditions. Some fixation detection algorithms
+
+Saccade - velocity threshold (`vel_threshold`):
+
+Saccade - minimum amplitude (min_am
 
 ## Area of interest (AOI) analysis
 
@@ -371,8 +382,8 @@ data_AOI_entry <-
   AOI_seq(fixations, 
           AOIs = HCL_AOIs)
 
-data_AOI_entry %>% 
-  dplyr::group_by(pID, trial) %>% 
+data_AOI_entry  |>  
+  dplyr::group_by(pID, trial) |>  
   dplyr::slice(1)
 
 ```
