@@ -70,7 +70,7 @@ tobii_sac <-
          origin_x:terminal_y, mean_velocity, peak_velocity)
   
   
-eyetools_sac <- saccade_VTI(eyetools_raw, threshold = 20)
+eyetools_sac <- saccade_VTI(eyetools_raw, vel_threshold = 30)
 
 # Sample periods from fixations
 # specify time period
@@ -131,14 +131,18 @@ for (p in 1:3) {
 
 # create all the plots and piece together 
 
-t_1 <- plot_spatial(sac_data = sel_tobii_sac[[1]]) #+ ggtitle("Tobii extracted saccades - period 1")
-e_1 <- plot_spatial(sac_data = sel_eyetools_sac[[1]]) #+ ggtitle("eyetools extracted saccades - period 1")
-t_2 <- plot_spatial(sac_data = sel_tobii_sac[[2]]) #+ ggtitle("Tobii extracted saccades - period 2")
-e_2 <- plot_spatial(sac_data = sel_eyetools_sac[[2]]) #+ ggtitle("eyetools extracted saccades - period 2")
-t_3 <- plot_spatial(sac_data = sel_tobii_sac[[3]]) #+ ggtitle("Tobii extracted saccades - period 3")
-e_3 <- plot_spatial(sac_data = sel_eyetools_sac[[3]]) #+ ggtitle("eyetools extracted saccades - period 3")
+t_1 <- plot_spatial(sac_data = sel_tobii_sac[[1]]) + ggtitle("Tobii extracted saccades - period 1")
+e_1 <- plot_spatial(sac_data = sel_eyetools_sac[[1]]) + ggtitle("eyetools extracted saccades - period 1")
+t_2 <- plot_spatial(sac_data = sel_tobii_sac[[2]]) + ggtitle("Tobii extracted saccades - period 2")
+e_2 <- plot_spatial(sac_data = sel_eyetools_sac[[2]]) + ggtitle("eyetools extracted saccades - period 2")
+t_3 <- plot_spatial(sac_data = sel_tobii_sac[[3]]) + ggtitle("Tobii extracted saccades - period 3")
+e_3 <- plot_spatial(sac_data = sel_eyetools_sac[[3]]) + ggtitle("eyetools extracted saccades - period 3")
 
 (t_1+e_1)/(t_2+e_2)/(t_3+e_3)
+
+
+
+
 
 
 
