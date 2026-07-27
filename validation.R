@@ -44,7 +44,12 @@ eyetools_raw <-
   select(pID, time, x, y) %>% 
   mutate(trial = 1)
 eyetools_raw <- interpolate(eyetools_raw)
-#eyetools_raw <- smoother(eyetools_raw)
+
+eyetools_s <- smoother(eyetools_raw, plot = TRUE)
+
+# !!!!!!
+# IF YOU INPSECT BOTH THE _RAW AND _S OBJECTS HERE, YOU CAN SEE THAT THE COORDINATES ARE WIDELY DIFFERENT...
+
 eyetools_fix <- fixation_dispersion(eyetools_raw)
 
 # prepare eyetools fixations_vti
@@ -140,24 +145,62 @@ e_3 <- plot_spatial(sac_data = sel_eyetools_sac[[3]]) + ggtitle("eyetools extrac
 
 (t_1+e_1)/(t_2+e_2)/(t_3+e_3)
 
+# combine all fix results
+
+eyetools_fix <- fixation_dispersion(eyetools_raw, min_dur = 150, disp_tol = 75)
+eyetools_fix_vti <- fixation_VTI(eyetools_raw, vel_threshold = 30)
 
 
+eyetools_fix <- 
+  eyetools_fix |> 
+  select(x,y,duration) |> 
+  mutate(algorithm = "fix_disp")
+
+eyetools_fix_vti <- 
+  eyetools_fix_vti |> 
+  select(x,y,duration) |> 
+  mutate(algorithm = "fix_vti")
+
+tobii_fix <- 
+  tobii_fix |> 
+  select(x,y,duration) |> 
+  mutate(algorithm = "fix_tobii")
+
+all_fix <- 
+  rbind(eyetools_fix, eyetools_fix_vti, tobii_fix) |> 
+  drop_na()
+
+# get statistics of the extracted fixations
+
+all_fix |> 
+  group_by(algorithm) |> 
+  summarise(num_fix = n(),
+            mean_dur = mean(duration))
 
 
+all_fix |> 
+  filter(between(duration, 100, 2000)) |> 
+  ggplot(aes(x = duration, colour = algorithm)) + 
+  geom_freqpoly(linewidth = 2) +
+  theme_classic()
 
+# 
+# 
+# 
+# 
+# 
+# # compute distance between a and b
+# 
+# c_t <- sel_tobii[,c("x", "y")]
+# c_e <- sel_eyetools[,c("x", "y")]
+# 
+# min_dist <- NULL
+# 
+# for (i in 1:nrow(c_t)) {
+#   dist_vals <-  as.matrix(dist(rbind(c_t[i,], c_e)))
+#   min_dist[i] <- min(dist_vals[2:nrow(dist_vals),1])
+# }
+# 
+# mean(min_dist)
 
-
-# compute distance between a and b
-
-c_t <- sel_tobii[,c("x", "y")]
-c_e <- sel_eyetools[,c("x", "y")]
-
-min_dist <- NULL
-
-for (i in 1:nrow(c_t)) {
-  dist_vals <-  as.matrix(dist(rbind(c_t[i,], c_e)))
-  min_dist[i] <- min(dist_vals[2:nrow(dist_vals),1])
-}
-
-mean(min_dist)
 
