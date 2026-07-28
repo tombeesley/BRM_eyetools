@@ -61,7 +61,7 @@ In the current article we introduce a new toolkit for eye-data processing and an
 [^1]: We did not present or summarise here packages that were designed for work in opthalmology research. There are also several packages that are not listed on CRAN but can be installed using alternative methods. Of note is the package ***gazeR*** which, like ***eyetools*** and ***kollaR***, features a comprehensive array of functions for work with eye data. For a summary of packages that are available beyond the R-ecosystem, see @niehorster2025.
 
 | Package | Hardware-agnostic | Data Import | Data processing | Fixation detection | Saccade detection | Pupillometry | Plotting |
-|---------|:-------:|:-------:|:-------:|:-------:|:-------:|:-------:|:-------:|
+|----|:--:|:--:|:--:|:--:|:--:|:--:|:--:|
 | emov | {{< fa check >}} |  | {{< fa check >}} | {{< fa check >}} | {{< fa check >}} |  |  |
 | eyelinker |  | Eyelink |  |  |  |  |  |
 | eyelinkReader |  | EyeLink |  | {{< fa check >}} | {{< fa check >}} |  | {{< fa check >}} |

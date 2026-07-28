@@ -22,6 +22,17 @@ d <-
          fixation_point_x,
          fixation_point_y)
 
+# plot x and y
+
+d |> 
+  ggplot(aes(x)) +
+  geom_histogram()
+
+d |> 
+  ggplot(aes(y)) +
+  geom_histogram()
+
+
 # extract tobii fixations
 tobii_fix <- 
   d %>%
