@@ -5,22 +5,56 @@ library(tidyverse)
 library(eyetools)
 library(patchwork)
 
-d_raw <- read_csv("Chen_data_tobii.csv")
+# data from https://dl.acm.org/doi/full/10.1145/3797246.3806792
+
+d_raw <- read_tsv("YarbusKangaroo Data export.tsv", n_max = 2000000)
+
+#d_raw <- read_csv("Chen_data_tobii.csv")
 
 d_raw <- janitor::clean_names(d_raw)
 
+unique(d_raw$participant_name)
+
+d_p <- filter(d_raw, participant_name == "P04_23")
 
 d <- 
-  d_raw %>% 
+  d_p |> 
   select(pID = participant_name,
-         time = recording_timestamp, 
-         x = gaze_point_x,
-         y = gaze_point_y,
+         time = recording_timestamp_ms,
+         x = gaze_point_x_dacs_px,
+         y = gaze_point_y_dacs_px,
          eye_movement_type,
-         duration = gaze_event_duration,
          eye_movement_type_index,
-         fixation_point_x,
-         fixation_point_y)
+         duration = gaze_event_duration_ms, 
+         fix_x = fixation_point_x_dacs_px,
+         fix_y = fixation_point_y_dacs_px)
+
+# events <- read_tsv("YarbusKangaroo Event-based-Metrics.tsv") |> 
+#   janitor::clean_names() |> 
+#   filter(participant == "P04_23")
+# 
+# media_key_trials <- c("Task1", "Task2 (1)", "Task3", "Task4", "Task5", "Task6", "Task7")
+# 
+# tobii_fix <- 
+#   events |> 
+#   filter(event_type == "Fixation") |> 
+#   filter(toi != "Entire Recording") |> 
+#   filter(media %in% media_key_trials) |> 
+#   mutate(trial = str_sub(media, 5,5)) |> 
+#   select(pID = participant, validity, trial, start, stop, duration, x = fixation_point_x, y = fixation_point_y)
+# 
+# tobii_sac <- 
+#   events |> 
+#   filter(event_type == "Saccade") |> 
+#   filter(toi != "Entire Recording") |> 
+#   filter(media %in% media_key_trials) |> 
+#   mutate(trial = str_sub(media, 5,5)) |> 
+#   select(pID = participant, validity, trial, start, stop, duration, 
+#          saccade_direction, average_velocity, peak_velocity, 
+#          saccade_amplitude, origin_x = start_position_x, 
+#          origin_y = start_position_y, terminal_x = landing_position_x, terminal_y = landing_position_y)
+
+save(d_p, events, tobii_fix, tobii_sac, file = "sample_data.RData")
 
 # plot x and y
 
